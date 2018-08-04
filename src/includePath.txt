@@ -1,0 +1,4 @@
+/Users/mohammedalyousef/vcpkg/installed/x64-osx/include
+/Users/mohammedalyousef/vcpkg/packages/boost-filesystemx64-osx/include
+/Users/mohammedalyousef/vcpkg/packages/boost-systemx64-osx/include
+/Users/mohammedalyousef/vcpkg/packages/nlohmann-jsonx64-osx/include

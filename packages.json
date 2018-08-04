@@ -1,0 +1,7 @@
+{
+    "packages": [
+        "boost-filesystem",
+        "boost-system",
+        "nlohmann-json"
+    ]
+}

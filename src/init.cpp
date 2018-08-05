@@ -73,7 +73,6 @@ void init() {
                   << "\"0.1.0\",\n\t"
                   << "\"language\" : "
                   << "\"c++11\",\n\t"
-                  << "\",\n\t"
                   << "\"binaryName\" : "
                   << "\"" << fs::current_path().filename().string() << "\",\n\t"
                   << "\"binaryType\" : "

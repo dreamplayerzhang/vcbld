@@ -3,7 +3,6 @@
 
 #include "args.h"
 #include "help.h"
-#include "init.h"
 
 #define MAJOR_VERSION 0
 #define MINOR_VERSION 1
@@ -14,9 +13,11 @@ using namespace vcbld;
 int main(int argc, char *argv[]) {
   if (argc >= 2) {
     if (strcmp(argv[1], "new") == 0) {
-      Args::New(argv[0]);
+      Args::New();
+    } else if (strcmp(argv[1], "configure") == 0) {
+      Args::configure();
     } else if (strcmp(argv[1], "restore") == 0) {
-      Args::restore(argv[0]);
+      Args::restore();
     } else if (strcmp(argv[1], "generate") == 0) {
       Args::generate();
     } else if (strcmp(argv[1], "build") == 0) {

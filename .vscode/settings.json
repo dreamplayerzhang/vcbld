@@ -3,6 +3,8 @@
         "*.cs": "csharp",
         "fstream": "cpp",
         "locale": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "__mutex_base": "cpp",
+        "memory": "cpp"
     }
 }

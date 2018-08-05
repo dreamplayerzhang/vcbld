@@ -31,7 +31,7 @@ namespace fs = boost::filesystem;
 
 namespace vcbld {
 
-Builder::Builder(const char *buildType) {
+Builder::Builder(const std::string &buildType) {
 
   this->_buildType = buildType;
   if (!fs::exists("vcbld.json")) {
@@ -47,7 +47,7 @@ Builder::Builder(const char *buildType) {
 
 std::string Builder::compile() {
 
-  if (strcmp(this->_buildType, "release") == 0) {
+  if (this->_buildType == "release") {
     this->_compileCommand << "cd " << this->_rlsDir << " && "
                           << this->confClass.compilerPath() << " -c "
                           << this->confClass.sourceFiles() << " "
@@ -70,7 +70,7 @@ std::string Builder::compile() {
 std::string Builder::appLink() {
   std::vector<fs::directory_entry> v;
   std::string temp, tempPath;
-  if (strcmp(this->_buildType, "debug") == 0) {
+  if (this->_buildType == "debug") {
     tempPath = this->_dbgDir;
   } else {
     tempPath = this->_rlsDir;
@@ -89,7 +89,7 @@ std::string Builder::appLink() {
     }
   }
 
-  if (strcmp(this->_buildType, "release") == 0) {
+  if (this->_buildType == "release") {
     this->_appLinkCmnd << "cd " << this->_rlsDir << " && "
                        << this->confClass.compilerPath() << " -o "
                        << this->confClass.binaryName() << " " << temp << " "
@@ -106,7 +106,7 @@ std::string Builder::appLink() {
 std::string Builder::dylibLink() {
   std::vector<fs::directory_entry> v;
   std::string temp, tempPath;
-  if (strcmp(this->_buildType, "debug") == 0) {
+  if (this->_buildType == "debug"){
     tempPath = this->_dbgDir;
   } else {
     tempPath = this->_rlsDir;
@@ -134,7 +134,7 @@ std::string Builder::dylibLink() {
     dylibExt = ".so";
   }
 
-  if (strcmp(this->_buildType, "release") == 0) {
+  if (this->_buildType == "release") {
     this->_libLinkCmnd << "cd " << this->_rlsDir << " && "
                        << this->confClass.compilerPath() << dylibArg << " -o "
                        << this->confClass.binaryName() << dylibExt << " "
@@ -151,7 +151,7 @@ std::string Builder::dylibLink() {
 std::string Builder::archive() {
   std::vector<fs::directory_entry> v;
   std::string temp, tempPath;
-  if (strcmp(this->_buildType, "debug") == 0) {
+  if (this->_buildType == "debug") {
     tempPath = this->_dbgDir;
   } else {
     tempPath = this->_rlsDir;
@@ -170,7 +170,7 @@ std::string Builder::archive() {
     }
   }
 
-  if (strcmp(this->_buildType, "release") == 0) {
+  if (this->_buildType == "release") {
     this->_archiveCmnd << "cd " << this->_rlsDir << " && "
                        << "ar rcs " << this->confClass.binaryName() << ".a"
                        << " " << temp;
@@ -208,6 +208,7 @@ void Builder::build() {
     fs::create_directory(this->_dbgDir);
 
   if (this->confClass.binaryType() == "app") {
+    std::cout << compile();
     system(this->compile().c_str());
     system(this->appLink().c_str());
   } else if (this->confClass.binaryType() == "staticLibrary") {

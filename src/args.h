@@ -5,11 +5,12 @@
 #include <string>
 
 namespace vcbld::Args {
-void New(const boost::filesystem::path &path);
-void restore(const boost::filesystem::path &path);
-void build(const char *buildType);
+void New();
+void configure();
+void restore();
+void build(const std::string &buildType);
 void clean();
-void run(const char *buildType);
+void run(const std::string &buildType);
 void available();
 void add(const std::string &pkg);
 void remove(const std::string &pkg);

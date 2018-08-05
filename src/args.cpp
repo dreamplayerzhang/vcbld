@@ -44,7 +44,7 @@ using json = nlohmann::json;
 
 namespace vcbld::Args {
 
-void New(const fs::path &path) {
+void New() {
 
   if (!fs::exists("src")) {
     fs::create_directory("src");
@@ -123,7 +123,11 @@ void New(const fs::path &path) {
   init::init();
 }
 
-void build(const char *buildType) {
+void configure() {
+  init::init();
+}
+
+void build(const std::string &buildType) {
   Builder builder(buildType);
   builder.build();
 }
@@ -142,8 +146,8 @@ void clean() {
   }
 }
 
-void run(const char *buildType) {
-  if (strcmp(buildType, "debug") == 0) {
+void run(const std::string &buildType) {
+  if (buildType ==  "debug") {
     try {
       ConfClass confClass;
       std::string command = "cd " + confClass.outputDirectory().string() +
@@ -309,7 +313,7 @@ void vcpkg(const std::string &vcpkgCmnds) {
   system(temp.c_str());
 }
 
-void restore(const boost::filesystem::path &path) {
+void restore() {
   ConfClass confClass;
   PkgClass pkgClass;
   std::ostringstream pkg;

@@ -46,7 +46,7 @@ ConfClass::ConfClass() {
       std::cerr << "Failed to open conf.json file : " << errno << std::endl;
     }
   } catch (const json::parse_error e) {
-    std::cerr << "Error reading vcbld.json." << std::endl;
+    std::cerr << "Error reading conf.json." << std::endl;
   }
 
   this->_cCompilerPath = confJson["cCompilerPath"];

@@ -2,8 +2,6 @@
 	"projectName" : "myProj",
 	"version" : "0.1.0",
 	"language" : "c++11", // or "c11", both are the minimum supported versions of c++ and c.
-	"compilerPath" : "/usr/bin/clang++",
-	"vcpkgDirectory" : "/Users/mohammedalyousef/vcpkg", // Absolute path to your vcpkg directory.
 	"binaryType" : "app", // or "staticLibrary" or "sharedLibrary"
 	"binaryName" : "myApp", // Name of the app, use a "lib" prefix if it were a library.
     "sourceDirectory" : "./src", // Relative or absolute path of your source directory

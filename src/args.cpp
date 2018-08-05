@@ -42,7 +42,7 @@
 namespace fs = boost::filesystem;
 using json = nlohmann::json;
 
-namespace vcbld::Args {
+namespace vcbld::args {
 
 void New(const std::string &binType) {
 

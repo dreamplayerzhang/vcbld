@@ -2,7 +2,7 @@
 #include <iomanip>
 #include <iostream>
 
-namespace vcbld::Help {
+namespace vcbld::help {
 
 void mainHelp() {
   const char *lit = R"lit(
@@ -30,4 +30,4 @@ SDK commands:
 
   std::cout << std::setw(4) << lit << std::endl;
 }
-} // namespace vcbld::Help
+} // namespace vcbld::help

@@ -1,10 +1,10 @@
 #ifndef HELP_H
 #define HELP_H
 
-namespace vcbld::Help {
+namespace vcbld::help {
 
 void mainHelp();
 
-} // namespace vcbld::Help
+} // namespace vcbld::help
 
 #endif // !HELP_H

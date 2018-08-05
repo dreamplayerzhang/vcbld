@@ -4,7 +4,7 @@
 #include <boost/filesystem.hpp>
 #include <string>
 
-namespace vcbld::Args {
+namespace vcbld::args {
 void New(const std::string &binType);
 void configure();
 void restore();

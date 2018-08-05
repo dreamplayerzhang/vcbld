@@ -10,7 +10,7 @@
 namespace vcbld {
 class Builder {
 public:
-  Builder(const std::string &buildType);
+  explicit Builder(const std::string &buildType);
 
   std::string compile();
   std::string appLink();

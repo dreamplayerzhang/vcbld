@@ -9,7 +9,7 @@ void mainHelp() {
 Usage: vcbld [sdk-command]
 
 SDK commands:
-    new                             Starts a new project.
+    new     [app|dylib|statlib]     Starts a new project.
     configure                       Configure a vcbld project. 
     restore                         Restore missing dependencies in a project.
     build   [debug|release]         Builds the project.

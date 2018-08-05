@@ -88,14 +88,14 @@ void PkgClass::write() {
   }
   if (isEmpty == true) {
     fs::remove("packages.json");
-    init::init();
+    init::init(this->confClass.binaryType());
   }
 }
 
 std::string PkgClass::getVersion(const std::string &pkgName) {
-  std::string ctrlPath = confClass.vcpkgDirPath() + PATHSEP + "packages" +
-                         PATHSEP + pkgName + "_" + confClass.architecture() +
-                         PATHSEP + "CONTROL";
+  std::string ctrlPath = this->confClass.vcpkgDirPath() + PATHSEP + "packages" +
+                         PATHSEP + pkgName + "_" +
+                         this->confClass.architecture() + PATHSEP + "CONTROL";
   std::string line;
   try {
     std::ifstream input(ctrlPath);
@@ -121,15 +121,15 @@ std::string PkgClass::getVersion(const std::string &pkgName) {
 
 std::string PkgClass::headerPaths() {
   std::ostringstream temp;
-  temp << " -I" << confClass.sourceDirectory() << " -I"
-       << confClass.includeDirectory() << " -I" << confClass.vcpkgDirPath()
-       << PATHSEP << "installed" << PATHSEP << confClass.architecture()
-       << PATHSEP << "include";
+  temp << " -I" << this->confClass.sourceDirectory() << " -I"
+       << this->confClass.includeDirectory() << " -I"
+       << this->confClass.vcpkgDirPath() << PATHSEP << "installed" << PATHSEP
+       << this->confClass.architecture() << PATHSEP << "include";
 
   for (std::vector<std::string>::iterator it = this->packageName.begin();
        it != this->packageName.end(); ++it) {
-    temp << " -I" << confClass.vcpkgDirPath() << PATHSEP << "packages"
-         << PATHSEP << *it << "_" << confClass.architecture() << PATHSEP
+    temp << " -I" << this->confClass.vcpkgDirPath() << PATHSEP << "packages"
+         << PATHSEP << *it << "_" << this->confClass.architecture() << PATHSEP
          << "include ";
   }
   return temp.str();
@@ -166,10 +166,10 @@ std::string PkgClass::getLibName(const std::string &lib) {
 std::string PkgClass::dbgLibPaths() {
   std::ostringstream temp;
   std::string localDbgLibs =
-      confClass.libsDirectory().string() + PATHSEP + "debug";
+      this->confClass.libsDirectory().string() + PATHSEP + "debug";
   std::vector<fs::directory_entry> v;
 
-  if (fs::is_directory((fs::path)localDbgLibs)) {
+  if (fs::is_directory(static_cast<fs::path>(localDbgLibs))) {
     std::copy(fs::directory_iterator(localDbgLibs), fs::directory_iterator(),
               std::back_inserter(v));
 
@@ -184,10 +184,11 @@ std::string PkgClass::dbgLibPaths() {
 
   for (std::vector<std::string>::iterator it = this->packageName.begin();
        it != this->packageName.end(); ++it) {
-    std::string vcpkgDbgLibs = confClass.vcpkgDirPath() + PATHSEP + "packages" +
-                               PATHSEP + *it + "_" + confClass.architecture() +
-                               PATHSEP + "debug" + PATHSEP + "lib";
-    if (fs::is_directory((fs::path)vcpkgDbgLibs)) {
+    std::string vcpkgDbgLibs = this->confClass.vcpkgDirPath() + PATHSEP +
+                               "packages" + PATHSEP + *it + "_" +
+                               this->confClass.architecture() + PATHSEP +
+                               "debug" + PATHSEP + "lib";
+    if (fs::is_directory(static_cast<fs::path>(vcpkgDbgLibs))) {
       std::copy(fs::directory_iterator(vcpkgDbgLibs), fs::directory_iterator(),
                 std::back_inserter(v));
       for (std::vector<fs::directory_entry>::iterator jt = v.begin();
@@ -204,10 +205,10 @@ std::string PkgClass::dbgLibPaths() {
 std::string PkgClass::rlsLibPaths() {
   std::ostringstream temp;
   std::string localRlsLibs =
-      confClass.libsDirectory().string() + PATHSEP + "lib";
+      this->confClass.libsDirectory().string() + PATHSEP + "lib";
   std::vector<fs::directory_entry> v;
 
-  if (fs::is_directory((fs::path)localRlsLibs)) {
+  if (fs::is_directory(static_cast<fs::path>(localRlsLibs))) {
     std::copy(fs::directory_iterator(localRlsLibs), fs::directory_iterator(),
               std::back_inserter(v));
 
@@ -222,10 +223,10 @@ std::string PkgClass::rlsLibPaths() {
 
   for (std::vector<std::string>::iterator it = this->packageName.begin();
        it != this->packageName.end(); ++it) {
-    std::string vcpkgRlsLibs = confClass.vcpkgDirPath() + PATHSEP + "packages" +
-                               PATHSEP + *it + "_" + confClass.architecture() +
-                               PATHSEP + "lib";
-    if (fs::is_directory((fs::path)vcpkgRlsLibs)) {
+    std::string vcpkgRlsLibs = this->confClass.vcpkgDirPath() + PATHSEP +
+                               "packages" + PATHSEP + *it + "_" +
+                               this->confClass.architecture() + PATHSEP + "lib";
+    if (fs::is_directory(static_cast<fs::path>(vcpkgRlsLibs))) {
       std::copy(fs::directory_iterator(vcpkgRlsLibs), fs::directory_iterator(),
                 std::back_inserter(v));
       for (std::vector<fs::directory_entry>::iterator jt = v.begin();

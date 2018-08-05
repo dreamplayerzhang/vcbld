@@ -44,7 +44,7 @@ using json = nlohmann::json;
 
 namespace vcbld::Args {
 
-void New() {
+void New(const std::string &binType) {
 
   if (!fs::exists("src")) {
     fs::create_directory("src");
@@ -102,7 +102,7 @@ void New() {
     std::cout << "bin/release directroy exists." << std::endl;
   }
 
-  if (!fs::exists("./src/main.cpp")) {
+  if (!fs::exists("./src/main.cpp") && binType == "app") {
     std::ofstream ofs("./src/main.cpp");
 
     if (ofs.is_open()) {
@@ -120,10 +120,10 @@ void New() {
     std::cout << "main.cpp already exists." << std::endl;
   }
 
-  init::init();
+  init::init(binType);
 }
 
-void configure() { init::init(); }
+void configure() { ConfClass confClass; }
 
 void build(const std::string &buildType) {
   Builder builder(buildType);
@@ -177,7 +177,7 @@ void available() {
     vcpkgDirPath += PATHSEP;
     vcpkgDirPath += "packages";
 
-    if (fs::is_directory((fs::path)vcpkgDirPath)) {
+    if (fs::is_directory(static_cast<fs::path>(vcpkgDirPath))) {
       std::copy(fs::directory_iterator(vcpkgDirPath), fs::directory_iterator(),
                 back_inserter(v));
 
@@ -206,7 +206,7 @@ void search(const std::string &pkg) {
     vcpkgDirPath += PATHSEP;
     vcpkgDirPath += "packages";
 
-    if (fs::is_directory((fs::path)vcpkgDirPath)) {
+    if (fs::is_directory(static_cast<fs::path>(vcpkgDirPath))) {
       std::copy(fs::directory_iterator(vcpkgDirPath), fs::directory_iterator(),
                 back_inserter(v));
 
@@ -269,7 +269,7 @@ void add(const std::string &pkg) {
   std::string addDep = confClass.vcpkgDirPath() + PATHSEP + "packages" +
                        PATHSEP + pkg + "_" + confClass.architecture();
 
-  if (fs::is_directory((fs::path)addDep)) {
+  if (fs::is_directory(static_cast<fs::path>(addDep))) {
     bool isExist = false;
     for (std::vector<std::string>::iterator pt = pkgClass.packageName.begin();
          pt != pkgClass.packageName.end(); ++pt) {

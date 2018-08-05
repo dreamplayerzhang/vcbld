@@ -13,7 +13,11 @@ using namespace vcbld;
 int main(int argc, char *argv[]) {
   if (argc >= 2) {
     if (strcmp(argv[1], "new") == 0) {
-      Args::New();
+      if (!argv[2]) {
+        Args::New("app");
+      } else {
+        Args::New(static_cast<std::string>(argv[2]));
+      }
     } else if (strcmp(argv[1], "configure") == 0) {
       Args::configure();
     } else if (strcmp(argv[1], "restore") == 0) {
@@ -78,19 +82,19 @@ int main(int argc, char *argv[]) {
       if (!argv[2]) {
         std::cout << "Please enter a package name to search for." << std::endl;
       } else {
-        Args::search((std::string)argv[2]);
+        Args::search(static_cast<std::string>(argv[2]));
       }
     } else if (strcmp(argv[1], "add") == 0) {
       if (!argv[2]) {
         std::cout << "Please enter a package name to add it." << std::endl;
       } else {
-        Args::add((std::string)argv[2]);
+        Args::add(static_cast<std::string>(argv[2]));
       }
     } else if (strcmp(argv[1], "remove") == 0) {
       if (!argv[2]) {
         std::cout << "Please enter a package name to remove it." << std::endl;
       } else {
-        Args::remove((std::string)argv[2]);
+        Args::remove(static_cast<std::string>(argv[2]));
       }
     } else if (strcmp(argv[1], "list") == 0) {
       Args::list();

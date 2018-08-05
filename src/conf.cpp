@@ -6,6 +6,8 @@
 #include <nlohmann/json.hpp>
 #include <vector>
 
+#include "init.h"
+
 #if defined(_WIN32)
 #define PLATFORM_NAME "x86-windows"
 #define PATHSEP "\"
@@ -34,25 +36,8 @@ namespace fs = boost::filesystem;
 namespace vcbld {
 
 ConfClass::ConfClass() {
-  json confJson, vcbldJson;
+  json vcbldJson, confJson;
   this->_selfPath = fs::current_path();
-
-  try {
-    std::ifstream confInput("conf.json");
-    if (confInput.is_open()) {
-      confJson = json::parse(confInput);
-      confInput.close();
-    } else {
-      std::cerr << "Failed to open conf.json file : " << errno << std::endl;
-    }
-  } catch (const json::parse_error e) {
-    std::cerr << "Error reading conf.json." << std::endl;
-  }
-
-  this->_cCompilerPath = confJson["cCompilerPath"];
-  this->_cppCompilerPath = confJson["cppCompilerPath"];
-  this->_vcpkgDirPath = confJson["vcpkgDirectory"];
-  this->_architecture = confJson["architecture"];
 
   try {
     std::ifstream vcbldInput("vcbld.json");
@@ -84,6 +69,27 @@ ConfClass::ConfClass() {
   } catch (const json::parse_error e) {
     std::cerr << "Error reading vcbld.json." << std::endl;
   }
+
+  if (!fs::exists("conf.json")) {
+    init::init(this->_binaryType);
+  }
+  
+  try {
+    std::ifstream confInput("conf.json");
+    if (confInput.is_open()) {
+      confJson = json::parse(confInput);
+      confInput.close();
+    } else {
+      std::cerr << "Failed to open conf.json file : " << errno << std::endl;
+    }
+  } catch (const json::parse_error e) {
+    std::cerr << "Error reading conf.json." << std::endl;
+  }
+
+  this->_cCompilerPath = confJson["cCompilerPath"];
+  this->_cppCompilerPath = confJson["cppCompilerPath"];
+  this->_vcpkgDirPath = confJson["vcpkgDirectory"];
+  this->_architecture = confJson["architecture"];
 }
 
 std::string ConfClass::sourceFiles() const {
@@ -91,7 +97,7 @@ std::string ConfClass::sourceFiles() const {
   std::string tempPath;
   std::ostringstream temp;
   tempPath = this->_sourceDirectory;
-  if (fs::is_directory((fs::path)tempPath)) {
+  if (fs::is_directory(static_cast<fs::path>(tempPath))) {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
               back_inserter(v));
 

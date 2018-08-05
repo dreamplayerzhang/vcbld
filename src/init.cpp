@@ -31,7 +31,7 @@
 namespace fs = boost::filesystem;
 
 namespace vcbld::init {
-void init() {
+void init(const std::string &binType) {
 
   std::string cCompilerPath, cppCompilerPath;
   if (PLATFORM_NAME == "x64-osx") {
@@ -43,6 +43,17 @@ void init() {
   } else if (PLATFORM_NAME == "x64-windows" || PLATFORM_NAME == "x86-windows") {
     cCompilerPath = "C:\\MinGW\\bin\\gcc";
     cppCompilerPath = "C:\\MinGW\\bin\\gcc";
+  }
+
+  std::string binaryType;
+  if (binType == "app") {
+    binaryType = "app";
+  } else if (binType == "dylib") {
+    binaryType = "dynamicLibrary";
+  } else if (binType == "statlib") {
+    binaryType = "staticLibrary";
+  } else {
+    binaryType = "app";
   }
 
   if (!fs::exists("conf.json")) {
@@ -76,7 +87,7 @@ void init() {
                   << "\"binaryName\" : "
                   << "\"" << fs::current_path().filename().string() << "\",\n\t"
                   << "\"binaryType\" : "
-                  << "\"app\",\n\t"
+                  << "\"" << binaryType << "\",\n\t"
                   << "\"sourceDirectory\" : "
                   << "\"." << PATHSEP << "src\",\n\t"
                   << "\"outputDirectory\" : "

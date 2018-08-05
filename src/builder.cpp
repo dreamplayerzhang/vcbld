@@ -77,7 +77,7 @@ std::string Builder::appLink() {
     tempPath = this->_rlsDir;
   }
 
-  if (fs::is_directory((fs::path)tempPath)) {
+  if (fs::is_directory(static_cast<fs::path>(tempPath))) {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
               back_inserter(v));
 
@@ -115,7 +115,7 @@ std::string Builder::dylibLink() {
     tempPath = this->_rlsDir;
   }
 
-  if (fs::is_directory((fs::path)tempPath)) {
+  if (fs::is_directory(static_cast<fs::path>(tempPath))) {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
               back_inserter(v));
 
@@ -161,7 +161,7 @@ std::string Builder::archive() {
     tempPath = this->_rlsDir;
   }
 
-  if (fs::is_directory((fs::path)tempPath)) {
+  if (fs::is_directory(static_cast<fs::path>(tempPath))) {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
               back_inserter(v));
 

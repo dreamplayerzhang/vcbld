@@ -2,8 +2,6 @@
 	"projectName" : "vcbld",
 	"version" : "0.1.0",
 	"language" : "c++17",
-	"compilerPath" : "/usr/bin/clang++",
-	"vcpkgDirectory" : "/absolute/path/to/vcpkg/directory",
 	"binaryType" : "app",
 	"binaryName" : "vcbld",
 	"sourceDirectory" : "./src",

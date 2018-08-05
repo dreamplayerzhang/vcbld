@@ -41,8 +41,8 @@ void init() {
     cCompilerPath = "/usr/bin/gcc";
     cppCompilerPath = "/usr/bin/g++";
   } else if (PLATFORM_NAME == "x64-windows" || PLATFORM_NAME == "x86-windows") {
-    cCompilerPath = "cl.exe";
-    cppCompilerPath = "cl.exe";
+    cCompilerPath = "C:\\MinGW\\bin\\gcc";
+    cppCompilerPath = "C:\\MinGW\\bin\\gcc";
   }
 
   if (!fs::exists("conf.json")) {
@@ -83,7 +83,7 @@ void init() {
                   << "\"." << PATHSEP << "bin\",\n\t"
                   << "\"includeDirectory\" : "
                   << "\"." << PATHSEP << "include\",\n\t"
-                  << "\"libsDirectory\" :"
+                  << "\"libsDirectory\" : "
                   << "\"." << PATHSEP << "libs\",\n\t"
                   << "\"compilerDefines\" : "
                   << "[],\n\t"

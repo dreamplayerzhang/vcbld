@@ -8,6 +8,8 @@
 #include <sstream>
 #include <vector>
 
+#include "init.h"
+
 #if defined(_WIN32)
 #define PLATFORM_NAME "x86-windows"
 #define PATHSEP "\"
@@ -55,7 +57,7 @@ PkgClass::PkgClass() {
 }
 
 void PkgClass::write() {
-  nlohmann::json pkgsJson;
+  json pkgsJson;
 
   for (std::vector<std::string>::iterator it = this->packageName.begin();
        it != this->packageName.end(); ++it) {
@@ -70,6 +72,23 @@ void PkgClass::write() {
   } else {
     std::cout << "Packages updated successfully." << std::endl;
     std::cerr << "Failed to open file : " << errno << std::endl;
+  }
+  std::string line;
+  bool isEmpty = false;
+  std::ifstream pkgsInput("packages.json");
+  if (pkgsInput.is_open()) {
+    std::getline(pkgsInput, line);
+    if (line == "null") {
+      isEmpty = true;
+      pkgsInput.close();
+    }
+  } else {
+    std::cout << "Packages updated successfully." << std::endl;
+    std::cerr << "Failed to open file : " << errno << std::endl;
+  }
+  if (isEmpty == true) {
+    fs::remove("packages.json");
+    init::init();
   }
 }
 

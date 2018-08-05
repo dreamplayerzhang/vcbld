@@ -7,6 +7,3 @@ include(~/vcpkg/scripts/buildsystems/vcpkg.cmake)
 
 add_subdirectory(src)
 
-enable_testing()
-
-add_subdirectory(tests)

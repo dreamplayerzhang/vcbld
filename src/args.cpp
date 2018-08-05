@@ -123,9 +123,7 @@ void New() {
   init::init();
 }
 
-void configure() {
-  init::init();
-}
+void configure() { init::init(); }
 
 void build(const std::string &buildType) {
   Builder builder(buildType);
@@ -147,7 +145,7 @@ void clean() {
 }
 
 void run(const std::string &buildType) {
-  if (buildType ==  "debug") {
+  if (buildType == "debug") {
     try {
       ConfClass confClass;
       std::string command = "cd " + confClass.outputDirectory().string() +

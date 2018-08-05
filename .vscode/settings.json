@@ -5,6 +5,8 @@
         "locale": "cpp",
         "*.ipp": "cpp",
         "__mutex_base": "cpp",
-        "memory": "cpp"
+        "memory": "cpp",
+        "ios": "cpp",
+        "algorithm": "cpp"
     }
 }

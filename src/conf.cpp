@@ -110,9 +110,9 @@ std::string ConfClass::sourceFiles() const {
 }
 
 std::string ConfClass::compilerPath() const {
-  if(this->_language == "c++"){
+  if (this->_language.at(2) == '+') {
     return this->_cppCompilerPath;
-  } else if(this->_language == "c") {
+  } else {
     return this->_cCompilerPath;
   }
 }

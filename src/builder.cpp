@@ -64,7 +64,8 @@ std::string Builder::compile() {
                           << "-std=" << this->confClass.language() << " "
                           << this->pkgClass.headerPaths() << " ";
   }
-  return _compileCommand.str();
+  system(this->_compileCommand.str().c_str());
+  return this->_compileCommand.str();
 }
 
 std::string Builder::appLink() {
@@ -82,7 +83,8 @@ std::string Builder::appLink() {
 
     for (std::vector<fs::directory_entry>::iterator it = v.begin();
          it != v.end(); ++it) {
-      if (fs::extension((*it).path().filename().string()) == ".o"|| fs::extension((*it).path().filename().string()) == ".obj") {
+      if (fs::extension((*it).path().filename().string()) == ".o" ||
+          fs::extension((*it).path().filename().string()) == ".obj") {
         temp += " ";
         temp += (*it).path().filename().string();
       }
@@ -100,13 +102,14 @@ std::string Builder::appLink() {
                        << this->confClass.binaryName() << " " << temp << " "
                        << this->pkgClass.dbgLibPaths();
   }
+  system(this->_appLinkCmnd.str().c_str());
   return this->_appLinkCmnd.str();
 }
 
 std::string Builder::dylibLink() {
   std::vector<fs::directory_entry> v;
   std::string temp, tempPath;
-  if (this->_buildType == "debug"){
+  if (this->_buildType == "debug") {
     tempPath = this->_dbgDir;
   } else {
     tempPath = this->_rlsDir;
@@ -145,6 +148,7 @@ std::string Builder::dylibLink() {
                        << this->confClass.binaryName() << dylibExt << " "
                        << temp << " " << this->pkgClass.dbgLibPaths();
   }
+  system(this->_libLinkCmnd.str().c_str());
   return this->_libLinkCmnd.str();
 }
 
@@ -179,6 +183,7 @@ std::string Builder::archive() {
                        << "ar rcs " << this->confClass.binaryName() << ".a"
                        << " " << temp;
   }
+  system(this->_archiveCmnd.str().c_str());
   return this->_archiveCmnd.str();
 }
 
@@ -208,15 +213,14 @@ void Builder::build() {
     fs::create_directory(this->_dbgDir);
 
   if (this->confClass.binaryType() == "app") {
-    std::cout << compile();
-    system(this->compile().c_str());
-    system(this->appLink().c_str());
+    this->compile();
+    this->appLink();
   } else if (this->confClass.binaryType() == "staticLibrary") {
-    system(this->compile().c_str());
-    system(this->archive().c_str());
+    this->compile();
+    this->archive();
   } else if (this->confClass.binaryType() == "sharedLibrary") {
-    system(this->compile().c_str());
-    system(this->dylibLink().c_str());
+    this->compile();
+    this->dylibLink();
   } else {
     std::cout << "Unknown binary type defined in vcbld.json" << std::endl;
   }

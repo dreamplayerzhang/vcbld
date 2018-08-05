@@ -32,12 +32,13 @@ public:
 
 private:
   boost::filesystem::path _selfPath;
+  std::string _cCompilerPath;
+  std::string _cppCompilerPath;
+  std::string _vcpkgDirPath;
   std::string _architecture;
   std::string _projectName;
   std::string _version;
   std::string _language;
-  std::string _compilerPath;
-  std::string _vcpkgDirPath;
   std::string _binaryType;
   std::string _binaryName;
   std::string _outputDirectory;

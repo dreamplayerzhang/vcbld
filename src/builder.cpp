@@ -82,7 +82,7 @@ std::string Builder::appLink() {
 
     for (std::vector<fs::directory_entry>::iterator it = v.begin();
          it != v.end(); ++it) {
-      if (fs::extension((*it).path().filename().string()) == ".o") {
+      if (fs::extension((*it).path().filename().string()) == ".o"|| fs::extension((*it).path().filename().string()) == ".obj") {
         temp += " ";
         temp += (*it).path().filename().string();
       }

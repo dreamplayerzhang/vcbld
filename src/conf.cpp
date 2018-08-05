@@ -34,10 +34,25 @@ namespace fs = boost::filesystem;
 namespace vcbld {
 
 ConfClass::ConfClass() {
-  json vcbldJson;
-  json pkgsJson;
-  this->_architecture = PLATFORM_NAME;
+  json confJson, vcbldJson;
   this->_selfPath = fs::current_path();
+
+  try {
+    std::ifstream confInput("conf.json");
+    if (confInput.is_open()) {
+      confJson = json::parse(confInput);
+      confInput.close();
+    } else {
+      std::cerr << "Failed to open conf.json file : " << errno << std::endl;
+    }
+  } catch (const json::parse_error e) {
+    std::cerr << "Error reading vcbld.json." << std::endl;
+  }
+
+  this->_cCompilerPath = confJson["cCompilerPath"];
+  this->_cppCompilerPath = confJson["cppCompilerPath"];
+  this->_vcpkgDirPath = confJson["vcpkgDirectory"];
+  this->_architecture = confJson["architecture"];
 
   try {
     std::ifstream vcbldInput("vcbld.json");
@@ -50,8 +65,6 @@ ConfClass::ConfClass() {
     this->_projectName = vcbldJson["projectName"];
     this->_version = vcbldJson["version"];
     this->_language = vcbldJson["language"];
-    this->_compilerPath = vcbldJson["compilerPath"];
-    this->_vcpkgDirPath = vcbldJson["vcpkgDirectory"];
     this->_binaryName = vcbldJson["binaryName"];
     this->_binaryType = vcbldJson["binaryType"];
     this->_outputDirectory = vcbldJson["outputDirectory"];
@@ -96,13 +109,20 @@ std::string ConfClass::sourceFiles() const {
   return temp.str();
 }
 
+std::string ConfClass::compilerPath() const {
+  if(this->_language == "c++"){
+    return this->_cppCompilerPath;
+  } else if(this->_language == "c") {
+    return this->_cCompilerPath;
+  }
+}
+
 std::string ConfClass::projectName() const { return _projectName; }
 std::string ConfClass::version() const { return _version; }
 std::string ConfClass::language() const { return _language; }
 std::string ConfClass::binaryType() const { return _binaryType; }
 std::string ConfClass::binaryName() const { return _binaryName; }
 std::string ConfClass::vcpkgDirPath() const { return _vcpkgDirPath; }
-std::string ConfClass::compilerPath() const { return _compilerPath; }
 fs::path ConfClass::outputDirectory() const { return _outputDirectory; }
 fs::path ConfClass::sourceDirectory() const { return _sourceDirectory; }
 fs::path ConfClass::includeDirectory() const { return _includeDirectory; }

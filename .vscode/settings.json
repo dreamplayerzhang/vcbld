@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "*.cs": "csharp",
+        "fstream": "cpp",
+        "locale": "cpp",
+        "*.ipp": "cpp"
+    }
+}

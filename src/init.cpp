@@ -32,18 +32,40 @@ namespace fs = boost::filesystem;
 
 namespace vcbld::init {
 void init() {
+
+  std::string cCompilerPath, cppCompilerPath;
+  if (PLATFORM_NAME == "x64-osx") {
+    cCompilerPath = "/usr/bin/clang";
+    cppCompilerPath = "/usr/bin/clang++";
+  } else if (PLATFORM_NAME == "x64-linux") {
+    cCompilerPath = "/usr/bin/gcc";
+    cppCompilerPath = "/usr/bin/g++";
+  } else if (PLATFORM_NAME == "x64-windows" || PLATFORM_NAME == "x86-windows") {
+    cCompilerPath = "cl.exe";
+    cppCompilerPath = "cl.exe";
+  }
+
+  if (!fs::exists("conf.json")) {
+
+    std::ofstream confOutput("conf.json");
+    if (confOutput.is_open()) {
+      confOutput << std::setw(4) << "{\n\t\"cCompilerPath\" : \""
+                 << cCompilerPath << "\",\n\t"
+                 << "\"cppCompilerPath\" : \"" << cppCompilerPath << "\",\n\t"
+                 << "\"vcpkgDirectory\" : \"" << getenv("HOME") << PATHSEP
+                 << "vcpkg"
+                 << "\",\n\t"
+                 << "\"architecture\" : \"" << PLATFORM_NAME << "\"\n}";
+      confOutput.flush();
+      confOutput.close();
+      std::cout << "conf.json written successfully." << std::endl;
+    } else {
+    }
+  }
+
   if (!fs::exists("vcbld.json")) {
 
     std::ofstream vcbldOutput("vcbld.json");
-    std::string cPath;
-    if (PLATFORM_NAME == "x64-osx") {
-      cPath = "/usr/bin/clang++";
-    } else if (PLATFORM_NAME == "x64-linux") {
-      cPath = "/usr/bin/g++";
-    } else if (PLATFORM_NAME == "x64-windows" ||
-               PLATFORM_NAME == "x86-windows") {
-      cPath = "cl.exe";
-    }
     if (vcbldOutput.is_open()) {
       vcbldOutput << std::setw(4) << "{\n\t\"projectName\" : "
                   << "\"" << fs::current_path().filename().string() << "\",\n\t"
@@ -51,10 +73,6 @@ void init() {
                   << "\"0.1.0\",\n\t"
                   << "\"language\" : "
                   << "\"c++11\",\n\t"
-                  << "\"compilerPath\" : "
-                  << "\"" << cPath << "\",\n\t"
-                  << "\"vcpkgDirectory\" : "
-                  << "\"" << getenv("HOME") << PATHSEP << "vcpkg"
                   << "\",\n\t"
                   << "\"binaryName\" : "
                   << "\"" << fs::current_path().filename().string() << "\",\n\t"

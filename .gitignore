@@ -11,4 +11,3 @@ CTestTestfile.cmake
 build
 bin
 vcbld
-conf.json

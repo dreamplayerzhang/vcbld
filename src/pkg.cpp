@@ -42,7 +42,7 @@ void PkgClass::write() {
 
   for (std::vector<std::string>::iterator it = this->packageName.begin();
        it != this->packageName.end(); ++it) {
-    pkgsJson["packages"].push_back((std::string)*it);
+    pkgsJson["packages"].push_back(*it);
   }
   std::ofstream pkgsOutput("packages.json");
   if (pkgsOutput.is_open()) {

@@ -207,12 +207,16 @@ void generate(const fs::path &vcbldPath) {
   ConfClass confClass(vcbldPath);
   PkgClass pkgClass(vcbldPath);
   std::ostringstream includePath;
-  includePath << confClass.vcpkgDirPath() << "/" << "installed" << "/"
-              << confClass.architecture() << "/" << "include\n";
+  includePath << confClass.vcpkgDirPath() << "/"
+              << "installed"
+              << "/" << confClass.architecture() << "/"
+              << "include\n";
   for (std::vector<std::string>::iterator it = pkgClass.packageName.begin();
        it != pkgClass.packageName.end(); ++it) {
-    includePath << confClass.vcpkgDirPath() << "/" << "packages" << "/"
-                << *it << confClass.architecture() << "/" << "include\n";
+    includePath << confClass.vcpkgDirPath() << "/"
+                << "packages"
+                << "/" << *it << confClass.architecture() << "/"
+                << "include\n";
   }
 
   std::string temp =
@@ -244,8 +248,8 @@ void list(const fs::path &vcbldPath) {
 void add(const std::string &pkg, const fs::path &vcbldPath) {
   ConfClass confClass(vcbldPath);
   PkgClass pkgClass(vcbldPath);
-  std::string addDep = confClass.vcpkgDirPath() + "/" + "packages" +
-                       "/" + pkg + "_" + confClass.architecture();
+  std::string addDep = confClass.vcpkgDirPath() + "/" + "packages" + "/" + pkg +
+                       "_" + confClass.architecture();
 
   if (fs::is_directory(static_cast<fs::path>(addDep))) {
     bool isExist = false;
@@ -324,4 +328,4 @@ bool findPackage(const std::string &pkg) {
     return false;
   }
 }
-} // namespace vcbld::Args
+} // namespace vcbld::args

@@ -9,9 +9,11 @@
 
 namespace fs = boost::filesystem;
 
-namespace vcbld {
+namespace vcbld
+{
 
-class PkgClass {
+class PkgClass
+{
 public:
   explicit PkgClass(const fs::path &vcbldPath);
   void write();

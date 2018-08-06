@@ -1,10 +1,10 @@
+#include <boost/filesystem.hpp>
 #include <cstdlib>
 #include <iostream>
-#include <boost/filesystem.hpp>
 
-#include "init.h"
 #include "args.h"
 #include "help.h"
+#include "init.h"
 
 #define MAJOR_VERSION 0
 #define MINOR_VERSION 1
@@ -16,7 +16,7 @@ using namespace vcbld;
 
 int main(int argc, char *argv[]) {
   fs::path vcbldPath = argv[0];
-  vcbldPath = vcbldPath.remove_filename();
+  vcbldPath = vcbldPath.parent_path();
 
   if (argc >= 2) {
     if (strcmp(argv[1], "new") == 0) {

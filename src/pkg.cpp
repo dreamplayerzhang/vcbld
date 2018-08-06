@@ -75,8 +75,8 @@ void PkgClass::write() {
 
 std::string PkgClass::getVersion(const std::string &pkgName) {
   std::string ctrlPath = this->confClass->vcpkgDirPath() + "/" + "packages" +
-                         "/" + pkgName + "_" +
-                         this->confClass->architecture() + "/" + "CONTROL";
+                         "/" + pkgName + "_" + this->confClass->architecture() +
+                         "/" + "CONTROL";
   std::string line;
   try {
     std::ifstream input(ctrlPath);
@@ -104,12 +104,15 @@ std::string PkgClass::headerPaths() {
   std::ostringstream temp;
   temp << " -I" << this->confClass->sourceDirectory() << " -I"
        << this->confClass->includeDirectory() << " -I"
-       << this->confClass->vcpkgDirPath() << "/" << "installed" << "/"
-       << this->confClass->architecture() << "/" << "include";
+       << this->confClass->vcpkgDirPath() << "/"
+       << "installed"
+       << "/" << this->confClass->architecture() << "/"
+       << "include";
 
   for (std::vector<std::string>::iterator it = this->packageName.begin();
        it != this->packageName.end(); ++it) {
-    temp << " -I" << this->confClass->vcpkgDirPath() << "/" << "packages"
+    temp << " -I" << this->confClass->vcpkgDirPath() << "/"
+         << "packages"
          << "/" << *it << "_" << this->confClass->architecture() << "/"
          << "/";
   }
@@ -165,10 +168,9 @@ std::string PkgClass::dbgLibPaths() {
 
   for (std::vector<std::string>::iterator it = this->packageName.begin();
        it != this->packageName.end(); ++it) {
-    std::string vcpkgDbgLibs = this->confClass->vcpkgDirPath() + "/" +
-                               "packages" + "/" + *it + "_" +
-                               this->confClass->architecture() + "/" +
-                               "debug" + "/" + "lib";
+    std::string vcpkgDbgLibs =
+        this->confClass->vcpkgDirPath() + "/" + "packages" + "/" + *it + "_" +
+        this->confClass->architecture() + "/" + "debug" + "/" + "lib";
     if (fs::is_directory(static_cast<fs::path>(vcpkgDbgLibs))) {
       std::copy(fs::directory_iterator(vcpkgDbgLibs), fs::directory_iterator(),
                 std::back_inserter(v));
@@ -237,8 +239,6 @@ void PkgClass::remove(const std::string &pkgName) {
   }
 }
 
-PkgClass::~PkgClass() {
-  delete confClass;
-}
+PkgClass::~PkgClass() { delete confClass; }
 
 } // namespace vcbld

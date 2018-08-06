@@ -33,7 +33,7 @@ namespace fs = boost::filesystem;
 namespace vcbld::init {
 
 void setup(const fs::path &vcbldPath) {
-    std::string cCompilerPath, cppCompilerPath;
+  std::string cCompilerPath, cppCompilerPath;
   if (PLATFORM_NAME == "x64-osx") {
     cCompilerPath = "/usr/bin/clang";
     cppCompilerPath = "/usr/bin/clang++";
@@ -45,11 +45,11 @@ void setup(const fs::path &vcbldPath) {
     cppCompilerPath = "C:/MinGW/bin/g++";
   }
 
-  std::string confJsonPath = vcbldPath.string() + "conf.json";
+  std::string confJsonPath = vcbldPath.string() + "/" + "conf.json";
 
-  if (!fs::exists("conf.json")) {
+  if (!fs::exists(confJsonPath)) {
 
-    std::ofstream confOutput("conf.json");
+    std::ofstream confOutput(confJsonPath);
     if (confOutput.is_open()) {
       confOutput << std::setw(4) << "{\n\t\"cCompilerPath\" : \""
                  << cCompilerPath << "\",\n\t"
@@ -78,8 +78,6 @@ void init(const std::string &binType) {
     binaryType = "app";
   }
 
-
-
   if (!fs::exists("vcbld.json")) {
 
     std::ofstream vcbldOutput("vcbld.json");
@@ -95,13 +93,21 @@ void init(const std::string &binType) {
                   << "\"binaryType\" : "
                   << "\"" << binaryType << "\",\n\t"
                   << "\"sourceDirectory\" : "
-                  << "\"." << "/" << "src\",\n\t"
+                  << "\"."
+                  << "/"
+                  << "src\",\n\t"
                   << "\"outputDirectory\" : "
-                  << "\"." << "/" << "bin\",\n\t"
+                  << "\"."
+                  << "/"
+                  << "bin\",\n\t"
                   << "\"includeDirectory\" : "
-                  << "\"." << "/" << "include\",\n\t"
+                  << "\"."
+                  << "/"
+                  << "include\",\n\t"
                   << "\"libsDirectory\" : "
-                  << "\"." << "/" << "libs\",\n\t"
+                  << "\"."
+                  << "/"
+                  << "libs\",\n\t"
                   << "\"compilerDefines\" : "
                   << "[],\n\t"
                   << "\"compilerFlags\" : "

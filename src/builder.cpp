@@ -18,10 +18,8 @@ Builder::Builder(const std::string &buildType, const fs::path &vcbldPath) {
     std::exit(1);
   }
 
-  this->_dbgDir =
-      this->confClass->outputDirectory().string() + "/" + "debug";
-  this->_rlsDir =
-      this->confClass->outputDirectory().string() + "/" + "release";
+  this->_dbgDir = this->confClass->outputDirectory().string() + "/" + "debug";
+  this->_rlsDir = this->confClass->outputDirectory().string() + "/" + "release";
 }
 
 std::string Builder::compile() {
@@ -187,8 +185,7 @@ void Builder::build() {
   if (!fs::exists(this->confClass->outputDirectory().string() + "/" +
                   "release"))
     fs::create_directory(this->_rlsDir);
-  if (!fs::exists(this->confClass->outputDirectory().string() + "/" +
-                  "debug"))
+  if (!fs::exists(this->confClass->outputDirectory().string() + "/" + "debug"))
     fs::create_directory(this->_dbgDir);
 
   if (this->confClass->binaryType() == "app") {

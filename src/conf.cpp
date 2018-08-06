@@ -49,11 +49,11 @@ ConfClass::ConfClass(const fs::path &vcbldPath) {
     std::cerr << "Error reading vcbld.json." << std::endl;
   }
 
-  std::string confJsonPath = vcbldPath.string() + "conf.json";
+  std::string confJsonPath = vcbldPath.string() + "/" + "conf.json";
   if (!fs::exists(confJsonPath)) {
     init::setup(this->_vcbldPath);
   }
-  
+
   try {
     std::ifstream confInput(confJsonPath);
     if (confInput.is_open()) {
@@ -65,7 +65,7 @@ ConfClass::ConfClass(const fs::path &vcbldPath) {
   } catch (const json::parse_error e) {
     std::cerr << "Error reading conf.json." << std::endl;
   }
-  
+
   fs::path vcpkgPath;
   this->_vcpkgDirectory = confJson["vcpkgDirectory"];
   vcpkgPath = static_cast<std::string>(this->_vcpkgDirectory);

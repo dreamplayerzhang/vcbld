@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
       args::configure(vcbldPath);
     } else if (strcmp(argv[1], "restore") == 0) {
       args::restore(vcbldPath);
-    } else if (strcmp(argv[1], "generate") == 0) {
+    } else if (strcmp(argv[1], "gen") == 0) {
       args::generate(vcbldPath);
     } else if (strcmp(argv[1], "build") == 0) {
       if (!argv[2]) {
@@ -116,12 +116,24 @@ int main(int argc, char *argv[]) {
         std::string help = "help";
         args::vcpkg(help, vcbldPath);
       } else {
-        std::string args;
+        std::string vcpkgArgs;
         for (int i = 2; i < argc; i++) {
-          args += " ";
-          args += argv[i];
+          vcpkgArgs += " ";
+          vcpkgArgs += argv[i];
         }
-        args::vcpkg(args, vcbldPath);
+        args::vcpkg(vcpkgArgs, vcbldPath);
+      }
+    } else if (strcmp(argv[1], "cmake") == 0) {
+      if (!argv[2]) {
+        std::string empty = " ";
+        args::cmake(empty, vcbldPath);
+      } else {
+        std::string cmakeArgs;
+        for (int i = 2; i < argc; i++) {
+          cmakeArgs += " ";
+          cmakeArgs += argv[i];
+        }
+        args::cmake(cmakeArgs, vcbldPath);
       }
     } else if (strcmp(argv[1], "--version") == 0) {
       std::cout << MAJOR_VERSION << "." << MINOR_VERSION << "." << PATCH_VERSION

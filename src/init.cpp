@@ -33,16 +33,19 @@ namespace fs = boost::filesystem;
 namespace vcbld::init {
 
 void setup(const fs::path &vcbldPath) {
-  std::string cCompilerPath, cppCompilerPath;
+  std::string cCompilerPath, cppCompilerPath, cmakePath;
   if (PLATFORM_NAME == "x64-osx") {
     cCompilerPath = "/usr/bin/clang";
     cppCompilerPath = "/usr/bin/clang++";
+    cmakePath = "/usr/local/bin/cmake";
   } else if (PLATFORM_NAME == "x64-linux") {
     cCompilerPath = "/usr/bin/gcc";
     cppCompilerPath = "/usr/bin/g++";
+    cmakePath = "/usr/local/bin/cmake";
   } else if (PLATFORM_NAME == "x64-windows" || PLATFORM_NAME == "x86-windows") {
     cCompilerPath = "C:/MinGW/bin/gcc";
     cppCompilerPath = "C:/MinGW/bin/g++";
+    cmakePath = static_cast<std::string>(getenv("PROGRAMFILES")) + "/CMake/cmake";
   }
 
   std::string confJsonPath = vcbldPath.string() + "/" + "conf.json";
@@ -57,7 +60,8 @@ void setup(const fs::path &vcbldPath) {
                  << "\"vcpkgDirectory\" : \"" << getenv("HOME") << PATHSEP
                  << "vcpkg"
                  << "\",\n\t"
-                 << "\"architecture\" : \"" << PLATFORM_NAME << "\"\n}";
+                 << "\"architecture\" : \"" << PLATFORM_NAME << "\",\n\t"
+                 << "\"cmakePath\" : \"" << cmakePath << "\"\n}";
       confOutput.flush();
       confOutput.close();
       std::cout << "conf.json written successfully." << std::endl;
@@ -87,7 +91,9 @@ void init(const std::string &binType) {
                   << "\"version\" : "
                   << "\"0.1.0\",\n\t"
                   << "\"language\" : "
-                  << "\"c++11\",\n\t"
+                  << "\"c++\",\n\t"
+                  << "\"standard\" : "
+                  << "\"11\",\n\t"
                   << "\"binaryName\" : "
                   << "\"" << fs::current_path().filename().string() << "\",\n\t"
                   << "\"binaryType\" : "

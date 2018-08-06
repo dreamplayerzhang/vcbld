@@ -14,6 +14,7 @@
 
 #include "builder.h"
 #include "conf.h"
+#include "gen.h"
 #include "init.h"
 #include "pkg.h"
 
@@ -204,30 +205,8 @@ void search(const std::string &pkg, const fs::path &vcbldPath) {
 }
 
 void generate(const fs::path &vcbldPath) {
-  ConfClass confClass(vcbldPath);
-  PkgClass pkgClass(vcbldPath);
-  std::ostringstream includePath;
-  includePath << confClass.vcpkgDirPath() << "/"
-              << "installed"
-              << "/" << confClass.architecture() << "/"
-              << "include\n";
-  for (std::vector<std::string>::iterator it = pkgClass.packageName.begin();
-       it != pkgClass.packageName.end(); ++it) {
-    includePath << confClass.vcpkgDirPath() << "/"
-                << "packages"
-                << "/" << *it << confClass.architecture() << "/"
-                << "include\n";
-  }
-
-  std::string temp =
-      confClass.sourceDirectory().string() + "/" + "includePath.txt";
-  std::ofstream ofs(temp);
-
-  if (ofs.is_open()) {
-    ofs << includePath.str();
-    ofs.flush();
-    ofs.close();
-  }
+  gen::includePathGen(vcbldPath);
+  gen::cmakeGen(vcbldPath);
 }
 
 void list(const fs::path &vcbldPath) {
@@ -305,6 +284,16 @@ void restore(const fs::path &vcbldPath) {
   std::string instlCmnd = confClass.vcpkgDirPath() + "/" + "vcpkg" + " " +
                           "install" + " " + pkg.str();
   system(instlCmnd.c_str());
+}
+
+void cmake(const std::string &cmakeArgs, const fs::path &vcbldPath) {
+  ConfClass confClass(vcbldPath);
+  std::ostringstream cmakeCmnd;
+  cmakeCmnd << "cd " << confClass.outputDirectory() << " && "
+            << confClass.cmakePath() << " "
+            << "-DCMAKE_TOOL_CHAIN_FILE=" << confClass.vcpkgDirPath()
+            << "/scripts/buildsystems/vcpkg.cmake " << " " << cmakeArgs << " .. ";
+  system(cmakeCmnd.str().c_str());
 }
 
 std::string sansTriplet(const std::string &pkg) {

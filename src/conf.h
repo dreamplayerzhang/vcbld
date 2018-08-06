@@ -13,13 +13,16 @@ namespace vcbld {
 class ConfClass {
 public:
   explicit ConfClass(const fs::path &vcbldPath); // reads vcbld.json
-
+  
+  std::string compilerPath() const;
+  std::string vcpkgDirPath() const;
   std::string architecture() const;
+  std::string cmakePath() const;
+
   std::string projectName() const;
   std::string version() const;
   std::string language() const;
-  std::string compilerPath() const;
-  std::string vcpkgDirPath() const;
+  std::string standard() const;
   std::string binaryName() const;
   std::string binaryType() const;
   fs::path outputDirectory() const;
@@ -38,9 +41,11 @@ private:
   std::string _vcpkgDirectory;
   std::string _vcpkgDirPath;
   std::string _architecture;
+  std::string _cmakePath;
   std::string _projectName;
   std::string _version;
   std::string _language;
+  std::string _standard;
   std::string _binaryType;
   std::string _binaryName;
   std::string _outputDirectory;

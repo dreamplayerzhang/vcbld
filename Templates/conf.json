@@ -2,5 +2,6 @@
 	"cCompilerPath" : "/usr/bin/clang",
 	"cppCompilerPath" : "/usr/bin/clang++",
 	"vcpkgDirectory" : "/Users/mohammedalyousef/vcpkg",
-	"architecture" : "x64-osx"
+	"architecture" : "x64-osx",
+	"cmakePath" : "/usr/local/bin/cmake"
 }

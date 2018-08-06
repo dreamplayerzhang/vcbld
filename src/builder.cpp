@@ -30,7 +30,8 @@ std::string Builder::compile() {
                           << this->confClass->sourceFiles() << " "
                           << this->confClass->compilerDefines() << " "
                           << this->confClass->compilerFlags()
-                          << "-std=" << this->confClass->language() << " "
+                          << "-std=" << this->confClass->language()
+                          << this->confClass->standard() << " "
                           << this->pkgClass->headerPaths() << " ";
   } else {
     this->_compileCommand << "cd " << this->_dbgDir << " && "
@@ -38,7 +39,8 @@ std::string Builder::compile() {
                           << "-c " << this->confClass->sourceFiles() << " "
                           << this->confClass->compilerDefines() << " "
                           << this->confClass->compilerFlags()
-                          << "-std=" << this->confClass->language() << " "
+                          << "-std=" << this->confClass->language()
+                          << this->confClass->standard() << " "
                           << this->pkgClass->headerPaths() << " ";
   }
   system(this->_compileCommand.str().c_str());

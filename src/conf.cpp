@@ -29,6 +29,7 @@ ConfClass::ConfClass(const fs::path &vcbldPath) {
     this->_projectName = vcbldJson["projectName"];
     this->_version = vcbldJson["version"];
     this->_language = vcbldJson["language"];
+    this->_standard = vcbldJson["standard"];
     this->_binaryName = vcbldJson["binaryName"];
     this->_binaryType = vcbldJson["binaryType"];
     this->_outputDirectory = vcbldJson["outputDirectory"];
@@ -72,6 +73,7 @@ ConfClass::ConfClass(const fs::path &vcbldPath) {
   this->_cCompilerPath = confJson["cCompilerPath"];
   this->_cppCompilerPath = confJson["cppCompilerPath"];
   this->_architecture = confJson["architecture"];
+  this->_cmakePath = confJson["cmakePath"];
   this->_vcpkgDirPath = vcpkgPath.string();
 }
 
@@ -105,10 +107,11 @@ std::string ConfClass::compilerPath() const {
     return this->_cCompilerPath;
   }
 }
-
+std::string ConfClass::cmakePath() const { return _cmakePath; }
 std::string ConfClass::projectName() const { return _projectName; }
 std::string ConfClass::version() const { return _version; }
 std::string ConfClass::language() const { return _language; }
+std::string ConfClass::standard() const { return _standard; }
 std::string ConfClass::binaryType() const { return _binaryType; }
 std::string ConfClass::binaryName() const { return _binaryName; }
 std::string ConfClass::vcpkgDirPath() const { return _vcpkgDirPath; }

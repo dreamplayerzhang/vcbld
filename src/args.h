@@ -20,6 +20,7 @@ void list(const fs::path &vcbldPath);
 void search(const std::string &pkg, const fs::path &vcbldPath);
 void generate(const fs::path &vcbldPath);
 void vcpkg(const std::string &vcpkgCmnds, const fs::path &vcbldPath);
+void cmake(const std::string &cmakeCmnds, const fs::path &vcbldPath);
 
 std::string sansTriplet(const std::string &);
 bool findPackage(const std::string &);

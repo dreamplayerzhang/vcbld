@@ -16,13 +16,14 @@ SDK commands:
     build   [debug|release]         Builds the project.
     clean                           Clean build output(s).
     run     [debug|release]         Executes the project.
-    generate                        Generates includePath.txt file.
+    gen                             Generates includePath.txt and CMakeLists.txt file.
     list                            Shows a list of packages added to the project.
     available                       Shows a list of installed vcpkg packages.
     search                          Search within installed vcpkg packages.
     add                             Add package to the project.
     remove                          Remove package from the project.
     vcpkg   [vcpkg command]         Runs vcpkg commands.
+    cmake   [cmake arguments]       Runs cmake using the vcpkg toolchain.
     help                            Show help.
 
     --version                       Current vcbld version in use.

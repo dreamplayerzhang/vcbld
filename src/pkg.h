@@ -3,14 +3,17 @@
 
 #include <string>
 #include <vector>
+#include <boost/filesystem.hpp>
 
 #include "conf.h"
+
+namespace fs = boost::filesystem;
 
 namespace vcbld {
 
 class PkgClass {
 public:
-  PkgClass();
+  explicit PkgClass(const fs::path &vcbldPath);
   void write();
   void include(const std::string &pkg);
   void remove(const std::string &pkg);
@@ -22,8 +25,10 @@ public:
 
   std::vector<std::string> packageName;
 
+  ~PkgClass();
+
 private:
-  ConfClass confClass;
+  ConfClass *confClass;
 };
 } // namespace vcbld
 

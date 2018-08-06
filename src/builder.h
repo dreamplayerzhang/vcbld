@@ -10,7 +10,7 @@
 namespace vcbld {
 class Builder {
 public:
-  explicit Builder(const std::string &buildType);
+  Builder(const std::string &buildType, const fs::path &vcbldPath);
 
   std::string compile();
   std::string appLink();
@@ -19,9 +19,11 @@ public:
   std::string getBldCommands();
   void build();
 
+  ~Builder();
+
 private:
-  ConfClass confClass;
-  PkgClass pkgClass;
+  ConfClass *confClass;
+  PkgClass *pkgClass;
   std::string _buildType;
   std::string _dbgDir;
   std::string _rlsDir;

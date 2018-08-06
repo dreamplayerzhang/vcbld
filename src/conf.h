@@ -12,7 +12,7 @@ namespace vcbld {
 
 class ConfClass {
 public:
-  ConfClass(); // reads vcbld.json
+  explicit ConfClass(const fs::path &vcbldPath); // reads vcbld.json
 
   std::string architecture() const;
   std::string projectName() const;
@@ -31,9 +31,11 @@ public:
   std::string compilerFlags() const;
 
 private:
-  boost::filesystem::path _selfPath;
+  fs::path _vcbldPath;
+  fs::path _projPath;
   std::string _cCompilerPath;
   std::string _cppCompilerPath;
+  std::string _vcpkgDirectory;
   std::string _vcpkgDirPath;
   std::string _architecture;
   std::string _projectName;

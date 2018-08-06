@@ -10,33 +10,14 @@
 
 #include "init.h"
 
-#if defined(_WIN32)
-#define PLATFORM_NAME "x86-windows"
-#define PATHSEP "\"
-#elif defined(_WIN64)
-#define PLATFORM_NAME "x64-windows"
-#define PATHSEP "\"
-#elif defined(__CYGWIN__) && !defined(_WIN32)
-#define PLATFORM_NAME "x64-windows"
-#define PATHSEP "/"
-#elif defined(__linux__)
-#define PLATFORM_NAME "x64-linux"
-#define PATHSEP "/"
-#elif defined(__APPLE__) && defined(__MACH__)
-#include <TargetConditionals.h>
-#if TARGET_OS_MAC == 1
-#define PLATFORM_NAME "x64-osx" // Apple OSX
-#define PATHSEP "/"
-#endif
-#else
-#define PLATFORM_NAME NULL
-#endif
-
+namespace fs = boost::filesystem;
 using json = nlohmann::json;
 
 namespace vcbld {
 
-PkgClass::PkgClass() {
+PkgClass::PkgClass(const fs::path &vcbldPath) {
+  confClass = new ConfClass(vcbldPath);
+
   json pkgsJson;
 
   try {
@@ -88,14 +69,14 @@ void PkgClass::write() {
   }
   if (isEmpty == true) {
     fs::remove("packages.json");
-    init::init(this->confClass.binaryType());
+    init::init(this->confClass->binaryType());
   }
 }
 
 std::string PkgClass::getVersion(const std::string &pkgName) {
-  std::string ctrlPath = this->confClass.vcpkgDirPath() + PATHSEP + "packages" +
-                         PATHSEP + pkgName + "_" +
-                         this->confClass.architecture() + PATHSEP + "CONTROL";
+  std::string ctrlPath = this->confClass->vcpkgDirPath() + "/" + "packages" +
+                         "/" + pkgName + "_" +
+                         this->confClass->architecture() + "/" + "CONTROL";
   std::string line;
   try {
     std::ifstream input(ctrlPath);
@@ -121,16 +102,16 @@ std::string PkgClass::getVersion(const std::string &pkgName) {
 
 std::string PkgClass::headerPaths() {
   std::ostringstream temp;
-  temp << " -I" << this->confClass.sourceDirectory() << " -I"
-       << this->confClass.includeDirectory() << " -I"
-       << this->confClass.vcpkgDirPath() << PATHSEP << "installed" << PATHSEP
-       << this->confClass.architecture() << PATHSEP << "include";
+  temp << " -I" << this->confClass->sourceDirectory() << " -I"
+       << this->confClass->includeDirectory() << " -I"
+       << this->confClass->vcpkgDirPath() << "/" << "installed" << "/"
+       << this->confClass->architecture() << "/" << "include";
 
   for (std::vector<std::string>::iterator it = this->packageName.begin();
        it != this->packageName.end(); ++it) {
-    temp << " -I" << this->confClass.vcpkgDirPath() << PATHSEP << "packages"
-         << PATHSEP << *it << "_" << this->confClass.architecture() << PATHSEP
-         << "include ";
+    temp << " -I" << this->confClass->vcpkgDirPath() << "/" << "packages"
+         << "/" << *it << "_" << this->confClass->architecture() << "/"
+         << "/";
   }
   return temp.str();
 }
@@ -166,7 +147,7 @@ std::string PkgClass::getLibName(const std::string &lib) {
 std::string PkgClass::dbgLibPaths() {
   std::ostringstream temp;
   std::string localDbgLibs =
-      this->confClass.libsDirectory().string() + PATHSEP + "debug";
+      this->confClass->libsDirectory().string() + "/" + "debug";
   std::vector<fs::directory_entry> v;
 
   if (fs::is_directory(static_cast<fs::path>(localDbgLibs))) {
@@ -184,10 +165,10 @@ std::string PkgClass::dbgLibPaths() {
 
   for (std::vector<std::string>::iterator it = this->packageName.begin();
        it != this->packageName.end(); ++it) {
-    std::string vcpkgDbgLibs = this->confClass.vcpkgDirPath() + PATHSEP +
-                               "packages" + PATHSEP + *it + "_" +
-                               this->confClass.architecture() + PATHSEP +
-                               "debug" + PATHSEP + "lib";
+    std::string vcpkgDbgLibs = this->confClass->vcpkgDirPath() + "/" +
+                               "packages" + "/" + *it + "_" +
+                               this->confClass->architecture() + "/" +
+                               "debug" + "/" + "lib";
     if (fs::is_directory(static_cast<fs::path>(vcpkgDbgLibs))) {
       std::copy(fs::directory_iterator(vcpkgDbgLibs), fs::directory_iterator(),
                 std::back_inserter(v));
@@ -205,7 +186,7 @@ std::string PkgClass::dbgLibPaths() {
 std::string PkgClass::rlsLibPaths() {
   std::ostringstream temp;
   std::string localRlsLibs =
-      this->confClass.libsDirectory().string() + PATHSEP + "lib";
+      this->confClass->libsDirectory().string() + "/" + "lib";
   std::vector<fs::directory_entry> v;
 
   if (fs::is_directory(static_cast<fs::path>(localRlsLibs))) {
@@ -223,9 +204,9 @@ std::string PkgClass::rlsLibPaths() {
 
   for (std::vector<std::string>::iterator it = this->packageName.begin();
        it != this->packageName.end(); ++it) {
-    std::string vcpkgRlsLibs = this->confClass.vcpkgDirPath() + PATHSEP +
-                               "packages" + PATHSEP + *it + "_" +
-                               this->confClass.architecture() + PATHSEP + "lib";
+    std::string vcpkgRlsLibs = this->confClass->vcpkgDirPath() + "/" +
+                               "packages" + "/" + *it + "_" +
+                               this->confClass->architecture() + "/" + "lib";
     if (fs::is_directory(static_cast<fs::path>(vcpkgRlsLibs))) {
       std::copy(fs::directory_iterator(vcpkgRlsLibs), fs::directory_iterator(),
                 std::back_inserter(v));
@@ -254,6 +235,10 @@ void PkgClass::remove(const std::string &pkgName) {
       ++it;
     }
   }
+}
+
+PkgClass::~PkgClass() {
+  delete confClass;
 }
 
 } // namespace vcbld

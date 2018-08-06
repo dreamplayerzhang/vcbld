@@ -8,36 +8,15 @@
 
 #include "init.h"
 
-#if defined(_WIN32)
-#define PLATFORM_NAME "x86-windows"
-#define PATHSEP "\"
-#elif defined(_WIN64)
-#define PLATFORM_NAME "x64-windows"
-#define PATHSEP "\"
-#elif defined(__CYGWIN__) && !defined(_WIN32)
-#define PLATFORM_NAME "x64-windows"
-#define PATHSEP "/"
-#elif defined(__linux__)
-#define PLATFORM_NAME "x64-linux"
-#define PATHSEP "/"
-#elif defined(__APPLE__) && defined(__MACH__)
-#include <TargetConditionals.h>
-#if TARGET_OS_MAC == 1
-#define PLATFORM_NAME "x64-osx" // Apple OSX
-#define PATHSEP "/"
-#endif
-#else
-#define PLATFORM_NAME NULL
-#endif
-
 using json = nlohmann::json;
 namespace fs = boost::filesystem;
 
 namespace vcbld {
 
-ConfClass::ConfClass() {
+ConfClass::ConfClass(const fs::path &vcbldPath) {
   json vcbldJson, confJson;
-  this->_selfPath = fs::current_path();
+  this->_vcbldPath = vcbldPath;
+  this->_projPath = fs::current_path();
 
   try {
     std::ifstream vcbldInput("vcbld.json");
@@ -70,12 +49,13 @@ ConfClass::ConfClass() {
     std::cerr << "Error reading vcbld.json." << std::endl;
   }
 
-  if (!fs::exists("conf.json")) {
-    init::init(this->_binaryType);
+  std::string confJsonPath = vcbldPath.string() + "conf.json";
+  if (!fs::exists(confJsonPath)) {
+    init::setup(this->_vcbldPath);
   }
   
   try {
-    std::ifstream confInput("conf.json");
+    std::ifstream confInput(confJsonPath);
     if (confInput.is_open()) {
       confJson = json::parse(confInput);
       confInput.close();
@@ -85,11 +65,14 @@ ConfClass::ConfClass() {
   } catch (const json::parse_error e) {
     std::cerr << "Error reading conf.json." << std::endl;
   }
-
+  
+  fs::path vcpkgPath;
+  this->_vcpkgDirectory = confJson["vcpkgDirectory"];
+  vcpkgPath = static_cast<std::string>(this->_vcpkgDirectory);
   this->_cCompilerPath = confJson["cCompilerPath"];
   this->_cppCompilerPath = confJson["cppCompilerPath"];
-  this->_vcpkgDirPath = confJson["vcpkgDirectory"];
   this->_architecture = confJson["architecture"];
+  this->_vcpkgDirPath = vcpkgPath.string();
 }
 
 std::string ConfClass::sourceFiles() const {
@@ -107,7 +90,7 @@ std::string ConfClass::sourceFiles() const {
           fs::extension((*it).path().filename().string()) == ".rc" ||
           fs::extension((*it).path().filename().string()) == ".c" ||
           fs::extension((*it).path().filename().string()) == ".cxx") {
-        temp << this->_selfPath.c_str() << PATHSEP << tempPath + PATHSEP
+        temp << this->_projPath.c_str() << "/" << tempPath + "/"
              << (*it).path().filename().string() << " ";
       }
     }

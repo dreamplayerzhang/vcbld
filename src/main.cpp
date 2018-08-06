@@ -1,6 +1,8 @@
 #include <cstdlib>
 #include <iostream>
+#include <boost/filesystem.hpp>
 
+#include "init.h"
 #include "args.h"
 #include "help.h"
 
@@ -8,9 +10,14 @@
 #define MINOR_VERSION 1
 #define PATCH_VERSION 0
 
+namespace fs = boost::filesystem;
+
 using namespace vcbld;
 
 int main(int argc, char *argv[]) {
+  fs::path vcbldPath = argv[0];
+  vcbldPath = vcbldPath.remove_filename();
+
   if (argc >= 2) {
     if (strcmp(argv[1], "new") == 0) {
       if (!argv[2]) {
@@ -18,16 +25,18 @@ int main(int argc, char *argv[]) {
       } else {
         args::New(static_cast<std::string>(argv[2]));
       }
+    } else if (strcmp(argv[1], "setup") == 0) {
+      init::setup(vcbldPath);
     } else if (strcmp(argv[1], "configure") == 0) {
-      args::configure();
+      args::configure(vcbldPath);
     } else if (strcmp(argv[1], "restore") == 0) {
-      args::restore();
+      args::restore(vcbldPath);
     } else if (strcmp(argv[1], "generate") == 0) {
-      args::generate();
+      args::generate(vcbldPath);
     } else if (strcmp(argv[1], "build") == 0) {
       if (!argv[2]) {
         try {
-          args::build("debug");
+          args::build("debug", vcbldPath);
         } catch (const std::exception &e) {
           std::cout << "Build configuration or entry not available!"
                     << std::endl;
@@ -35,14 +44,14 @@ int main(int argc, char *argv[]) {
       } else {
         if (strcmp(argv[2], "release") == 0) {
           try {
-            args::build("release");
+            args::build("release", vcbldPath);
           } catch (const std::exception &e) {
             std::cout << "Build configuration or entry not available!"
                       << std::endl;
           }
         } else if (strcmp(argv[2], "debug") == 0) {
           try {
-            args::build("debug");
+            args::build("debug", vcbldPath);
           } catch (const std::exception &e) {
             std::cout << "Build configuration or entry not available!"
                       << std::endl;
@@ -50,13 +59,13 @@ int main(int argc, char *argv[]) {
         }
       }
     } else if (strcmp(argv[1], "clean") == 0) {
-      args::clean();
+      args::clean(vcbldPath);
     } else if (strcmp(argv[1], "available") == 0) {
-      args::available();
+      args::available(vcbldPath);
     } else if (strcmp(argv[1], "run") == 0) {
       if (!argv[2]) {
         try {
-          args::run("debug");
+          args::run("debug", vcbldPath);
         } catch (const std::exception &e) {
           std::cout << "Build configuration or entry not available!"
                     << std::endl;
@@ -64,14 +73,14 @@ int main(int argc, char *argv[]) {
       } else {
         if (strcmp(argv[2], "release") == 0) {
           try {
-            args::run("release");
+            args::run("release", vcbldPath);
           } catch (const std::exception &e) {
             std::cout << "Build configuration or entry not available!"
                       << std::endl;
           }
         } else if (strcmp(argv[2], "debug") == 0) {
           try {
-            args::run("debug");
+            args::run("debug", vcbldPath);
           } catch (const std::exception &e) {
             std::cout << "Build configuration or entry not available!"
                       << std::endl;
@@ -82,22 +91,22 @@ int main(int argc, char *argv[]) {
       if (!argv[2]) {
         std::cout << "Please enter a package name to search for." << std::endl;
       } else {
-        args::search(static_cast<std::string>(argv[2]));
+        args::search(static_cast<std::string>(argv[2]), vcbldPath);
       }
     } else if (strcmp(argv[1], "add") == 0) {
       if (!argv[2]) {
         std::cout << "Please enter a package name to add it." << std::endl;
       } else {
-        args::add(static_cast<std::string>(argv[2]));
+        args::add(static_cast<std::string>(argv[2]), vcbldPath);
       }
     } else if (strcmp(argv[1], "remove") == 0) {
       if (!argv[2]) {
         std::cout << "Please enter a package name to remove it." << std::endl;
       } else {
-        args::remove(static_cast<std::string>(argv[2]));
+        args::remove(static_cast<std::string>(argv[2]), vcbldPath);
       }
     } else if (strcmp(argv[1], "list") == 0) {
-      args::list();
+      args::list(vcbldPath);
     } else if (strcmp(argv[1], "help") == 0) {
       std::cout << "\nvcbld command line tools, version: \t" << MAJOR_VERSION
                 << "." << MINOR_VERSION << "." << PATCH_VERSION << std::endl;
@@ -105,14 +114,14 @@ int main(int argc, char *argv[]) {
     } else if (strcmp(argv[1], "vcpkg") == 0) {
       if (!argv[2]) {
         std::string help = "help";
-        args::vcpkg(help);
+        args::vcpkg(help, vcbldPath);
       } else {
         std::string args;
         for (int i = 2; i < argc; i++) {
           args += " ";
           args += argv[i];
         }
-        args::vcpkg(args);
+        args::vcpkg(args, vcbldPath);
       }
     } else if (strcmp(argv[1], "--version") == 0) {
       std::cout << MAJOR_VERSION << "." << MINOR_VERSION << "." << PATCH_VERSION

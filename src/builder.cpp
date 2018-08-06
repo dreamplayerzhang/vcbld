@@ -5,34 +5,13 @@
 #include <iterator>
 #include <vector>
 
-#if defined(_WIN32)
-#define PLATFORM_NAME "x86-windows"
-#define PATHSEP "\"
-#elif defined(_WIN64)
-#define PLATFORM_NAME "x64-windows"
-#define PATHSEP "\"
-#elif defined(__CYGWIN__) && !defined(_WIN32)
-#define PLATFORM_NAME "x64-windows"
-#define PATHSEP "/"
-#elif defined(__linux__)
-#define PLATFORM_NAME "x64-linux"
-#define PATHSEP "/"
-#elif defined(__APPLE__) && defined(__MACH__)
-#include <TargetConditionals.h>
-#if TARGET_OS_MAC == 1
-#define PLATFORM_NAME "x64-osx" // Apple OSX
-#define PATHSEP "/"
-#endif
-#else
-#define PLATFORM_NAME NULL
-#endif
-
 namespace fs = boost::filesystem;
 
 namespace vcbld {
 
-Builder::Builder(const std::string &buildType) {
-
+Builder::Builder(const std::string &buildType, const fs::path &vcbldPath) {
+  confClass = new ConfClass(vcbldPath);
+  pkgClass = new PkgClass(vcbldPath);
   this->_buildType = buildType;
   if (!fs::exists("vcbld.json")) {
     std::cout << "Build configuration not found!" << std::endl;
@@ -40,29 +19,29 @@ Builder::Builder(const std::string &buildType) {
   }
 
   this->_dbgDir =
-      this->confClass.outputDirectory().string() + PATHSEP + "debug";
+      this->confClass->outputDirectory().string() + "/" + "debug";
   this->_rlsDir =
-      this->confClass.outputDirectory().string() + PATHSEP + "release";
+      this->confClass->outputDirectory().string() + "/" + "release";
 }
 
 std::string Builder::compile() {
 
   if (this->_buildType == "release") {
     this->_compileCommand << "cd " << this->_rlsDir << " && "
-                          << this->confClass.compilerPath() << " -c "
-                          << this->confClass.sourceFiles() << " "
-                          << this->confClass.compilerDefines() << " "
-                          << this->confClass.compilerFlags()
-                          << "-std=" << this->confClass.language() << " "
-                          << this->pkgClass.headerPaths() << " ";
+                          << this->confClass->compilerPath() << " -c "
+                          << this->confClass->sourceFiles() << " "
+                          << this->confClass->compilerDefines() << " "
+                          << this->confClass->compilerFlags()
+                          << "-std=" << this->confClass->language() << " "
+                          << this->pkgClass->headerPaths() << " ";
   } else {
     this->_compileCommand << "cd " << this->_dbgDir << " && "
-                          << this->confClass.compilerPath() << " -g "
-                          << "-c " << this->confClass.sourceFiles() << " "
-                          << this->confClass.compilerDefines() << " "
-                          << this->confClass.compilerFlags()
-                          << "-std=" << this->confClass.language() << " "
-                          << this->pkgClass.headerPaths() << " ";
+                          << this->confClass->compilerPath() << " -g "
+                          << "-c " << this->confClass->sourceFiles() << " "
+                          << this->confClass->compilerDefines() << " "
+                          << this->confClass->compilerFlags()
+                          << "-std=" << this->confClass->language() << " "
+                          << this->pkgClass->headerPaths() << " ";
   }
   system(this->_compileCommand.str().c_str());
   return this->_compileCommand.str();
@@ -93,14 +72,14 @@ std::string Builder::appLink() {
 
   if (this->_buildType == "release") {
     this->_appLinkCmnd << "cd " << this->_rlsDir << " && "
-                       << this->confClass.compilerPath() << " -o "
-                       << this->confClass.binaryName() << " " << temp << " "
-                       << this->pkgClass.rlsLibPaths();
+                       << this->confClass->compilerPath() << " -o "
+                       << this->confClass->binaryName() << " " << temp << " "
+                       << this->pkgClass->rlsLibPaths();
   } else {
     this->_appLinkCmnd << "cd " << this->_dbgDir << " && "
-                       << this->confClass.compilerPath() << " -o "
-                       << this->confClass.binaryName() << " " << temp << " "
-                       << this->pkgClass.dbgLibPaths();
+                       << this->confClass->compilerPath() << " -o "
+                       << this->confClass->binaryName() << " " << temp << " "
+                       << this->pkgClass->dbgLibPaths();
   }
   system(this->_appLinkCmnd.str().c_str());
   return this->_appLinkCmnd.str();
@@ -129,7 +108,7 @@ std::string Builder::dylibLink() {
   }
 
   std::string dylibArg, dylibExt;
-  if (confClass.compilerPath().find("clang") != std::string::npos) {
+  if (confClass->compilerPath().find("clang") != std::string::npos) {
     dylibArg = " -dynamiclib ";
     dylibExt = ".dylib";
   } else {
@@ -139,14 +118,14 @@ std::string Builder::dylibLink() {
 
   if (this->_buildType == "release") {
     this->_libLinkCmnd << "cd " << this->_rlsDir << " && "
-                       << this->confClass.compilerPath() << dylibArg << " -o "
-                       << this->confClass.binaryName() << dylibExt << " "
-                       << temp << " " << this->pkgClass.rlsLibPaths();
+                       << this->confClass->compilerPath() << dylibArg << " -o "
+                       << this->confClass->binaryName() << dylibExt << " "
+                       << temp << " " << this->pkgClass->rlsLibPaths();
   } else {
     this->_libLinkCmnd << "cd " << this->_dbgDir << " && "
-                       << this->confClass.compilerPath() << dylibArg << " -o "
-                       << this->confClass.binaryName() << dylibExt << " "
-                       << temp << " " << this->pkgClass.dbgLibPaths();
+                       << this->confClass->compilerPath() << dylibArg << " -o "
+                       << this->confClass->binaryName() << dylibExt << " "
+                       << temp << " " << this->pkgClass->dbgLibPaths();
   }
   system(this->_libLinkCmnd.str().c_str());
   return this->_libLinkCmnd.str();
@@ -176,11 +155,11 @@ std::string Builder::archive() {
 
   if (this->_buildType == "release") {
     this->_archiveCmnd << "cd " << this->_rlsDir << " && "
-                       << "ar rcs " << this->confClass.binaryName() << ".a"
+                       << "ar rcs " << this->confClass->binaryName() << ".a"
                        << " " << temp;
   } else {
     this->_archiveCmnd << "cd " << this->_dbgDir << " && "
-                       << "ar rcs " << this->confClass.binaryName() << ".a"
+                       << "ar rcs " << this->confClass->binaryName() << ".a"
                        << " " << temp;
   }
   system(this->_archiveCmnd.str().c_str());
@@ -189,11 +168,11 @@ std::string Builder::archive() {
 
 std::string Builder::getBldCommands() {
 
-  if (this->confClass.binaryType() == "app") {
+  if (this->confClass->binaryType() == "app") {
     return this->compile() + "\n" + this->appLink();
-  } else if (this->confClass.binaryType() == "staticLibrary") {
+  } else if (this->confClass->binaryType() == "staticLibrary") {
     return this->compile() + "\n" + this->archive();
-  } else if (this->confClass.binaryType() == "sharedLibrary") {
+  } else if (this->confClass->binaryType() == "sharedLibrary") {
     return this->compile() + "\n" + this->dylibLink();
   } else {
     std::cout << "Unknown binary type defined in vcbld.json" << std::endl;
@@ -203,22 +182,22 @@ std::string Builder::getBldCommands() {
 
 void Builder::build() {
 
-  if (!fs::exists(this->confClass.outputDirectory()))
-    fs::create_directory(this->confClass.outputDirectory());
-  if (!fs::exists(this->confClass.outputDirectory().string() + PATHSEP +
+  if (!fs::exists(this->confClass->outputDirectory()))
+    fs::create_directory(this->confClass->outputDirectory());
+  if (!fs::exists(this->confClass->outputDirectory().string() + "/" +
                   "release"))
     fs::create_directory(this->_rlsDir);
-  if (!fs::exists(this->confClass.outputDirectory().string() + PATHSEP +
+  if (!fs::exists(this->confClass->outputDirectory().string() + "/" +
                   "debug"))
     fs::create_directory(this->_dbgDir);
 
-  if (this->confClass.binaryType() == "app") {
+  if (this->confClass->binaryType() == "app") {
     this->compile();
     this->appLink();
-  } else if (this->confClass.binaryType() == "staticLibrary") {
+  } else if (this->confClass->binaryType() == "staticLibrary") {
     this->compile();
     this->archive();
-  } else if (this->confClass.binaryType() == "sharedLibrary") {
+  } else if (this->confClass->binaryType() == "sharedLibrary") {
     this->compile();
     this->dylibLink();
   } else {
@@ -226,4 +205,8 @@ void Builder::build() {
   }
 }
 
+Builder::~Builder() {
+  delete confClass;
+  delete pkgClass;
+}
 } // namespace vcbld

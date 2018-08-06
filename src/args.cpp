@@ -17,28 +17,6 @@
 #include "init.h"
 #include "pkg.h"
 
-#if defined(_WIN32)
-#define PLATFORM_NAME "x86-windows"
-#define PATHSEP "\"
-#elif defined(_WIN64)
-#define PLATFORM_NAME "x64-windows"
-#define PATHSEP "\"
-#elif defined(__CYGWIN__) && !defined(_WIN32)
-#define PLATFORM_NAME "x64-windows"
-#define PATHSEP "/"
-#elif defined(__linux__)
-#define PLATFORM_NAME "x64-linux"
-#define PATHSEP "/"
-#elif defined(__APPLE__) && defined(__MACH__)
-#include <TargetConditionals.h>
-#if TARGET_OS_MAC == 1
-#define PLATFORM_NAME "x64-osx" // Apple OSX
-#define PATHSEP "/"
-#endif
-#else
-#define PLATFORM_NAME NULL
-#endif
-
 namespace fs = boost::filesystem;
 using json = nlohmann::json;
 
@@ -123,33 +101,33 @@ void New(const std::string &binType) {
   init::init(binType);
 }
 
-void configure() { ConfClass confClass; }
+void configure(const fs::path &vcbldPath) { ConfClass confClass(vcbldPath); }
 
-void build(const std::string &buildType) {
-  Builder builder(buildType);
+void build(const std::string &buildType, const fs::path &vcbldPath) {
+  Builder builder(buildType, vcbldPath);
   builder.build();
 }
 
-void clean() {
+void clean(const fs::path &vcbldPath) {
   try {
-    ConfClass confClass;
+    ConfClass confClass(vcbldPath);
     std::string command = "rm -rf " + confClass.outputDirectory().string() +
-                          PATHSEP + "debug" + PATHSEP + "**";
+                          "/" + "debug" + "/" + "**";
     system(command.c_str());
-    command = "rm -rf " + confClass.outputDirectory().string() + PATHSEP +
-              "release" + PATHSEP + "**";
+    command = "rm -rf " + confClass.outputDirectory().string() + "/" +
+              "release" + "/" + "**";
     system(command.c_str());
   } catch (const std::exception &e) {
     std::cout << "vcbld.json not found!" << std::endl;
   }
 }
 
-void run(const std::string &buildType) {
+void run(const std::string &buildType, const fs::path &vcbldPath) {
   if (buildType == "debug") {
     try {
-      ConfClass confClass;
+      ConfClass confClass(vcbldPath);
       std::string command = "cd " + confClass.outputDirectory().string() +
-                            " && " + "." + PATHSEP + "debug" + PATHSEP +
+                            " && " + "." + "/" + "debug" + "/" +
                             confClass.binaryName();
       system(command.c_str());
     } catch (const std::exception &e) {
@@ -157,9 +135,9 @@ void run(const std::string &buildType) {
     }
   } else {
     try {
-      ConfClass confClass;
+      ConfClass confClass(vcbldPath);
       std::string command = "cd " + confClass.outputDirectory().string() +
-                            " && " + "." + PATHSEP + "release" + PATHSEP +
+                            " && " + "." + "/" + "release" + "/" +
                             confClass.binaryName();
       system(command.c_str());
     } catch (const std::exception &e) {
@@ -168,13 +146,13 @@ void run(const std::string &buildType) {
   }
 }
 
-void available() {
+void available(const fs::path &vcbldPath) {
   try {
-    ConfClass confClass;
+    ConfClass confClass(vcbldPath);
     std::vector<fs::directory_entry> v;
 
     std::string vcpkgDirPath = confClass.vcpkgDirPath();
-    vcpkgDirPath += PATHSEP;
+    vcpkgDirPath += "/";
     vcpkgDirPath += "packages";
 
     if (fs::is_directory(static_cast<fs::path>(vcpkgDirPath))) {
@@ -197,13 +175,13 @@ void available() {
   }
 }
 
-void search(const std::string &pkg) {
+void search(const std::string &pkg, const fs::path &vcbldPath) {
   try {
-    ConfClass confClass;
+    ConfClass confClass(vcbldPath);
     std::vector<fs::directory_entry> v;
 
     std::string vcpkgDirPath = confClass.vcpkgDirPath();
-    vcpkgDirPath += PATHSEP;
+    vcpkgDirPath += "/";
     vcpkgDirPath += "packages";
 
     if (fs::is_directory(static_cast<fs::path>(vcpkgDirPath))) {
@@ -225,20 +203,20 @@ void search(const std::string &pkg) {
   }
 }
 
-void generate() {
-  ConfClass confClass;
-  PkgClass pkgClass;
+void generate(const fs::path &vcbldPath) {
+  ConfClass confClass(vcbldPath);
+  PkgClass pkgClass(vcbldPath);
   std::ostringstream includePath;
-  includePath << confClass.vcpkgDirPath() << PATHSEP << "installed" << PATHSEP
-              << confClass.architecture() << PATHSEP << "include\n";
+  includePath << confClass.vcpkgDirPath() << "/" << "installed" << "/"
+              << confClass.architecture() << "/" << "include\n";
   for (std::vector<std::string>::iterator it = pkgClass.packageName.begin();
        it != pkgClass.packageName.end(); ++it) {
-    includePath << confClass.vcpkgDirPath() << PATHSEP << "packages" << PATHSEP
-                << *it << confClass.architecture() << PATHSEP << "include\n";
+    includePath << confClass.vcpkgDirPath() << "/" << "packages" << "/"
+                << *it << confClass.architecture() << "/" << "include\n";
   }
 
   std::string temp =
-      confClass.sourceDirectory().string() + PATHSEP + "includePath.txt";
+      confClass.sourceDirectory().string() + "/" + "includePath.txt";
   std::ofstream ofs(temp);
 
   if (ofs.is_open()) {
@@ -248,9 +226,9 @@ void generate() {
   }
 }
 
-void list() {
+void list(const fs::path &vcbldPath) {
   try {
-    PkgClass pkgClass;
+    PkgClass pkgClass(vcbldPath);
     for (std::vector<std::string>::iterator it = pkgClass.packageName.begin();
          it != pkgClass.packageName.end(); ++it) {
       std::cout << std::setw(4) << "Package name: " << *it
@@ -263,11 +241,11 @@ void list() {
   }
 }
 
-void add(const std::string &pkg) {
-  ConfClass confClass;
-  PkgClass pkgClass;
-  std::string addDep = confClass.vcpkgDirPath() + PATHSEP + "packages" +
-                       PATHSEP + pkg + "_" + confClass.architecture();
+void add(const std::string &pkg, const fs::path &vcbldPath) {
+  ConfClass confClass(vcbldPath);
+  PkgClass pkgClass(vcbldPath);
+  std::string addDep = confClass.vcpkgDirPath() + "/" + "packages" +
+                       "/" + pkg + "_" + confClass.architecture();
 
   if (fs::is_directory(static_cast<fs::path>(addDep))) {
     bool isExist = false;
@@ -291,8 +269,8 @@ void add(const std::string &pkg) {
   }
 }
 
-void remove(const std::string &pkg) {
-  PkgClass pkgClass;
+void remove(const std::string &pkg, const fs::path &vcbldPath) {
+  PkgClass pkgClass(vcbldPath);
   for (std::vector<std::string>::iterator pt = pkgClass.packageName.begin();
        pt != pkgClass.packageName.end(); ++pt) {
     if (((*pt) == pkg)) {
@@ -304,23 +282,23 @@ void remove(const std::string &pkg) {
   }
 }
 
-void vcpkg(const std::string &vcpkgCmnds) {
-  ConfClass confClass;
+void vcpkg(const std::string &vcpkgCmnds, const fs::path &vcbldPath) {
+  ConfClass confClass(vcbldPath);
   std::string temp =
-      confClass.vcpkgDirPath() + PATHSEP + "vcpkg" + " " + vcpkgCmnds;
+      confClass.vcpkgDirPath() + "/" + "vcpkg" + " " + vcpkgCmnds;
   system(temp.c_str());
 }
 
-void restore() {
-  ConfClass confClass;
-  PkgClass pkgClass;
+void restore(const fs::path &vcbldPath) {
+  ConfClass confClass(vcbldPath);
+  PkgClass pkgClass(vcbldPath);
   std::ostringstream pkg;
 
   for (std::vector<std::string>::iterator it = pkgClass.packageName.begin();
        it != pkgClass.packageName.end(); ++it) {
     pkg << *it << " ";
   }
-  std::string instlCmnd = confClass.vcpkgDirPath() + PATHSEP + "vcpkg" + " " +
+  std::string instlCmnd = confClass.vcpkgDirPath() + "/" + "vcpkg" + " " +
                           "install" + " " + pkg.str();
   system(instlCmnd.c_str());
 }

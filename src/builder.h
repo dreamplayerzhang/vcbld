@@ -5,7 +5,6 @@
 #include <string>
 
 #include "conf.h"
-#include "pkg.h"
 
 namespace vcbld {
 class Builder {
@@ -23,7 +22,6 @@ public:
 
 private:
   ConfClass *confClass;
-  PkgClass *pkgClass;
   std::string _buildType;
   std::string _dbgDir;
   std::string _rlsDir;

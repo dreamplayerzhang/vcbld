@@ -33,6 +33,17 @@ public:
   std::string compilerDefines() const;
   std::string compilerFlags() const;
 
+  void write();
+  void include(const std::string &pkg);
+  void remove(const std::string &pkg);
+  std::string getVersion(const std::string &pkgName);
+  std::string headerPaths();
+  std::string getLibName(const std::string &lib);
+  std::string dbgLibPaths();
+  std::string rlsLibPaths();
+
+  std::vector<std::string> packageName;
+
 private:
   fs::path _vcbldPath;
   fs::path _projPath;

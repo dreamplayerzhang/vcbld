@@ -16,7 +16,6 @@
 #include "conf.h"
 #include "gen.h"
 #include "init.h"
-#include "pkg.h"
 
 namespace fs = boost::filesystem;
 using json = nlohmann::json;
@@ -211,11 +210,11 @@ void generate(const fs::path &vcbldPath) {
 
 void list(const fs::path &vcbldPath) {
   try {
-    PkgClass pkgClass(vcbldPath);
-    for (std::vector<std::string>::iterator it = pkgClass.packageName.begin();
-         it != pkgClass.packageName.end(); ++it) {
+    ConfClass confClass(vcbldPath);
+    for (std::vector<std::string>::iterator it = confClass.packageName.begin();
+         it != confClass.packageName.end(); ++it) {
       std::cout << std::setw(4) << "Package name: " << *it
-                << "\t\tPackage version: " << pkgClass.getVersion(*it)
+                << "\t\tPackage version: " << confClass.getVersion(*it)
                 << std::endl;
     }
   } catch (const std::exception &e) {
@@ -226,14 +225,13 @@ void list(const fs::path &vcbldPath) {
 
 void add(const std::string &pkg, const fs::path &vcbldPath) {
   ConfClass confClass(vcbldPath);
-  PkgClass pkgClass(vcbldPath);
   std::string addDep = confClass.vcpkgDirPath() + "/" + "packages" + "/" + pkg +
                        "_" + confClass.architecture();
 
   if (fs::is_directory(static_cast<fs::path>(addDep))) {
     bool isExist = false;
-    for (std::vector<std::string>::iterator pt = pkgClass.packageName.begin();
-         pt != pkgClass.packageName.end(); ++pt) {
+    for (std::vector<std::string>::iterator pt = confClass.packageName.begin();
+         pt != confClass.packageName.end(); ++pt) {
       if (((*pt) == pkg)) {
         std::cout << "Package already exists" << std::endl;
         isExist = true;
@@ -243,8 +241,8 @@ void add(const std::string &pkg, const fs::path &vcbldPath) {
       }
     }
     if (isExist != true) {
-      pkgClass.include(pkg);
-      pkgClass.write();
+      confClass.include(pkg);
+      confClass.write();
     }
   } else {
     std::cout << "Package not found!" << std::endl;
@@ -253,12 +251,12 @@ void add(const std::string &pkg, const fs::path &vcbldPath) {
 }
 
 void remove(const std::string &pkg, const fs::path &vcbldPath) {
-  PkgClass pkgClass(vcbldPath);
-  for (std::vector<std::string>::iterator pt = pkgClass.packageName.begin();
-       pt != pkgClass.packageName.end(); ++pt) {
+  ConfClass confClass(vcbldPath);
+  for (std::vector<std::string>::iterator pt = confClass.packageName.begin();
+       pt != confClass.packageName.end(); ++pt) {
     if (((*pt) == pkg)) {
-      pkgClass.remove(pkg);
-      pkgClass.write();
+      confClass.remove(pkg);
+      confClass.write();
       break;
     } else {
     }
@@ -274,11 +272,10 @@ void vcpkg(const std::string &vcpkgCmnds, const fs::path &vcbldPath) {
 
 void restore(const fs::path &vcbldPath) {
   ConfClass confClass(vcbldPath);
-  PkgClass pkgClass(vcbldPath);
   std::ostringstream pkg;
 
-  for (std::vector<std::string>::iterator it = pkgClass.packageName.begin();
-       it != pkgClass.packageName.end(); ++it) {
+  for (std::vector<std::string>::iterator it = confClass.packageName.begin();
+       it != confClass.packageName.end(); ++it) {
     pkg << *it << " ";
   }
   std::string instlCmnd = confClass.vcpkgDirPath() + "/" + "vcpkg" + " " +

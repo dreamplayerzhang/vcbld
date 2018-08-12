@@ -7,7 +7,6 @@
 #include <vector>
 
 #include "conf.h"
-#include "pkg.h"
 
 namespace fs = boost::filesystem;
 
@@ -15,14 +14,13 @@ namespace vcbld::gen {
 
 void includePathGen(const fs::path &vcbldPath) {
   ConfClass confClass(vcbldPath);
-  PkgClass pkgClass(vcbldPath);
   std::ostringstream includePath;
   includePath << confClass.vcpkgDirPath() << "/"
               << "installed"
               << "/" << confClass.architecture() << "/"
               << "include\n";
-  for (std::vector<std::string>::iterator it = pkgClass.packageName.begin();
-       it != pkgClass.packageName.end(); ++it) {
+  for (std::vector<std::string>::iterator it = confClass.packageName.begin();
+       it != confClass.packageName.end(); ++it) {
     includePath << confClass.vcpkgDirPath() << "/"
                 << "packages"
                 << "/" << *it << confClass.architecture() << "/"
@@ -42,7 +40,6 @@ void includePathGen(const fs::path &vcbldPath) {
 
 void cmakeGen(const fs::path &vcbldPath) {
   ConfClass confClass(vcbldPath);
-  PkgClass pkgClass(vcbldPath);
 
   if (!fs::exists("CMakeLists.txt")) {
     std::ofstream ofs("CMakeLists.txt");
@@ -56,22 +53,12 @@ void cmakeGen(const fs::path &vcbldPath) {
       ofs.close();
     }
   } else {
-    std::fstream iofs("CMakeLists.txt", std::ios_base::in | std::ios_base::out);
-    std::string line;
-    std::vector<std::string> lines;
-    if (iofs.is_open()) {
-      while (!iofs.eof()) {
-        std::getline(iofs, line);
-        lines.push_back(line);
-      }
-      iofs.close();
-      std::cout << "\nA CMakeLists.txt file was found with the following contents: \n"   << "***********\n" << std::endl;
-      for (std::vector<std::string>::iterator jt = lines.begin();
-           jt != lines.end(); ++jt) {
-        std::cout << *jt << std::endl;
-      }
-      std::cout << "***********\n" << "You can modify it directly or delete it to regenerate a new file.\n" << std::endl;
-    }
+
+    std::cout
+        << "A CMakeLists.txt file was found in the parent directory. You can "
+           "modify it directly or delete/rename it to regenerate a new file.\n"
+        << std::endl;
   }
 }
+
 } // namespace vcbld::gen

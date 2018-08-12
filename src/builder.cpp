@@ -11,7 +11,6 @@ namespace vcbld {
 
 Builder::Builder(const std::string &buildType, const fs::path &vcbldPath) {
   confClass = new ConfClass(vcbldPath);
-  pkgClass = new PkgClass(vcbldPath);
   this->_buildType = buildType;
   if (!fs::exists("vcbld.json")) {
     std::cout << "Build configuration not found!" << std::endl;
@@ -32,7 +31,7 @@ std::string Builder::compile() {
                           << this->confClass->compilerFlags()
                           << "-std=" << this->confClass->language()
                           << this->confClass->standard() << " "
-                          << this->pkgClass->headerPaths() << " ";
+                          << this->confClass->headerPaths() << " ";
   } else {
     this->_compileCommand << "cd " << this->_dbgDir << " && "
                           << this->confClass->compilerPath() << " -g "
@@ -41,7 +40,7 @@ std::string Builder::compile() {
                           << this->confClass->compilerFlags()
                           << "-std=" << this->confClass->language()
                           << this->confClass->standard() << " "
-                          << this->pkgClass->headerPaths() << " ";
+                          << this->confClass->headerPaths() << " ";
   }
   system(this->_compileCommand.str().c_str());
   return this->_compileCommand.str();
@@ -74,12 +73,12 @@ std::string Builder::appLink() {
     this->_appLinkCmnd << "cd " << this->_rlsDir << " && "
                        << this->confClass->compilerPath() << " -o "
                        << this->confClass->binaryName() << " " << temp << " "
-                       << this->pkgClass->rlsLibPaths();
+                       << this->confClass->rlsLibPaths();
   } else {
     this->_appLinkCmnd << "cd " << this->_dbgDir << " && "
                        << this->confClass->compilerPath() << " -o "
                        << this->confClass->binaryName() << " " << temp << " "
-                       << this->pkgClass->dbgLibPaths();
+                       << this->confClass->dbgLibPaths();
   }
   system(this->_appLinkCmnd.str().c_str());
   return this->_appLinkCmnd.str();
@@ -120,12 +119,12 @@ std::string Builder::dylibLink() {
     this->_libLinkCmnd << "cd " << this->_rlsDir << " && "
                        << this->confClass->compilerPath() << dylibArg << " -o "
                        << this->confClass->binaryName() << dylibExt << " "
-                       << temp << " " << this->pkgClass->rlsLibPaths();
+                       << temp << " " << this->confClass->rlsLibPaths();
   } else {
     this->_libLinkCmnd << "cd " << this->_dbgDir << " && "
                        << this->confClass->compilerPath() << dylibArg << " -o "
                        << this->confClass->binaryName() << dylibExt << " "
-                       << temp << " " << this->pkgClass->dbgLibPaths();
+                       << temp << " " << this->confClass->dbgLibPaths();
   }
   system(this->_libLinkCmnd.str().c_str());
   return this->_libLinkCmnd.str();
@@ -206,6 +205,5 @@ void Builder::build() {
 
 Builder::~Builder() {
   delete confClass;
-  delete pkgClass;
 }
 } // namespace vcbld

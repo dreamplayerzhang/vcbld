@@ -6,6 +6,7 @@
 #include <iterator>
 #include <nlohmann/json.hpp>
 #include <sstream>
+#include <string>
 #include <vector>
 
 #include "conf.h"
@@ -22,16 +23,17 @@ void includePathGen(const fs::path &vcbldPath)
   ConfClass confClass(vcbldPath);
   incJson.push_back(confClass.sourceDirectory().relative_path().string());
   incJson.push_back(confClass.vcpkgDirPath() + "/" + "installed" + "/" + "include");
-  for (std::vector<std::string>::iterator it = confClass.packageName.begin();
-       it != confClass.packageName.end(); ++it)
+  for (std::vector<std::string>::iterator it = confClass.packageNames.begin();
+       it != confClass.packageNames.end(); ++it)
   {
     incJson.push_back(confClass.vcpkgDirPath() + "/" + "packages" + "/" + *it + "/" + confClass.architecture() + "/" + "include");
   }
   std::string temp =
-      confClass.sourceDirectory().string() + "/" + "includePath.json";
-  if (!fs::exists(temp))
+      confClass.sourceDirectory().string();
+
+  if (!fs::exists("includePath.txt"))
   {
-    std::ofstream ofs(temp);
+    std::ofstream ofs("includePath.txt");
 
     if (ofs.is_open())
     {
@@ -113,16 +115,34 @@ void cmakeGen(const fs::path &vcbldPath)
       ofs << "set(CMAKE_EXPORT_COMPILE_COMMANDS ON)"
           << "\n"
           << "set(CMAKE_CXX_FLAGS "
-          << "\"" << confClass.compilerFlags() << ")\n"
+          << "\"" << confClass.compilerFlags() << "\")\n"
           << "add_definitions(" << confClass.compilerDefines() << ")\n\n"
+          << "#Uncomment the following lines if you're using Qt QObject macro, Qt qrc or Qt widgets.\n"
           << "#set(CMAKE_AUTOMOC ON)\n#set(CMAKE_AUTOUIC "
              "ON)\n#set(CMAKE_AUTORCC ON)\n\n"
           << "if(${CMAKE_SOURCE_DIR} STREQUAL "
-             "${CMAKE_BINARY_DIR})\nmessage(FATAL_ERROR \"Prevented in-tree "
+             "${CMAKE_BINARY_DIR})\n\tmessage(FATAL_ERROR \"Prevented in-tree "
              "built. Please create a build directory outside of the source "
              "code and call cmake from there. Thank you.\")\nendif()\n\n"
-          << "include_directories PUBLIC ${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}"
-          << "/include)\n\n";
+          << "if (${CMAKE_BUILD_TYPE} \"Debug\")\n"
+          << "\tset(LIBPATH ${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}/lib)\n"
+          << "elseif (${CMAKE_BUILD_TYPE} \"Release\")\n"
+          << "\tset(LIBPATH ${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}/debug/lib)\n"
+          << "endif()\n\n";
+
+      for (std::vector<std::string>::iterator it = confClass.libs.begin(); it != confClass.libs.end(); ++it)
+      {
+        std::string libName = *it;
+        std::string module = libName;
+        module[0] = toupper(module[0]);
+        ofs << "find_package(" << module << " CONFIG)\n"
+            << "if (NOT " << module << "_FOUND)\n\t"
+            << "find_library(" << libName << "_LIBRARIES NAMES " << libName << " PATHS "
+            << "${LIBPATH}"
+            << ")\n"
+            << "endif()\n"
+            << "set(LIBS ${LIBS} " << libName << "_LIBRARIES)\n\n";
+      }
 
       if (confClass.binaryType() == "app")
       {
@@ -140,6 +160,9 @@ void cmakeGen(const fs::path &vcbldPath)
             << ")\n\n";
       }
 
+      ofs << "target_include_directories(${PROJECT_NAME} PUBLIC ${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}"
+          << "/include)\n"
+          << "target_link_libraries(${PROJECT_NAME} ${LIBS})\n\n";
       ofs.flush();
       ofs.close();
     }

@@ -86,18 +86,37 @@ ConfClass::ConfClass(const fs::path &vcbldPath) {
     }
     for (json::iterator it = pkgsJson["packages"].begin();
          it != pkgsJson["packages"].end(); ++it) {
-      this->packageName.push_back(*it);
+      this->packageNames.push_back(*it);
     }
   } catch (const json::parse_error e) {
     std::cerr << "Error reading packages.json" << std::endl;
   }
+
+  std::vector<fs::directory_entry> v; 
+  for (std::vector<std::string>::iterator it = this->packageNames.begin();
+       it != this->packageNames.end(); ++it) {
+    std::string vcpkgRlsLibs = this->vcpkgDirPath() + "/" +
+                               "packages" + "/" + *it + "_" +
+                               this->architecture() + "/" + "lib";
+    if (fs::is_directory(static_cast<fs::path>(vcpkgRlsLibs))) {
+      std::copy(fs::directory_iterator(vcpkgRlsLibs), fs::directory_iterator(),
+                std::back_inserter(v));
+      for (std::vector<fs::directory_entry>::iterator jt = v.begin();
+           jt != v.end(); ++jt) {
+        if (stripLibName((*jt).path().filename().string()).at(0) != '.') {
+          libs.push_back(stripLibName((*jt).path().filename().string()));
+        }
+      }
+    }
+  }
+
 }
 
 void ConfClass::write() {
   json pkgsJson;
 
-  for (std::vector<std::string>::iterator it = this->packageName.begin();
-       it != this->packageName.end(); ++it) {
+  for (std::vector<std::string>::iterator it = this->packageNames.begin();
+       it != this->packageNames.end(); ++it) {
     pkgsJson["packages"].push_back(*it);
   }
   std::ofstream pkgsOutput("packages.json");
@@ -143,7 +162,9 @@ std::string ConfClass::sourceFiles() const {
       if (fs::extension((*it).path().filename().string()) == ".cpp" ||
           fs::extension((*it).path().filename().string()) == ".rc" ||
           fs::extension((*it).path().filename().string()) == ".c" ||
-          fs::extension((*it).path().filename().string()) == ".cxx") {
+          fs::extension((*it).path().filename().string()) == ".cxx" ||
+          fs::extension((*it).path().filename().string()) == ".qrc" ||
+          fs::extension((*it).path().filename().string()) == ".ui") {
         temp << this->_projPath.c_str() << "/" << tempPath + "/"
              << (*it).path().filename().string() << " ";
       }
@@ -218,8 +239,8 @@ std::string ConfClass::headerPaths() {
        << "/" << this->architecture() << "/"
        << "include";
 
-  for (std::vector<std::string>::iterator it = this->packageName.begin();
-       it != this->packageName.end(); ++it) {
+  for (std::vector<std::string>::iterator it = this->packageNames.begin();
+       it != this->packageNames.end(); ++it) {
     temp << " -I" << this->vcpkgDirPath() << "/"
          << "packages"
          << "/" << *it << "_" << this->architecture() << "/"
@@ -228,7 +249,7 @@ std::string ConfClass::headerPaths() {
   return temp.str();
 }
 
-std::string ConfClass::getLibName(const std::string &lib) {
+std::string ConfClass::stripLibName(const std::string &lib) {
   std::size_t found;
   std::string stripLib;
   std::string stripExt;
@@ -268,15 +289,15 @@ std::string ConfClass::dbgLibPaths() {
 
     for (std::vector<fs::directory_entry>::iterator jt = v.begin();
          jt != v.end(); ++jt) {
-      if (getLibName((*jt).path().filename().string()).at(0) != '.') {
+      if (stripLibName((*jt).path().filename().string()).at(0) != '.') {
         temp << " -L" << (*jt).path().parent_path().string() << " "
-             << " -l" << getLibName((*jt).path().filename().string());
+             << " -l" << stripLibName((*jt).path().filename().string());
       }
     }
   }
 
-  for (std::vector<std::string>::iterator it = this->packageName.begin();
-       it != this->packageName.end(); ++it) {
+  for (std::vector<std::string>::iterator it = this->packageNames.begin();
+       it != this->packageNames.end(); ++it) {
     std::string vcpkgDbgLibs =
         this->vcpkgDirPath() + "/" + "packages" + "/" + *it + "_" +
         this->architecture() + "/" + "debug" + "/" + "lib";
@@ -285,9 +306,9 @@ std::string ConfClass::dbgLibPaths() {
                 std::back_inserter(v));
       for (std::vector<fs::directory_entry>::iterator jt = v.begin();
            jt != v.end(); ++jt) {
-        if (getLibName((*jt).path().filename().string()).at(0) != '.') {
+        if (stripLibName((*jt).path().filename().string()).at(0) != '.') {
           temp << " -L" << (*jt).path().parent_path().string() << " "
-               << " -l" << getLibName((*jt).path().filename().string());
+               << " -l" << stripLibName((*jt).path().filename().string());
         }
       }
     }
@@ -307,15 +328,15 @@ std::string ConfClass::rlsLibPaths() {
 
     for (std::vector<fs::directory_entry>::iterator jt = v.begin();
          jt != v.end(); ++jt) {
-      if (getLibName((*jt).path().filename().string()).at(0) != '.') {
+      if (stripLibName((*jt).path().filename().string()).at(0) != '.') {
         temp << " -L" << (*jt).path().parent_path().string() << " "
-             << " -l" << getLibName((*jt).path().filename().string());
+             << " -l" << stripLibName((*jt).path().filename().string());
       }
     }
   }
 
-  for (std::vector<std::string>::iterator it = this->packageName.begin();
-       it != this->packageName.end(); ++it) {
+  for (std::vector<std::string>::iterator it = this->packageNames.begin();
+       it != this->packageNames.end(); ++it) {
     std::string vcpkgRlsLibs = this->vcpkgDirPath() + "/" +
                                "packages" + "/" + *it + "_" +
                                this->architecture() + "/" + "lib";
@@ -324,9 +345,9 @@ std::string ConfClass::rlsLibPaths() {
                 std::back_inserter(v));
       for (std::vector<fs::directory_entry>::iterator jt = v.begin();
            jt != v.end(); ++jt) {
-        if (getLibName((*jt).path().filename().string()).at(0) != '.') {
+        if (stripLibName((*jt).path().filename().string()).at(0) != '.') {
           temp << " -L" << (*jt).path().parent_path().string() << " "
-               << " -l" << getLibName((*jt).path().filename().string());
+               << " -l" << stripLibName((*jt).path().filename().string());
         }
       }
     }
@@ -335,14 +356,14 @@ std::string ConfClass::rlsLibPaths() {
 }
 
 void ConfClass::include(const std::string &pkgName) {
-  this->packageName.push_back(pkgName);
+  this->packageNames.push_back(pkgName);
 }
 
 void ConfClass::remove(const std::string &pkgName) {
-  for (std::vector<std::string>::iterator it = this->packageName.begin();
-       it != this->packageName.end();) {
+  for (std::vector<std::string>::iterator it = this->packageNames.begin();
+       it != this->packageNames.end();) {
     if (*it == pkgName) {
-      it = this->packageName.erase(it);
+      it = this->packageNames.erase(it);
     } else {
       ++it;
     }

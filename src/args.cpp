@@ -211,8 +211,8 @@ void generate(const fs::path &vcbldPath) {
 void list(const fs::path &vcbldPath) {
   try {
     ConfClass confClass(vcbldPath);
-    for (std::vector<std::string>::iterator it = confClass.packageName.begin();
-         it != confClass.packageName.end(); ++it) {
+    for (std::vector<std::string>::iterator it = confClass.packageNames.begin();
+         it != confClass.packageNames.end(); ++it) {
       std::cout << std::setw(4) << "Package name: " << *it
                 << "\t\tPackage version: " << confClass.getVersion(*it)
                 << std::endl;
@@ -230,9 +230,9 @@ void add(const std::string &pkg, const fs::path &vcbldPath) {
 
   if (fs::is_directory(static_cast<fs::path>(addDep))) {
     bool isExist = false;
-    for (std::vector<std::string>::iterator pt = confClass.packageName.begin();
-         pt != confClass.packageName.end(); ++pt) {
-      if (((*pt) == pkg)) {
+    for (std::vector<std::string>::iterator it = confClass.packageNames.begin();
+         it != confClass.packageNames.end(); ++it) {
+      if (((*it) == pkg)) {
         std::cout << "Package already exists" << std::endl;
         isExist = true;
         break;
@@ -252,9 +252,9 @@ void add(const std::string &pkg, const fs::path &vcbldPath) {
 
 void remove(const std::string &pkg, const fs::path &vcbldPath) {
   ConfClass confClass(vcbldPath);
-  for (std::vector<std::string>::iterator pt = confClass.packageName.begin();
-       pt != confClass.packageName.end(); ++pt) {
-    if (((*pt) == pkg)) {
+  for (std::vector<std::string>::iterator it = confClass.packageNames.begin();
+       it != confClass.packageNames.end(); ++it) {
+    if (((*it) == pkg)) {
       confClass.remove(pkg);
       confClass.write();
       break;
@@ -274,8 +274,8 @@ void restore(const fs::path &vcbldPath) {
   ConfClass confClass(vcbldPath);
   std::ostringstream pkg;
 
-  for (std::vector<std::string>::iterator it = confClass.packageName.begin();
-       it != confClass.packageName.end(); ++it) {
+  for (std::vector<std::string>::iterator it = confClass.packageNames.begin();
+       it != confClass.packageNames.end(); ++it) {
     pkg << *it << " ";
   }
   std::string instlCmnd = confClass.vcpkgDirPath() + "/" + "vcpkg" + " " +

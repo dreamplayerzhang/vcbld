@@ -39,11 +39,12 @@ public:
   void remove(const std::string &pkg);
   std::string getVersion(const std::string &pkgName);
   std::string headerPaths();
-  std::string getLibName(const std::string &lib);
+  std::string stripLibName(const std::string &lib);
   std::string dbgLibPaths();
   std::string rlsLibPaths();
 
-  std::vector<std::string> packageName;
+  std::vector<std::string> packageNames;
+  std::vector<std::string> libs;
 
 private:
   fs::path _vcbldPath;

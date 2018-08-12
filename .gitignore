@@ -12,3 +12,4 @@ build
 bin
 vcbld
 cmake_bin
+.vscode

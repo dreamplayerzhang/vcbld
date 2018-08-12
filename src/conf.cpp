@@ -152,6 +152,28 @@ std::string ConfClass::sourceFiles() const {
   return temp.str();
 }
 
+std::string ConfClass::sourceFilesSinPath() const {
+  std::vector<fs::directory_entry> v;
+  std::string tempPath;
+  std::ostringstream temp;
+  tempPath = this->_sourceDirectory;
+  if (fs::is_directory(static_cast<fs::path>(tempPath))) {
+    std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
+              back_inserter(v));
+
+    for (std::vector<fs::directory_entry>::iterator it = v.begin();
+         it != v.end(); ++it) {
+      if (fs::extension((*it).path().filename().string()) == ".cpp" ||
+          fs::extension((*it).path().filename().string()) == ".rc" ||
+          fs::extension((*it).path().filename().string()) == ".c" ||
+          fs::extension((*it).path().filename().string()) == ".cxx") {
+        temp << "\"" << (*it).path().filename().string() << "\" ";
+      }
+    }
+  }
+  return temp.str();
+}
+
 std::string ConfClass::compilerPath() const {
   if (this->_language.at(2) == '+') {
     return this->_cppCompilerPath;
@@ -272,6 +294,7 @@ std::string ConfClass::dbgLibPaths() {
   }
   return temp.str();
 }
+
 std::string ConfClass::rlsLibPaths() {
   std::ostringstream temp;
   std::string localRlsLibs =

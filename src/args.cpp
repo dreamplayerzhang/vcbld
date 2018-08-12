@@ -161,8 +161,8 @@ void available(const fs::path &vcbldPath) {
 
       for (std::vector<fs::directory_entry>::const_iterator it = v.begin();
            it != v.end(); ++it) {
-        if (sansTriplet((*it).path().filename().string()).at(0) != '.') {
-          std::cout << sansTriplet((*it).path().filename().string())
+        if (sinTriplet((*it).path().filename().string()).at(0) != '.') {
+          std::cout << sinTriplet((*it).path().filename().string())
                     << std::endl;
         }
       }
@@ -190,9 +190,9 @@ void search(const std::string &pkg, const fs::path &vcbldPath) {
 
       for (std::vector<fs::directory_entry>::const_iterator it = v.begin();
            it != v.end(); ++it)
-        if (sansTriplet((*it).path().filename().string()).find(pkg) !=
+        if (sinTriplet((*it).path().filename().string()).find(pkg) !=
             std::string::npos) {
-          std::cout << sansTriplet((*it).path().filename().string())
+          std::cout << sinTriplet((*it).path().filename().string())
                     << std::endl;
         }
     } else {
@@ -293,7 +293,7 @@ void cmake(const std::string &cmakeArgs, const fs::path &vcbldPath) {
   system(cmakeCmnd.str().c_str());
 }
 
-std::string sansTriplet(const std::string &pkg) {
+std::string sinTriplet(const std::string &pkg) {
   std::size_t found;
   std::string stripTrip;
   found = pkg.find("_");

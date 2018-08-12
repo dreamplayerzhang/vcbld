@@ -30,6 +30,7 @@ public:
   fs::path includeDirectory() const;
   fs::path libsDirectory() const;
   std::string sourceFiles() const;
+  std::string sourceFilesSinPath() const;
   std::string compilerDefines() const;
   std::string compilerFlags() const;
 

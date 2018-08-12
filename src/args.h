@@ -22,7 +22,7 @@ void generate(const fs::path &vcbldPath);
 void vcpkg(const std::string &vcpkgCmnds, const fs::path &vcbldPath);
 void cmake(const std::string &cmakeCmnds, const fs::path &vcbldPath);
 
-std::string sansTriplet(const std::string &);
+std::string sinTriplet(const std::string &);
 bool findPackage(const std::string &);
 
 } // namespace vcbld::Args

@@ -8,5 +8,5 @@ find_package(Boost COMPONENTS filesystem system REQUIRED)
 
 add_executable(${PROJECT_NAME} "main.cpp" "args.cpp" "builder.cpp" "help.cpp" "conf.cpp" "init.cpp" "gen.cpp")
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${VCPKG_ROOT}/installed/x64-osx/include)
+target_include_directories(${PROJECT_NAME} PUBLIC ${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}/include)
 target_link_libraries(${PROJECT_NAME} PUBLIC Boost::filesystem Boost::system)

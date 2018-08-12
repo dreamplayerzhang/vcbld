@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
       if (!argv[2]) {
         try {
           args::build("debug", vcbldPath);
-        } catch (const std::exception &e) {
+        } catch (...) {
           std::cout << "Build configuration or entry not available!"
                     << std::endl;
         }
@@ -45,14 +45,14 @@ int main(int argc, char *argv[]) {
         if (strcmp(argv[2], "release") == 0) {
           try {
             args::build("release", vcbldPath);
-          } catch (const std::exception &e) {
+          } catch (...) {
             std::cout << "Build configuration or entry not available!"
                       << std::endl;
           }
         } else if (strcmp(argv[2], "debug") == 0) {
           try {
             args::build("debug", vcbldPath);
-          } catch (const std::exception &e) {
+          } catch (...) {
             std::cout << "Build configuration or entry not available!"
                       << std::endl;
           }
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
       if (!argv[2]) {
         try {
           args::run("debug", vcbldPath);
-        } catch (const std::exception &e) {
+        } catch (...) {
           std::cout << "Build configuration or entry not available!"
                     << std::endl;
         }
@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
         if (strcmp(argv[2], "release") == 0) {
           try {
             args::run("release", vcbldPath);
-          } catch (const std::exception &e) {
+          } catch (...) {
             std::cout << "Build configuration or entry not available!"
                       << std::endl;
           }

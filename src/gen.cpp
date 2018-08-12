@@ -2,7 +2,9 @@
 
 #include <fstream>
 #include <iostream>
+#include <iterator>
 #include <sstream>
+#include <vector>
 
 #include "conf.h"
 #include "pkg.h"
@@ -54,16 +56,22 @@ void cmakeGen(const fs::path &vcbldPath) {
       ofs.close();
     }
   } else {
-    std::ofstream ofs("tempCMakeLists.txt");
-
-    if (ofs.is_open()) {
-      ofs << "cmake_minimum_required(VERSION 3.10.0)\n"
-          << "set(CMAKE_CXX_STANDARD " << confClass.standard() << ")\n\n"
-          << "project(" << confClass.projectName() << ")\n\n"
-          << "add_subdirectory(" << confClass.sourceDirectory() << ")\n\n";
-      ofs.flush();
-      ofs.close();
+    std::fstream iofs("CMakeLists.txt", std::ios_base::in | std::ios_base::out);
+    std::string line;
+    std::vector<std::string> lines;
+    if (iofs.is_open()) {
+      while (!iofs.eof()) {
+        std::getline(iofs, line);
+        lines.push_back(line);
+      }
+      iofs.close();
+      std::cout << "\nA CMakeLists.txt file was found with the following contents: \n"   << "***********\n" << std::endl;
+      for (std::vector<std::string>::iterator jt = lines.begin();
+           jt != lines.end(); ++jt) {
+        std::cout << *jt << std::endl;
+      }
+      std::cout << "***********\n" << "You can modify it directly or delete it to regenerate a new file.\n" << std::endl;
     }
   }
 }
-}
+} // namespace vcbld::gen

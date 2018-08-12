@@ -20,52 +20,24 @@ void includePathGen(const fs::path &vcbldPath)
 {
   json incJson;
   ConfClass confClass(vcbldPath);
-  std::ostringstream includePath;
-  includePath << confClass.vcpkgDirPath() << "/"
-              << "installed"
-              << "/" << confClass.architecture() << "/"
-              << "include\n";
+  incJson.push_back(confClass.sourceDirectory().relative_path().string());
   incJson.push_back(confClass.vcpkgDirPath() + "/" + "installed" + "/" + "include");
   for (std::vector<std::string>::iterator it = confClass.packageName.begin();
        it != confClass.packageName.end(); ++it)
   {
-    includePath << confClass.vcpkgDirPath() << "/"
-                << "packages"
-                << "/" << *it << confClass.architecture() << "/"
-                << "include\n";
     incJson.push_back(confClass.vcpkgDirPath() + "/" + "packages" + "/" + *it + "/" + confClass.architecture() + "/" + "include");
   }
-
   std::string temp =
-      confClass.sourceDirectory().string() + "/" + "includePath.txt";
-
+      confClass.sourceDirectory().string() + "/" + "includePath.json";
   if (!fs::exists(temp))
   {
     std::ofstream ofs(temp);
 
     if (ofs.is_open())
     {
-      ofs << includePath.str();
+      ofs << std::setw(4) << incJson;
       ofs.flush();
       ofs.close();
-    }
-    std::cout << "includePath.txt file written successfully." << std::endl;
-  }
-  else
-  {
-    std::cout << "includePath.txt file found." << std::endl;
-  }
-  std::string temp2 =
-      confClass.sourceDirectory().string() + "/" + "includePath.json";
-  if (!fs::exists(temp2))
-  {
-    std::ofstream ofs2(temp2);
-
-    if (ofs2.is_open())
-    {
-      ofs2 << std::setw(4) << incJson;
-      ofs2.flush();
-      ofs2.close();
     }
     std::cout << "includePath.json file written successfully." << std::endl;
   }

@@ -1,7 +1,0 @@
-{
-	"cCompilerPath" : "/usr/bin/clang",  // your c compiler path
-	"cppCompilerPath" : "/usr/bin/clang++", // your c++ compiler path
-	"vcpkgDirectory" : "/Users/mohammedalyousef/vcpkg", //your vcpkg root directory
-	"architecture" : "x64-osx" // your OS architecture, you can read more on vcpkg triplets
-	"cmakePath" : "/usr/local/bin/cmake"
-}

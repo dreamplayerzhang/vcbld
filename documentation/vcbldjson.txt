@@ -1,0 +1,15 @@
+{
+	"projectName" : "myProj",
+	"version" : "0.1.0",
+	"language" : "c++", 
+	"standard" : "11", // The minimum supported standards of both of c++ and c.
+	"binaryType" : "app", // or "staticLibrary" or "sharedLibrary"
+	"binaryName" : "myApp", // Name of the app, use a "lib" prefix if it were a library.
+    "sourceDirectory" : "./src", // Relative or absolute path of your source directory
+    "includeDirectory" : "./include",
+	"libsDirectory" : "./libs",
+    "outputDirectory" : "./bin", // Relative or absolute path to your output directory
+    "compilerDefines" : [], // an array of any -D arguments you want to pass to the 
+	"compilerFlags" : ["-Werror"] // an array of any compiler flags 
+}
+

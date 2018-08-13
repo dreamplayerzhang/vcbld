@@ -373,7 +373,7 @@ void cmake(const std::string &cmakeArgs, const fs::path &vcbldPath)
   ConfClass confClass(vcbldPath);
   std::ostringstream cmakeCmnd;
   cmakeCmnd << "cd " << confClass.outputDirectory() << " && "
-            << confClass.cmakePath() << " " << cmakeArgs << " .. ";
+            << confClass.cmakePath() << " -G \"Unix Makefiles\" " << cmakeArgs << " .. ";
   system(cmakeCmnd.str().c_str());
 }
 
@@ -382,7 +382,7 @@ void make(const fs::path &vcbldPath)
   ConfClass confClass(vcbldPath);
   std::ostringstream makeCmnd;
   makeCmnd << "cd " << confClass.outputDirectory() << " && "
-           << " make";
+           << " " << confClass.makePath();
   system(makeCmnd.str().c_str());
 }
 

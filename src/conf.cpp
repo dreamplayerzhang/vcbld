@@ -98,6 +98,7 @@ ConfClass::ConfClass(const fs::path &vcbldPath)
   this->_cppCompilerPath = confJson["cppCompilerPath"];
   this->_architecture = confJson["architecture"];
   this->_cmakePath = confJson["cmakePath"];
+  this->_makePath = confJson["makePath"];
   this->_vcpkgDirPath = vcpkgPath.string();
 
   try
@@ -552,6 +553,7 @@ bool ConfClass::hasComponents(const std::string &libName)
 }
 std::string ConfClass::cmakeOutput() const { return this->_cmakeOutput.str(); }
 std::string ConfClass::cmakePath() const { return _cmakePath; }
+std::string ConfClass::makePath() const { return _makePath; }
 std::string ConfClass::projectName() const { return _projectName; }
 std::string ConfClass::version() const { return _version; }
 std::string ConfClass::language() const { return _language; }

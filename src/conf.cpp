@@ -124,7 +124,7 @@ ConfClass::ConfClass(const fs::path &vcbldPath)
     std::cerr << "Error reading package.json" << std::endl;
   }
 
-  std::vector<fs::directory_entry> v;
+  std::vector<fs::directory_entry> dirEntry;
   for (std::vector<std::string>::iterator it = this->packageNames.begin();
        it != this->packageNames.end(); ++it)
   {
@@ -133,12 +133,12 @@ ConfClass::ConfClass(const fs::path &vcbldPath)
     if (fs::is_directory(static_cast<fs::path>(vcpkgRlsLibs)))
     {
       std::copy(fs::directory_iterator(vcpkgRlsLibs), fs::directory_iterator(),
-                std::back_inserter(v));
+                std::back_inserter(dirEntry));
 
-      std::sort(v.begin(), v.end());
-      v.erase(std::unique(v.begin(), v.end()), v.end());
-      for (std::vector<fs::directory_entry>::iterator jt = v.begin();
-           jt != v.end(); ++jt)
+      std::sort(dirEntry.begin(), dirEntry.end());
+      dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
+      for (std::vector<fs::directory_entry>::iterator jt = dirEntry.begin();
+           jt != dirEntry.end(); ++jt)
       {
         if (stripLibName((*jt).path().filename().string()).at(0) != '.')
         {
@@ -250,19 +250,19 @@ void ConfClass::write()
 
 std::string ConfClass::sourceFiles() const
 {
-  std::vector<fs::directory_entry> v;
+  std::vector<fs::directory_entry> dirEntry;
   std::string tempPath;
   std::ostringstream temp;
   tempPath = this->_sourceDirectory;
   if (fs::is_directory(static_cast<fs::path>(tempPath)))
   {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
-              back_inserter(v));
-    std::sort(v.begin(), v.end());
-    v.erase(std::unique(v.begin(), v.end()), v.end());
+              back_inserter(dirEntry));
+    std::sort(dirEntry.begin(), dirEntry.end());
+    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
 
-    for (std::vector<fs::directory_entry>::iterator it = v.begin();
-         it != v.end(); ++it)
+    for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
+         it != dirEntry.end(); ++it)
     {
       if (fs::extension((*it).path().filename().string()) == ".cpp" ||
           fs::extension((*it).path().filename().string()) == ".rc" ||
@@ -281,19 +281,19 @@ std::string ConfClass::sourceFiles() const
 
 std::string ConfClass::sourceFilesSinPath() const
 {
-  std::vector<fs::directory_entry> v;
+  std::vector<fs::directory_entry> dirEntry;
   std::string tempPath;
   std::ostringstream temp;
   tempPath = this->_sourceDirectory;
   if (fs::is_directory(static_cast<fs::path>(tempPath)))
   {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
-              back_inserter(v));
-    std::sort(v.begin(), v.end());
-    v.erase(std::unique(v.begin(), v.end()), v.end());
+              back_inserter(dirEntry));
+    std::sort(dirEntry.begin(), dirEntry.end());
+    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
 
-    for (std::vector<fs::directory_entry>::iterator it = v.begin();
-         it != v.end(); ++it)
+    for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
+         it != dirEntry.end(); ++it)
     {
       if (fs::extension((*it).path().filename().string()) == ".cpp" ||
           fs::extension((*it).path().filename().string()) == ".rc" ||
@@ -411,17 +411,17 @@ std::string ConfClass::dbgLibPaths()
 {
   std::ostringstream temp;
   std::string localDbgLibs = this->libsDirectory().string() + "/" + "debug";
-  std::vector<fs::directory_entry> v;
+  std::vector<fs::directory_entry> dirEntry;
 
   if (fs::is_directory(static_cast<fs::path>(localDbgLibs)))
   {
     std::copy(fs::directory_iterator(localDbgLibs), fs::directory_iterator(),
-              std::back_inserter(v));
-    std::sort(v.begin(), v.end());
-    v.erase(std::unique(v.begin(), v.end()), v.end());
+              std::back_inserter(dirEntry));
+    std::sort(dirEntry.begin(), dirEntry.end());
+    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
 
-    for (std::vector<fs::directory_entry>::iterator jt = v.begin();
-         jt != v.end(); ++jt)
+    for (std::vector<fs::directory_entry>::iterator jt = dirEntry.begin();
+         jt != dirEntry.end(); ++jt)
     {
       if (stripLibName((*jt).path().filename().string()).at(0) != '.')
       {
@@ -440,11 +440,11 @@ std::string ConfClass::dbgLibPaths()
     if (fs::is_directory(static_cast<fs::path>(vcpkgDbgLibs)))
     {
       std::copy(fs::directory_iterator(vcpkgDbgLibs), fs::directory_iterator(),
-                std::back_inserter(v));
-      std::sort(v.begin(), v.end());
-      v.erase(std::unique(v.begin(), v.end()), v.end());
-      for (std::vector<fs::directory_entry>::iterator jt = v.begin();
-           jt != v.end(); ++jt)
+                std::back_inserter(dirEntry));
+      std::sort(dirEntry.begin(), dirEntry.end());
+      dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
+      for (std::vector<fs::directory_entry>::iterator jt = dirEntry.begin();
+           jt != dirEntry.end(); ++jt)
       {
         if (stripLibName((*jt).path().filename().string()).at(0) != '.')
         {
@@ -461,17 +461,17 @@ std::string ConfClass::rlsLibPaths()
 {
   std::ostringstream temp;
   std::string localRlsLibs = this->libsDirectory().string() + "/" + "lib";
-  std::vector<fs::directory_entry> v;
+  std::vector<fs::directory_entry> dirEntry;
 
   if (fs::is_directory(static_cast<fs::path>(localRlsLibs)))
   {
     std::copy(fs::directory_iterator(localRlsLibs), fs::directory_iterator(),
-              std::back_inserter(v));
-    std::sort(v.begin(), v.end());
-    v.erase(std::unique(v.begin(), v.end()), v.end());
+              std::back_inserter(dirEntry));
+    std::sort(dirEntry.begin(), dirEntry.end());
+    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
 
-    for (std::vector<fs::directory_entry>::iterator jt = v.begin();
-         jt != v.end(); ++jt)
+    for (std::vector<fs::directory_entry>::iterator jt = dirEntry.begin();
+         jt != dirEntry.end(); ++jt)
     {
       if (stripLibName((*jt).path().filename().string()).at(0) != '.')
       {
@@ -489,11 +489,11 @@ std::string ConfClass::rlsLibPaths()
     if (fs::is_directory(static_cast<fs::path>(vcpkgRlsLibs)))
     {
       std::copy(fs::directory_iterator(vcpkgRlsLibs), fs::directory_iterator(),
-                std::back_inserter(v));
-      std::sort(v.begin(), v.end());
-      v.erase(std::unique(v.begin(), v.end()), v.end());
-      for (std::vector<fs::directory_entry>::iterator jt = v.begin();
-           jt != v.end(); ++jt)
+                std::back_inserter(dirEntry));
+      std::sort(dirEntry.begin(), dirEntry.end());
+      dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
+      for (std::vector<fs::directory_entry>::iterator jt = dirEntry.begin();
+           jt != dirEntry.end(); ++jt)
       {
         if (stripLibName((*jt).path().filename().string()).at(0) != '.')
         {

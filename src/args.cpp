@@ -196,7 +196,7 @@ void available(const fs::path &vcbldPath)
   try
   {
     ConfClass confClass(vcbldPath);
-    std::vector<fs::directory_entry> v;
+    std::vector<fs::directory_entry> dirEntry;
 
     std::string vcpkgDirPath = confClass.vcpkgDirPath();
     vcpkgDirPath += "/";
@@ -205,10 +205,10 @@ void available(const fs::path &vcbldPath)
     if (fs::is_directory(static_cast<fs::path>(vcpkgDirPath)))
     {
       std::copy(fs::directory_iterator(vcpkgDirPath), fs::directory_iterator(),
-                back_inserter(v));
+                back_inserter(dirEntry));
 
-      for (std::vector<fs::directory_entry>::const_iterator it = v.begin();
-           it != v.end(); ++it)
+      for (std::vector<fs::directory_entry>::const_iterator it = dirEntry.begin();
+           it != dirEntry.end(); ++it)
       {
         if (sinTriplet((*it).path().filename().string()).at(0) != '.')
         {
@@ -234,7 +234,7 @@ void search(const std::string &pkg, const fs::path &vcbldPath)
   try
   {
     ConfClass confClass(vcbldPath);
-    std::vector<fs::directory_entry> v;
+    std::vector<fs::directory_entry> dirEntry;
 
     std::string vcpkgDirPath = confClass.vcpkgDirPath();
     vcpkgDirPath += "/";
@@ -243,10 +243,10 @@ void search(const std::string &pkg, const fs::path &vcbldPath)
     if (fs::is_directory(static_cast<fs::path>(vcpkgDirPath)))
     {
       std::copy(fs::directory_iterator(vcpkgDirPath), fs::directory_iterator(),
-                back_inserter(v));
+                back_inserter(dirEntry));
 
-      for (std::vector<fs::directory_entry>::const_iterator it = v.begin();
-           it != v.end(); ++it)
+      for (std::vector<fs::directory_entry>::const_iterator it = dirEntry.begin();
+           it != dirEntry.end(); ++it)
         if (sinTriplet((*it).path().filename().string()).find(pkg) !=
             std::string::npos)
         {

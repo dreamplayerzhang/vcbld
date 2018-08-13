@@ -55,7 +55,7 @@ std::string Builder::compile()
 
 std::string Builder::appLink()
 {
-  std::vector<fs::directory_entry> v;
+  std::vector<fs::directory_entry> dirEntry;
   std::string temp, tempPath;
   if (this->_buildType == "debug")
   {
@@ -69,10 +69,12 @@ std::string Builder::appLink()
   if (fs::is_directory(static_cast<fs::path>(tempPath)))
   {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
-              back_inserter(v));
+              back_inserter(dirEntry));
+    std::sort(dirEntry.begin(), dirEntry.end());
+    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
 
-    for (std::vector<fs::directory_entry>::iterator it = v.begin();
-         it != v.end(); ++it)
+    for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
+         it != dirEntry.end(); ++it)
     {
       if (fs::extension((*it).path().filename().string()) == ".o" ||
           fs::extension((*it).path().filename().string()) == ".obj")
@@ -103,7 +105,7 @@ std::string Builder::appLink()
 
 std::string Builder::dylibLink()
 {
-  std::vector<fs::directory_entry> v;
+  std::vector<fs::directory_entry> dirEntry;
   std::string temp, tempPath;
   if (this->_buildType == "debug")
   {
@@ -117,10 +119,12 @@ std::string Builder::dylibLink()
   if (fs::is_directory(static_cast<fs::path>(tempPath)))
   {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
-              back_inserter(v));
+              back_inserter(dirEntry));
+    std::sort(dirEntry.begin(), dirEntry.end());
+    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
 
-    for (std::vector<fs::directory_entry>::iterator it = v.begin();
-         it != v.end(); ++it)
+    for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
+         it != dirEntry.end(); ++it)
     {
       if (fs::extension((*it).path().filename().string()) == ".o")
       {
@@ -162,7 +166,7 @@ std::string Builder::dylibLink()
 
 std::string Builder::archive()
 {
-  std::vector<fs::directory_entry> v;
+  std::vector<fs::directory_entry> dirEntry;
   std::string temp, tempPath;
   if (this->_buildType == "debug")
   {
@@ -176,10 +180,11 @@ std::string Builder::archive()
   if (fs::is_directory(static_cast<fs::path>(tempPath)))
   {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
-              back_inserter(v));
-
-    for (std::vector<fs::directory_entry>::iterator it = v.begin();
-         it != v.end(); ++it)
+              back_inserter(dirEntry));
+    std::sort(dirEntry.begin(), dirEntry.end());
+    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
+    for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
+         it != dirEntry.end(); ++it)
     {
       if (fs::extension((*it).path().filename().string()) == ".o")
       {

@@ -101,8 +101,6 @@ void New(const std::string &binType) {
   init::init(binType);
 }
 
-void configure(const fs::path &vcbldPath) { ConfClass confClass(vcbldPath); }
-
 void build(const std::string &buildType, const fs::path &vcbldPath) {
   Builder builder(buildType, vcbldPath);
   builder.build();
@@ -287,10 +285,16 @@ void cmake(const std::string &cmakeArgs, const fs::path &vcbldPath) {
   ConfClass confClass(vcbldPath);
   std::ostringstream cmakeCmnd;
   cmakeCmnd << "cd " << confClass.outputDirectory() << " && "
-            << confClass.cmakePath() << " "
-            << "-DCMAKE_TOOL_CHAIN_FILE=" << confClass.vcpkgDirPath()
-            << "/scripts/buildsystems/vcpkg.cmake " << " " << cmakeArgs << " .. ";
+            << confClass.cmakePath() << " " << cmakeArgs << " .. ";
   system(cmakeCmnd.str().c_str());
+}
+
+void make(const fs::path &vcbldPath) {
+  ConfClass confClass(vcbldPath);
+  std::ostringstream makeCmnd;
+  makeCmnd << "cd " << confClass.outputDirectory() << " && "
+           << " make";
+  system(makeCmnd.str().c_str());
 }
 
 std::string sinTriplet(const std::string &pkg) {

@@ -11,7 +11,6 @@ Usage: vcbld [sdk-command]
 SDK commands:
     setup                           Creates a conf.json in the vcbld directory.
     new     [app|dylib|statlib]     Starts a new project.
-    configure                       Configure a vcbld project. 
     restore                         Restore missing dependencies in a project.
     build   [debug|release]         Builds the project.
     clean                           Clean build output(s).
@@ -23,7 +22,8 @@ SDK commands:
     add                             Add package to the project.
     remove                          Remove package from the project.
     vcpkg   [vcpkg command]         Runs vcpkg commands.
-    cmake   [cmake arguments]       Runs cmake using the vcpkg toolchain.
+    cmake   [cmake arguments]       Runs cmake in the output directory.
+    make                            Runs make in the output directory.
     help                            Show help.
 
     --version                       Current vcbld version in use.

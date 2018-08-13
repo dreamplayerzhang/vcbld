@@ -27,8 +27,6 @@ int main(int argc, char *argv[]) {
       }
     } else if (strcmp(argv[1], "setup") == 0) {
       init::setup(vcbldPath);
-    } else if (strcmp(argv[1], "configure") == 0) {
-      args::configure(vcbldPath);
     } else if (strcmp(argv[1], "restore") == 0) {
       args::restore(vcbldPath);
     } else if (strcmp(argv[1], "gen") == 0) {
@@ -135,6 +133,8 @@ int main(int argc, char *argv[]) {
         }
         args::cmake(cmakeArgs, vcbldPath);
       }
+    } else if (strcmp(argv[1], "make") == 0) {
+      args::make(vcbldPath);
     } else if (strcmp(argv[1], "--version") == 0) {
       std::cout << MAJOR_VERSION << "." << MINOR_VERSION << "." << PATCH_VERSION
                 << std::endl;

@@ -18,6 +18,11 @@ ConfClass::ConfClass(const fs::path &vcbldPath) {
   this->_vcbldPath = vcbldPath;
   this->_projPath = fs::current_path();
 
+  if (!fs::exists("vcbld.json")) {
+    std::cout << "vcbld.json not found in the current directory" << std::endl;
+    std::exit(1);
+  }
+
   try {
     std::ifstream vcbldInput("vcbld.json");
     if (vcbldInput.is_open()) {

@@ -62,6 +62,7 @@ void cmakeGen(const fs::path &vcbldPath)
       ofs << "cmake_minimum_required(VERSION 3.10.0)\n"
           << "set(CMAKE_CXX_STANDARD " << confClass.standard() << ")\n\n"
           << "project(" << confClass.projectName() << ")\n\n"
+          << "include(" << confClass.vcpkgDirPath() << "/scripts/buildsystems/vcpkg.cmake)\n\n"
           << "add_subdirectory(" << confClass.sourceDirectory() << ")\n\n";
       ofs.flush();
       ofs.close();
@@ -124,45 +125,41 @@ void cmakeGen(const fs::path &vcbldPath)
              "${CMAKE_BINARY_DIR})\n\tmessage(FATAL_ERROR \"Prevented in-tree "
              "built. Please create a build directory outside of the source "
              "code and call cmake from there. Thank you.\")\nendif()\n\n"
-          << "if (${CMAKE_BUILD_TYPE} \"Debug\")\n"
-          << "\tset(LIBPATH ${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}/lib)\n"
-          << "elseif (${CMAKE_BUILD_TYPE} \"Release\")\n"
-          << "\tset(LIBPATH ${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}/debug/lib)\n"
-          << "endif()\n\n";
+          << "set(SOURCEFILES " << confClass.sourceFilesSinPath()
+          << ")\n\n"
+          << "set(DBG_LIB_PATH ${_VCPKG_ROOT_DIR}/installed/${VCPKG_TARGET_TRIPLET}/debug/lib)\n"
+          << "set(RLS_LIB_PATH ${_VCPKG_ROOT_DIR}/installed/${VCPKG_TARGET_TRIPLET}/lib)\n\n";
 
       for (std::vector<std::string>::iterator it = confClass.libs.begin(); it != confClass.libs.end(); ++it)
       {
         std::string libName = *it;
         std::string module = libName;
         module[0] = toupper(module[0]);
-        ofs << "find_package(" << module << " CONFIG)\n"
-            << "if (NOT " << module << "_FOUND)\n\t"
-            << "find_library(" << libName << "_LIBRARIES NAMES " << libName << " PATHS "
-            << "${LIBPATH}"
-            << ")\n"
-            << "endif()\n"
-            << "set(LIBS ${LIBS} " << libName << "_LIBRARIES)\n\n";
+        ofs << "find_library(" << libName << "_DBG NAMES " << libName << " HINTS "
+            << "${DBG_LIB_PATH})\n"
+            << "find_library(" << libName << "_RLS NAMES " << libName << " HINTS "
+            << "${RLS_LIB_PATH})\n"
+            << "set(dbgLIBS ${dbgLIBS} ${" << libName << "_DBG})\n"
+            << "set(rlsLIBS ${rlsLIBS} ${" << libName << "_RLS})\n\n";
       }
 
       if (confClass.binaryType() == "app")
       {
-        ofs << "add_executable(${PROJECT_NAME} " << confClass.sourceFilesSinPath()
-            << ")\n\n";
+        ofs << "add_executable(${PROJECT_NAME} ${SOURCEFILES})\n\n";
       }
       else if (confClass.binaryType() == "statLib")
       {
-        ofs << "add_library(${PROJECT_NAME} STATIC " << confClass.sourceFilesSinPath()
-            << ")\n\n";
+        ofs << "add_library(${PROJECT_NAME} STATIC ${SOURCEFILES})\n\n";
       }
       else
       {
-        ofs << "add_library(${PROJECT_NAME} SHARED " << confClass.sourceFilesSinPath()
-            << ")\n\n";
+        ofs << "add_library(${PROJECT_NAME} SHARED ${SOURCEFILES})\n\n";
       }
 
-      ofs << "target_include_directories(${PROJECT_NAME} PUBLIC ${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}"
+      ofs << "target_include_directories(${PROJECT_NAME} PUBLIC ${_VCPKG_ROOT_DIR}/installed/${VCPKG_TARGET_TRIPLET}"
           << "/include)\n"
-          << "target_link_libraries(${PROJECT_NAME} ${LIBS})\n\n";
+          << "target_link_libraries(${PROJECT_NAME} debug ${dbgLIBS})\n"
+          << "target_link_libraries(${PROJECT_NAME} optimized ${rlsLIBS})\n";
       ofs.flush();
       ofs.close();
     }

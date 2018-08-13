@@ -112,8 +112,8 @@ void New(const std::string &binType)
 
     if (ofs.is_open())
     {
-      ofs << "#include <iostream>" << std::endl;
-      ofs << "int main(int argc, char *argv[])\n{\n\tstd::cout  << \"Hello "
+      ofs << "#include <iostream>\n\n"
+          << "int main(int argc, char *argv[])\n{\n\tstd::cout  << \"Hello "
              "World\"  << std::endl; \n\treturn 0;\n}"
           << std::endl;
       ofs.flush();

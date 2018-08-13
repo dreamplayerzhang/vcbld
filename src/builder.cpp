@@ -1,5 +1,6 @@
 #include "builder.h"
 
+#include <algorithm>
 #include <boost/filesystem.hpp>
 #include <iostream>
 #include <iterator>

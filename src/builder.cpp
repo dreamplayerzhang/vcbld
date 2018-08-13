@@ -10,7 +10,7 @@ namespace fs = boost::filesystem;
 namespace vcbld {
 
 Builder::Builder(const std::string &buildType, const fs::path &vcbldPath) {
-  confClass = new ConfClass(vcbldPath);
+  this->confClass = new ConfClass(vcbldPath);
   this->_buildType = buildType;
   if (!fs::exists("vcbld.json")) {
     std::cout << "Build configuration not found!" << std::endl;
@@ -107,7 +107,7 @@ std::string Builder::dylibLink() {
   }
 
   std::string dylibArg, dylibExt;
-  if (confClass->compilerPath().find("clang") != std::string::npos) {
+  if (this->confClass->compilerPath().find("clang") != std::string::npos) {
     dylibArg = " -dynamiclib ";
     dylibExt = ".dylib";
   } else {

@@ -61,7 +61,7 @@ void cmakeGen(const fs::path &vcbldPath)
     {
       ofs << "cmake_minimum_required(VERSION 3.10.0)\n"
           << "set(CMAKE_CXX_STANDARD " << confClass.standard() << ")\n\n"
-          << "project(" << confClass.projectName() << ")\n\n"
+          << "project(" << confClass.projectName() << " VERSION " << confClass.version() << ")\n\n"
           << "include(" << confClass.vcpkgDirPath() << "/scripts/buildsystems/vcpkg.cmake)\n\n"
           << "add_subdirectory(" << confClass.sourceDirectory() << ")\n\n";
       ofs.flush();
@@ -135,7 +135,8 @@ void cmakeGen(const fs::path &vcbldPath)
         std::string libName = *it;
         std::string module = libName;
         module[0] = toupper(module[0]);
-        ofs << "find_library(" << libName << "_DBG NAMES " << libName << " HINTS "
+        ofs << "#Find " << libName << "\n"
+            << "find_library(" << libName << "_DBG NAMES " << libName << " HINTS "
             << "${DBG_LIB_PATH})\n"
             << "find_library(" << libName << "_RLS NAMES " << libName << " HINTS "
             << "${RLS_LIB_PATH})\n"

@@ -1,7 +1,8 @@
 {
 	"projectName" : "vcbld",
 	"version" : "0.1.0",
-	"language" : "c++17",
+	"language" : "c++",
+	"standard" : "17",
 	"binaryType" : "app",
 	"binaryName" : "vcbld",
 	"sourceDirectory" : "./src",

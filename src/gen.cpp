@@ -76,7 +76,7 @@ void cmakeGen(const fs::path &vcbldPath)
   else
   {
     std::cout
-        << "A CMakeLists.txt file was found in the parent directory. You can "
+        << "\nA CMakeLists.txt file was found in the parent directory. You can "
            "modify it directly or delete/rename it to regenerate a new file.\n"
         << std::endl;
   }
@@ -165,7 +165,7 @@ void cmakeGen(const fs::path &vcbldPath)
   else
   {
     std::cout
-        << "A CMakeLists.txt file was found in the source directory. You can "
+        << "\nA CMakeLists.txt file was found in the source directory. You can "
            "modify it directly or delete/rename it to regenerate a new file.\n"
         << std::endl;
   }

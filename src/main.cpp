@@ -40,6 +40,10 @@ int main(int argc, char *argv[])
     {
       args::restore(vcbldPath);
     }
+    else if (strcmp(argv[1], "includes") == 0)
+    {
+      args::includes(vcbldPath);
+    }
     else if (strcmp(argv[1], "gen") == 0)
     {
       args::generate(vcbldPath);

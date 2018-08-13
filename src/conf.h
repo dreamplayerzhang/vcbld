@@ -14,7 +14,7 @@ namespace vcbld
 class ConfClass
 {
 public:
-  explicit ConfClass(const fs::path &vcbldPath); // reads vcbld.json
+  explicit ConfClass(const fs::path &vcbldPath); // reads all configuration files
 
   std::string compilerPath() const;
   std::string vcpkgDirPath() const;

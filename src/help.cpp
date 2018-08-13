@@ -17,7 +17,8 @@ SDK commands:
     build   [debug|release]         Builds the project.
     clean                           Clean build output(s).
     run     [debug|release]         Executes the project.
-    gen                             Generates includePath.txt and CMakeLists.txt file.
+    includes                        Generates includePath.json file.
+    gen                             Generates CMakeLists.txt file.
     list                            Shows a list of packages added to the project.
     available                       Shows a list of installed vcpkg packages.
     search                          Search within installed vcpkg packages.

@@ -265,9 +265,12 @@ void search(const std::string &pkg, const fs::path &vcbldPath)
   }
 }
 
-void generate(const fs::path &vcbldPath)
+void includes(const fs::path &vcbldPath)
 {
   gen::includePathGen(vcbldPath);
+}
+void generate(const fs::path &vcbldPath)
+{
   gen::cmakeGen(vcbldPath);
 }
 

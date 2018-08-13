@@ -1,7 +1,7 @@
 # vcbld
 A build system to work with vcpkg.
 It works for the moment on posix compliant systems, i.e. linux and mac os x. It runs on windows if you're using MinGW or MSYS. It has a minimal build system which works for small single hierarchy projects which allows for faster prototyping, however it has support for cmake and can be used to generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
-`
+
 SDK commands:
     setup                           Creates a conf.json in the vcbld directory.
     new     [app|dylib|statlib]     Starts a new project.
@@ -22,7 +22,7 @@ SDK commands:
     help                            Show help.
 
     --version                       Current vcbld version in use.
-`
+
 With a first download of a prebuilt vcbld executable, or after compiling one from source, the first thing to do is run vcbld setup on the command line. This will generate a conf.json file in the directory of the executable. It contains several default variables depending on the operating system, which can also be changed if need be. A conf.json file will look like the following:
 ```json
 {
@@ -46,7 +46,7 @@ cmakePath and makePath are your installation locations of cmake and make. vcbld 
 
 A new project will have a vcbld.json and package.json files in project directory.
 A vcbld.json would look like the following (without the comments):
-```json
+```javascript
 {
 	"projectName" : "myProj", // Name of the project.
 	"version" : "0.1.0",

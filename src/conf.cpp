@@ -101,7 +101,6 @@ ConfClass::ConfClass(const fs::path &vcbldPath) {
   std::vector<fs::directory_entry> v;
   for (std::vector<std::string>::iterator it = this->packageNames.begin();
        it != this->packageNames.end(); ++it) {
-    std::cout << *it << std::endl;
     std::string vcpkgRlsLibs = this->vcpkgDirPath() + "/" + "packages" + "/" +
                                *it + "_" + this->architecture() + "/" + "lib";
     if (fs::is_directory(static_cast<fs::path>(vcpkgRlsLibs))) {

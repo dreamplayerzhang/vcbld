@@ -103,7 +103,7 @@ ConfClass::ConfClass(const fs::path &vcbldPath)
 
   try
   {
-    std::ifstream pkgsInput("packages.json");
+    std::ifstream pkgsInput("package.json");
     if (pkgsInput.is_open())
     {
       pkgsJson = json::parse(pkgsInput);
@@ -111,7 +111,7 @@ ConfClass::ConfClass(const fs::path &vcbldPath)
     }
     else
     {
-      std::cerr << "Failed to open packages.json file : " << errno << std::endl;
+      std::cerr << "Failed to open package.json file : " << errno << std::endl;
     }
     for (json::iterator it = pkgsJson["packages"].begin();
          it != pkgsJson["packages"].end(); ++it)
@@ -121,7 +121,7 @@ ConfClass::ConfClass(const fs::path &vcbldPath)
   }
   catch (const json::parse_error e)
   {
-    std::cerr << "Error reading packages.json" << std::endl;
+    std::cerr << "Error reading package.json" << std::endl;
   }
 
   std::vector<fs::directory_entry> v;
@@ -211,7 +211,7 @@ void ConfClass::write()
   {
     pkgsJson["packages"].push_back(*it);
   }
-  std::ofstream pkgsOutput("packages.json");
+  std::ofstream pkgsOutput("package.json");
   if (pkgsOutput.is_open())
   {
     pkgsOutput << std::setw(4) << pkgsJson;
@@ -226,7 +226,7 @@ void ConfClass::write()
   }
   std::string line;
   bool isEmpty = false;
-  std::ifstream pkgsInput("packages.json");
+  std::ifstream pkgsInput("package.json");
   if (pkgsInput.is_open())
   {
     std::getline(pkgsInput, line);
@@ -243,7 +243,7 @@ void ConfClass::write()
   }
   if (isEmpty == true)
   {
-    fs::remove("packages.json");
+    fs::remove("package.json");
     init::init(this->binaryType());
   }
 }

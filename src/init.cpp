@@ -146,20 +146,20 @@ void init(const std::string &binType)
     }
   }
 
-  if (!fs::exists("packages.json"))
+  if (!fs::exists("package.json"))
   {
 
-    std::ofstream pkgsOutput("packages.json");
+    std::ofstream pkgsOutput("package.json");
     if (pkgsOutput.is_open())
     {
       pkgsOutput << std::setw(4) << "{\n\t\"packages\" : []\n}";
       pkgsOutput.flush();
       pkgsOutput.close();
-      std::cout << "packages.json written successfully." << std::endl;
+      std::cout << "package.json written successfully." << std::endl;
     }
     else
     {
-      std::cout << "packages.json exists." << std::endl;
+      std::cout << "package.json exists." << std::endl;
     }
   }
 }

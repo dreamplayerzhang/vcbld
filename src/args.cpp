@@ -225,7 +225,7 @@ void available(const fs::path &vcbldPath)
   }
   catch (const std::exception &e)
   {
-    std::cout << "packages.json not found!" << std::endl;
+    std::cout << "package.json not found!" << std::endl;
   }
 }
 

@@ -8,12 +8,14 @@
 
 namespace fs = boost::filesystem;
 
-namespace vcbld {
+namespace vcbld
+{
 
-class ConfClass {
+class ConfClass
+{
 public:
   explicit ConfClass(const fs::path &vcbldPath); // reads vcbld.json
-  
+
   std::string compilerPath() const;
   std::string vcpkgDirPath() const;
   std::string architecture() const;
@@ -43,6 +45,9 @@ public:
   std::string dbgLibPaths();
   std::string rlsLibPaths();
 
+  bool hasComponents(const std::string &libName);
+  std::string cmakeOutput() const;
+
   std::vector<std::string> packageNames;
   std::vector<std::string> libs;
 
@@ -67,6 +72,10 @@ private:
   std::string _libsDirectory;
   std::ostringstream _compilerDefines;
   std::ostringstream _compilerFlags;
+
+  std::ostringstream _cmakeOutput;
+  std::vector<std::string> boostComponents;
+  std::vector<std::string> QtComponents;
 };
 } // namespace vcbld
 

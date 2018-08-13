@@ -1,7 +1,7 @@
 # vcbld
 A build system to work with vcpkg.
 It works for the moment on posix compliant systems, i.e. linux and mac os x. It runs on windows if you're using MinGW or MSYS. It has a minimal build system which works for small single hierarchy projects which allows for faster prototyping, however it has support for cmake and can be used to generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
-
+`
 SDK commands:
     setup                           Creates a conf.json in the vcbld directory.
     new     [app|dylib|statlib]     Starts a new project.
@@ -22,9 +22,9 @@ SDK commands:
     help                            Show help.
 
     --version                       Current vcbld version in use.
-
+`
 With a first download of a prebuilt vcbld executable, or after compiling one from source, the first thing to do is run vcbld setup on the command line. This will generate a conf.json file in the directory of the executable. It contains several default variables depending on the operating system, which can also be changed if need be. A conf.json file will look like the following:
-
+```json
 {
 	"cCompilerPath" : "/usr/bin/clang",
 	"cppCompilerPath" : "/usr/bin/clang++",
@@ -33,7 +33,7 @@ With a first download of a prebuilt vcbld executable, or after compiling one fro
 	"cmakePath" : "/usr/local/bin/cmake",
     "makePath" : "/usr/bin/make"
 }
-
+```
 The conf,json is not supposed to be pushed to version control repository since it's dependant on local variables.
 The first 2 variables are the paths of the c and c++ compilers. The default compilers for mac os x is clang, while for linux it would be gcc and g++ respectively. On windows, the default compiler is the MinGW gcc.
 The vcpkgDirectory variable is the parent directory of the vcpkg executable you wish to choose for your project. It defaults to the home path on linux and mac os x, while on windows it defaults to C:/Program Files/vcpkg.
@@ -46,7 +46,7 @@ cmakePath and makePath are your installation locations of cmake and make. vcbld 
 
 A new project will have a vcbld.json and package.json files in project directory.
 A vcbld.json would look like the following (without the comments):
-
+```json
 {
 	"projectName" : "myProj", // Name of the project.
 	"version" : "0.1.0",
@@ -61,11 +61,11 @@ A vcbld.json would look like the following (without the comments):
     "compilerDefines" : [], // an array of any -D arguments you want to pass to the 
 	"compilerFlags" : ["-Werror"] // an array of any compiler flags 
 }
-
+```
 The resulting dynamic library extension depends on the used compiler. 
 
 The package.json would start empty in a new project, but adding packages using the sdk command it should look like the following:
-
+```json
 {
     "packages": [
         "boost-filesystem",
@@ -73,7 +73,7 @@ The package.json would start empty in a new project, but adding packages using t
         "nlohmann-json"
     ]
 }
-
+```
 Adding packages should be done using the vcbld add command which checks the availability of the package.
 Notice that the versions are not included, that's because vcpkg builds packages from sources and doesn't keep previous versions of prebuilt binaries.
 To check the version of the actually installed libraries used in your project, use the vcbld list command.

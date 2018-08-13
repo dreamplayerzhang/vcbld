@@ -5,7 +5,8 @@
 
 namespace fs = boost::filesystem;
 
-namespace vcbld::gen {
+namespace vcbld::gen
+{
 void includePathGen(const fs::path &vcbldPath);
 void cmakeGen(const fs::path &vcbldPath);
 } // namespace vcbld::gen

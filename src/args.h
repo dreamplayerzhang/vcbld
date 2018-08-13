@@ -6,7 +6,8 @@
 
 namespace fs = boost::filesystem;
 
-namespace vcbld::args {
+namespace vcbld::args
+{
 void New(const std::string &binType);
 void restore(const fs::path &vcbldPath);
 void build(const std::string &buildType, const fs::path &vcbldPath);
@@ -24,6 +25,5 @@ void make(const fs::path &vcbldPath);
 
 std::string sinTriplet(const std::string &);
 bool findPackage(const std::string &);
-
-} // namespace vcbld::Args
+} // namespace vcbld::args
 #endif // ARGS_H

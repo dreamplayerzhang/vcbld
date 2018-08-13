@@ -2,9 +2,11 @@
 #include <iomanip>
 #include <iostream>
 
-namespace vcbld::help {
+namespace vcbld::help
+{
 
-void mainHelp() {
+void mainHelp()
+{
   const char *lit = R"lit(
 Usage: vcbld [sdk-command]
 

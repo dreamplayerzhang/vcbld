@@ -78,5 +78,4 @@ private:
   std::vector<std::string> QtComponents;
 };
 } // namespace vcbld
-
 #endif // !CONF_H

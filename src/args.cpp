@@ -20,70 +20,98 @@
 namespace fs = boost::filesystem;
 using json = nlohmann::json;
 
-namespace vcbld::args {
+namespace vcbld::args
+{
 
-void New(const std::string &binType) {
+void New(const std::string &binType)
+{
 
-  if (!fs::exists("src")) {
+  if (!fs::exists("src"))
+  {
     fs::create_directory("src");
     std::cout << "src directory created successfully." << std::endl;
-  } else {
+  }
+  else
+  {
     std::cout << "src directroy exists." << std::endl;
   }
 
-  if (!fs::exists("include")) {
+  if (!fs::exists("include"))
+  {
     fs::create_directory("include");
     std::cout << "include directory created successfully." << std::endl;
-  } else {
+  }
+  else
+  {
     std::cout << "include directroy exists." << std::endl;
   }
 
-  if (!fs::exists("libs")) {
+  if (!fs::exists("libs"))
+  {
     fs::create_directory("libs");
     std::cout << "libs directory created successfully." << std::endl;
-  } else {
+  }
+  else
+  {
     std::cout << "libs directroy exists." << std::endl;
   }
 
-  if (!fs::exists("./libs/debug")) {
+  if (!fs::exists("./libs/debug"))
+  {
     fs::create_directory("./libs/debug");
     std::cout << "libs/debug directory created successfully." << std::endl;
-  } else {
+  }
+  else
+  {
     std::cout << "libs/debug directroy exists." << std::endl;
   }
 
-  if (!fs::exists("./libs/release")) {
+  if (!fs::exists("./libs/release"))
+  {
     fs::create_directory("./libs/release");
     std::cout << "libs/release directory created successfully." << std::endl;
-  } else {
+  }
+  else
+  {
     std::cout << "libs/release directroy exists." << std::endl;
   }
 
-  if (!fs::exists("bin")) {
+  if (!fs::exists("bin"))
+  {
     fs::create_directory("bin");
     std::cout << "bin directory created successfully." << std::endl;
-  } else {
+  }
+  else
+  {
     std::cout << "bin directroy exists." << std::endl;
   }
 
-  if (!fs::exists("./bin/debug")) {
+  if (!fs::exists("./bin/debug"))
+  {
     fs::create_directory("./bin/debug");
     std::cout << "bin/debug directory created successfully." << std::endl;
-  } else {
+  }
+  else
+  {
     std::cout << "bin/debug directroy exists." << std::endl;
   }
 
-  if (!fs::exists("./bin/release")) {
+  if (!fs::exists("./bin/release"))
+  {
     fs::create_directory("bin/release");
     std::cout << "bin/release directory created successfully." << std::endl;
-  } else {
+  }
+  else
+  {
     std::cout << "bin/release directroy exists." << std::endl;
   }
 
-  if (!fs::exists("./src/main.cpp") && binType == "app") {
+  if (!fs::exists("./src/main.cpp") && binType == "app")
+  {
     std::ofstream ofs("./src/main.cpp");
 
-    if (ofs.is_open()) {
+    if (ofs.is_open())
+    {
       ofs << "#include <iostream>" << std::endl;
       ofs << "int main(int argc, char *argv[])\n{\n\tstd::cout  << \"Hello "
              "World\"  << std::endl; \n\treturn 0;\n}"
@@ -91,23 +119,30 @@ void New(const std::string &binType) {
       ofs.flush();
       ofs.close();
       std::cout << "main.cpp written successfully." << std::endl;
-    } else {
+    }
+    else
+    {
       std::cerr << "Failed to open file : " << errno << std::endl;
     }
-  } else {
+  }
+  else
+  {
     std::cout << "main.cpp already exists." << std::endl;
   }
 
   init::init(binType);
 }
 
-void build(const std::string &buildType, const fs::path &vcbldPath) {
+void build(const std::string &buildType, const fs::path &vcbldPath)
+{
   Builder builder(buildType, vcbldPath);
   builder.build();
 }
 
-void clean(const fs::path &vcbldPath) {
-  try {
+void clean(const fs::path &vcbldPath)
+{
+  try
+  {
     ConfClass confClass(vcbldPath);
     std::string command = "rm -rf " + confClass.outputDirectory().string() +
                           "/" + "debug" + "/" + "**";
@@ -115,37 +150,51 @@ void clean(const fs::path &vcbldPath) {
     command = "rm -rf " + confClass.outputDirectory().string() + "/" +
               "release" + "/" + "**";
     system(command.c_str());
-  } catch (const std::exception &e) {
+  }
+  catch (const std::exception &e)
+  {
     std::cout << "vcbld.json not found!" << std::endl;
   }
 }
 
-void run(const std::string &buildType, const fs::path &vcbldPath) {
-  if (buildType == "debug") {
-    try {
+void run(const std::string &buildType, const fs::path &vcbldPath)
+{
+  if (buildType == "debug")
+  {
+    try
+    {
       ConfClass confClass(vcbldPath);
       std::string command = "cd " + confClass.outputDirectory().string() +
                             " && " + "." + "/" + "debug" + "/" +
                             confClass.binaryName();
       system(command.c_str());
-    } catch (const std::exception &e) {
+    }
+    catch (const std::exception &e)
+    {
       std::cout << "vcbld.json not found!" << std::endl;
     }
-  } else {
-    try {
+  }
+  else
+  {
+    try
+    {
       ConfClass confClass(vcbldPath);
       std::string command = "cd " + confClass.outputDirectory().string() +
                             " && " + "." + "/" + "release" + "/" +
                             confClass.binaryName();
       system(command.c_str());
-    } catch (const std::exception &e) {
+    }
+    catch (const std::exception &e)
+    {
       std::cout << "vcbld.json not found!" << std::endl;
     }
   }
 }
 
-void available(const fs::path &vcbldPath) {
-  try {
+void available(const fs::path &vcbldPath)
+{
+  try
+  {
     ConfClass confClass(vcbldPath);
     std::vector<fs::directory_entry> v;
 
@@ -153,28 +202,37 @@ void available(const fs::path &vcbldPath) {
     vcpkgDirPath += "/";
     vcpkgDirPath += "packages";
 
-    if (fs::is_directory(static_cast<fs::path>(vcpkgDirPath))) {
+    if (fs::is_directory(static_cast<fs::path>(vcpkgDirPath)))
+    {
       std::copy(fs::directory_iterator(vcpkgDirPath), fs::directory_iterator(),
                 back_inserter(v));
 
       for (std::vector<fs::directory_entry>::const_iterator it = v.begin();
-           it != v.end(); ++it) {
-        if (sinTriplet((*it).path().filename().string()).at(0) != '.') {
+           it != v.end(); ++it)
+      {
+        if (sinTriplet((*it).path().filename().string()).at(0) != '.')
+        {
           std::cout << sinTriplet((*it).path().filename().string())
                     << std::endl;
         }
       }
-    } else {
+    }
+    else
+    {
       std::cout << "vcpkg packages not found!" << std::endl;
       std::cout << "Please verify your vcpkg path." << std::endl;
     }
-  } catch (const std::exception &e) {
+  }
+  catch (const std::exception &e)
+  {
     std::cout << "packages.json not found!" << std::endl;
   }
 }
 
-void search(const std::string &pkg, const fs::path &vcbldPath) {
-  try {
+void search(const std::string &pkg, const fs::path &vcbldPath)
+{
+  try
+  {
     ConfClass confClass(vcbldPath);
     std::vector<fs::directory_entry> v;
 
@@ -182,98 +240,127 @@ void search(const std::string &pkg, const fs::path &vcbldPath) {
     vcpkgDirPath += "/";
     vcpkgDirPath += "packages";
 
-    if (fs::is_directory(static_cast<fs::path>(vcpkgDirPath))) {
+    if (fs::is_directory(static_cast<fs::path>(vcpkgDirPath)))
+    {
       std::copy(fs::directory_iterator(vcpkgDirPath), fs::directory_iterator(),
                 back_inserter(v));
 
       for (std::vector<fs::directory_entry>::const_iterator it = v.begin();
            it != v.end(); ++it)
         if (sinTriplet((*it).path().filename().string()).find(pkg) !=
-            std::string::npos) {
+            std::string::npos)
+        {
           std::cout << sinTriplet((*it).path().filename().string())
                     << std::endl;
         }
-    } else {
+    }
+    else
+    {
       std::cout << "vcpkg packages not found!" << std::endl;
       std::cout << "Please verify your vcpkg path." << std::endl;
     }
-  } catch (const std::exception &) {
+  }
+  catch (const std::exception &)
+  {
   }
 }
 
-void generate(const fs::path &vcbldPath) {
+void generate(const fs::path &vcbldPath)
+{
   gen::includePathGen(vcbldPath);
   gen::cmakeGen(vcbldPath);
 }
 
-void list(const fs::path &vcbldPath) {
-  try {
+void list(const fs::path &vcbldPath)
+{
+  try
+  {
     ConfClass confClass(vcbldPath);
     for (std::vector<std::string>::iterator it = confClass.packageNames.begin();
-         it != confClass.packageNames.end(); ++it) {
+         it != confClass.packageNames.end(); ++it)
+    {
       std::cout << std::setw(4) << "Package name: " << *it
                 << "\t\tPackage version: " << confClass.getVersion(*it)
                 << std::endl;
     }
-  } catch (const std::exception &e) {
+  }
+  catch (const std::exception &e)
+  {
     std::cout << "vcpkg packages not found!" << std::endl;
     std::cout << "Please verify your vcpkg path." << std::endl;
   }
 }
 
-void add(const std::string &pkg, const fs::path &vcbldPath) {
+void add(const std::string &pkg, const fs::path &vcbldPath)
+{
   ConfClass confClass(vcbldPath);
   std::string addDep = confClass.vcpkgDirPath() + "/" + "packages" + "/" + pkg +
                        "_" + confClass.architecture();
 
-  if (fs::is_directory(static_cast<fs::path>(addDep))) {
+  if (fs::is_directory(static_cast<fs::path>(addDep)))
+  {
     bool isExist = false;
     for (std::vector<std::string>::iterator it = confClass.packageNames.begin();
-         it != confClass.packageNames.end(); ++it) {
-      if (((*it) == pkg)) {
+         it != confClass.packageNames.end(); ++it)
+    {
+      if (((*it) == pkg))
+      {
         std::cout << "Package already exists" << std::endl;
         isExist = true;
         break;
-      } else {
+      }
+      else
+      {
         isExist = false;
       }
     }
-    if (isExist != true) {
+    if (isExist != true)
+    {
       confClass.include(pkg);
       confClass.write();
     }
-  } else {
+  }
+  else
+  {
     std::cout << "Package not found!" << std::endl;
     std::cout << "Please verify your vcpkg path." << std::endl;
   }
 }
 
-void remove(const std::string &pkg, const fs::path &vcbldPath) {
+void remove(const std::string &pkg, const fs::path &vcbldPath)
+{
   ConfClass confClass(vcbldPath);
   for (std::vector<std::string>::iterator it = confClass.packageNames.begin();
-       it != confClass.packageNames.end(); ++it) {
-    if (((*it) == pkg)) {
+       it != confClass.packageNames.end(); ++it)
+  {
+    if (((*it) == pkg))
+    {
       confClass.remove(pkg);
       confClass.write();
       break;
-    } else {
+    }
+    else
+    {
     }
   }
 }
 
-void vcpkg(const std::string &vcpkgCmnds, const fs::path &vcbldPath) {
+void vcpkg(const std::string &vcpkgCmnds, const fs::path &vcbldPath)
+{
   ConfClass confClass(vcbldPath);
   std::string temp =
       confClass.vcpkgDirPath() + "/" + "vcpkg" + " " + vcpkgCmnds;
   system(temp.c_str());
 }
 
-void restore(const fs::path &vcbldPath) {
+void restore(const fs::path &vcbldPath)
+{
   ConfClass confClass(vcbldPath);
   std::ostringstream pkg;
 
   for (std::vector<std::string>::iterator it = confClass.packageNames.begin();
-       it != confClass.packageNames.end(); ++it) {
+       it != confClass.packageNames.end(); ++it)
+  {
     pkg << *it << " ";
   }
   std::string instlCmnd = confClass.vcpkgDirPath() + "/" + "vcpkg" + " " +
@@ -281,7 +368,8 @@ void restore(const fs::path &vcbldPath) {
   system(instlCmnd.c_str());
 }
 
-void cmake(const std::string &cmakeArgs, const fs::path &vcbldPath) {
+void cmake(const std::string &cmakeArgs, const fs::path &vcbldPath)
+{
   ConfClass confClass(vcbldPath);
   std::ostringstream cmakeCmnd;
   cmakeCmnd << "cd " << confClass.outputDirectory() << " && "
@@ -289,7 +377,8 @@ void cmake(const std::string &cmakeArgs, const fs::path &vcbldPath) {
   system(cmakeCmnd.str().c_str());
 }
 
-void make(const fs::path &vcbldPath) {
+void make(const fs::path &vcbldPath)
+{
   ConfClass confClass(vcbldPath);
   std::ostringstream makeCmnd;
   makeCmnd << "cd " << confClass.outputDirectory() << " && "
@@ -297,24 +386,30 @@ void make(const fs::path &vcbldPath) {
   system(makeCmnd.str().c_str());
 }
 
-std::string sinTriplet(const std::string &pkg) {
+std::string sinTriplet(const std::string &pkg)
+{
   std::size_t found;
   std::string stripTrip;
   found = pkg.find("_");
-  if (found != std::string::npos) {
+  if (found != std::string::npos)
+  {
     stripTrip = pkg.substr(0, found);
   }
   return stripTrip;
 }
 
-bool findPackage(const std::string &pkg) {
+bool findPackage(const std::string &pkg)
+{
   std::size_t found;
   std::string pkgName;
   found = pkg.find(pkg);
-  if (found != std::string::npos) {
+  if (found != std::string::npos)
+  {
     std::cout << found;
     return true;
-  } else {
+  }
+  else
+  {
     return false;
   }
 }

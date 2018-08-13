@@ -6,8 +6,10 @@
 
 #include "conf.h"
 
-namespace vcbld {
-class Builder {
+namespace vcbld
+{
+class Builder
+{
 public:
   Builder(const std::string &buildType, const fs::path &vcbldPath);
 
@@ -31,5 +33,4 @@ private:
   std::ostringstream _archiveCmnd;
 };
 } // namespace vcbld
-
 #endif // !BUILDER_H

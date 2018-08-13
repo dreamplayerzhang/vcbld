@@ -30,19 +30,26 @@
 
 namespace fs = boost::filesystem;
 
-namespace vcbld::init {
+namespace vcbld::init
+{
 
-void setup(const fs::path &vcbldPath) {
+void setup(const fs::path &vcbldPath)
+{
   std::string cCompilerPath, cppCompilerPath, cmakePath;
-  if (PLATFORM_NAME == "x64-osx") {
+  if (PLATFORM_NAME == "x64-osx")
+  {
     cCompilerPath = "/usr/bin/clang";
     cppCompilerPath = "/usr/bin/clang++";
     cmakePath = "/usr/local/bin/cmake";
-  } else if (PLATFORM_NAME == "x64-linux") {
+  }
+  else if (PLATFORM_NAME == "x64-linux")
+  {
     cCompilerPath = "/usr/bin/gcc";
     cppCompilerPath = "/usr/bin/g++";
     cmakePath = "/usr/local/bin/cmake";
-  } else if (PLATFORM_NAME == "x64-windows" || PLATFORM_NAME == "x86-windows") {
+  }
+  else if (PLATFORM_NAME == "x64-windows" || PLATFORM_NAME == "x86-windows")
+  {
     cCompilerPath = "C:/MinGW/bin/gcc";
     cppCompilerPath = "C:/MinGW/bin/g++";
     cmakePath = static_cast<std::string>(getenv("PROGRAMFILES")) + "/CMake/cmake";
@@ -50,10 +57,12 @@ void setup(const fs::path &vcbldPath) {
 
   std::string confJsonPath = vcbldPath.string() + "/" + "conf.json";
 
-  if (!fs::exists(confJsonPath)) {
+  if (!fs::exists(confJsonPath))
+  {
 
     std::ofstream confOutput(confJsonPath);
-    if (confOutput.is_open()) {
+    if (confOutput.is_open())
+    {
       confOutput << std::setw(4) << "{\n\t\"cCompilerPath\" : \""
                  << cCompilerPath << "\",\n\t"
                  << "\"cppCompilerPath\" : \"" << cppCompilerPath << "\",\n\t"
@@ -65,27 +74,39 @@ void setup(const fs::path &vcbldPath) {
       confOutput.flush();
       confOutput.close();
       std::cout << "conf.json written successfully." << std::endl;
-    } else {
+    }
+    else
+    {
     }
   }
 }
-void init(const std::string &binType) {
+void init(const std::string &binType)
+{
 
   std::string binaryType;
-  if (binType == "app") {
+  if (binType == "app")
+  {
     binaryType = "app";
-  } else if (binType == "dylib") {
+  }
+  else if (binType == "dylib")
+  {
     binaryType = "dynamicLibrary";
-  } else if (binType == "statlib") {
+  }
+  else if (binType == "statlib")
+  {
     binaryType = "staticLibrary";
-  } else {
+  }
+  else
+  {
     binaryType = "app";
   }
 
-  if (!fs::exists("vcbld.json")) {
+  if (!fs::exists("vcbld.json"))
+  {
 
     std::ofstream vcbldOutput("vcbld.json");
-    if (vcbldOutput.is_open()) {
+    if (vcbldOutput.is_open())
+    {
       vcbldOutput << std::setw(4) << "{\n\t\"projectName\" : "
                   << "\"" << fs::current_path().filename().string() << "\",\n\t"
                   << "\"version\" : "
@@ -114,19 +135,27 @@ void init(const std::string &binType) {
       vcbldOutput.flush();
       vcbldOutput.close();
       std::cout << "vcbld.json written successfully." << std::endl;
-    } else {
+    }
+    else
+    {
+      std::cout << "vcbld.json exists." << std::endl;
     }
   }
 
-  if (!fs::exists("packages.json")) {
+  if (!fs::exists("packages.json"))
+  {
 
     std::ofstream pkgsOutput("packages.json");
-    if (pkgsOutput.is_open()) {
+    if (pkgsOutput.is_open())
+    {
       pkgsOutput << std::setw(4) << "{\n\t\"packages\" : []\n}";
       pkgsOutput.flush();
       pkgsOutput.close();
       std::cout << "packages.json written successfully." << std::endl;
-    } else {
+    }
+    else
+    {
+      std::cout << "packages.json exists." << std::endl;
     }
   }
 }

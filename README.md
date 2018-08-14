@@ -5,7 +5,7 @@ The vcbld executable is about 600kb large, and depends on the presence of vcpkg 
 
 ```
 SDK commands:
-    setup                           Creates a conf.json in the vcbld directory.
+    setup                           Creates a conf.json in the project directory.
     new     [app|dylib|statlib]     Starts a new project.
     restore                         Restore missing dependencies in a project.
     build   [debug|release]         Builds the project.

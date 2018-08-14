@@ -46,7 +46,7 @@ cmakePath and makePath are your installation locations of cmake and make. vcbld 
 
 A new project will have a vcbld.json and package.json files in project directory.
 A vcbld.json would look like the following (without the comments):
-```javascript
+```
 {
 	"projectName" : "myProj", // Name of the project.
 	"version" : "0.1.0",

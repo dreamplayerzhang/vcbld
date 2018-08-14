@@ -39,6 +39,7 @@ on the command line. This will generate a conf.json file in the directory of the
 }
 ```
 The conf.json is not supposed to be pushed to version control repository since it's dependant on local variables.
+You will also notice that vcbld doesn't add itself to your path. 
 The first 2 variables are the paths of the c and c++ compilers. The default compilers for mac os x is clang, while for linux it would be gcc and g++ respectively. On windows, the default compiler is the MinGW gcc.
 The vcpkgDirectory variable is the parent directory of the vcpkg executable you wish to choose for your project. It defaults to the home path on linux and mac os x, while on windows it defaults to C:/Program Files/vcpkg.
 

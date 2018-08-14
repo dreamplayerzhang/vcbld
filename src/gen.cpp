@@ -137,9 +137,9 @@ void cmakeGen()
              "code and call cmake from there. Thank you.\")\nendif()\n\n"
           << "set(SOURCEFILES " << confClass.sourceFilesSinPath() << ")\n\n"
           << "set(DBG_LIB_PATH "
-             "${_VCPKG_ROOT_DIR}/installed/${VCPKG_TARGET_TRIPLET}/debug/lib)\n"
+             "${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}/debug/lib)\n"
           << "set(RLS_LIB_PATH "
-             "${_VCPKG_ROOT_DIR}/installed/${VCPKG_TARGET_TRIPLET}/lib)\n\n"
+             "${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}/lib)\n\n"
           << confClass.cmakeOutput() << "\n";
 
       if (confClass.binaryType() == "app")
@@ -156,7 +156,7 @@ void cmakeGen()
       }
 
       ofs << "target_include_directories(${PROJECT_NAME} PUBLIC "
-             "${_VCPKG_ROOT_DIR}/installed/${VCPKG_TARGET_TRIPLET}"
+             "${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}"
           << "/include)\n";
       if (confClass.libs.size() != 0)
       {

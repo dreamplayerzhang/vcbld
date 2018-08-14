@@ -369,7 +369,7 @@ void cmake(const std::string &cmakeArgs)
   ConfClass confClass;
   std::ostringstream cmakeCmnd;
   cmakeCmnd << "cd " << confClass.outputDirectory() << " && "
-            << confClass.cmakePath() << " -G \"Unix Makefiles\" " << cmakeArgs
+            << confClass.cmakePath() << " -DCMAKE_TOOLCHAIN_FILE=" << confClass.vcpkgDirPath() << "/scripts/buildsystems/vcpkg.cmake " << cmakeArgs
             << " .. ";
   system(cmakeCmnd.str().c_str());
 }

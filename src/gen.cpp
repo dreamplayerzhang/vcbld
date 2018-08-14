@@ -101,27 +101,32 @@ void cmakeGen(const fs::path &vcbldPath)
           << "\n";
       if (confClass.binaryType() == "app")
       {
-        ofs << "set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "
-               "${PROJECT_BINARY_DIR}/cmake_bin)"
-            << "\n";
+        ofs << "set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "
+               "${PROJECT_BINARY_DIR}/debug)\n"
+            << "set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "
+               "${PROJECT_BINARY_DIR}/release)\n";
       }
       else if (confClass.binaryType() == "statLib")
       {
-        ofs << "set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "
-               "${PROJECT_BINARY_DIR}/cmake_statLib)"
-            << "\n";
+        ofs << "set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG "
+               "${PROJECT_BINARY_DIR}/debug)\n"
+            << "set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "
+               "${PROJECT_BINARY_DIR}/release)\n";
       }
       else
       {
-        ofs << "set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "
-               "${PROJECT_BINARY_DIR}/cmake_dyLib)"
-            << "\n";
+        ofs << "set(CMAKE_LIBRARY_OUTPUT_DIRECTORY _DEBUG "
+               "${PROJECT_BINARY_DIR}/debug)\n"
+            << "set(CMAKE_LIBRARY_OUTPUT_DIRECTORY _RELEASE "
+               "${PROJECT_BINARY_DIR}/release)\n";
       }
       ofs << "set(CMAKE_EXPORT_COMPILE_COMMANDS ON)"
           << "\n"
-          << "set(CMAKE_CXX_FLAGS "
-          << "\"" << confClass.compilerFlags() << "\")\n"
+          << "set(CMAKE_CXX_FLAGS " << confClass.compilerFlags() << ")\n"
           << "add_definitions(" << confClass.compilerDefines() << ")\n\n"
+          << "if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)\n\t"
+          << "set(CMAKE_BUILD_TYPE Debug)\n"
+          << "endif()\n\n"
           << "#Uncomment the following lines if you're using Qt QObject macro, "
              "Qt qrc or Qt widgets.\n"
           << "#set(CMAKE_AUTOMOC ON)\n#set(CMAKE_AUTOUIC "
@@ -152,9 +157,12 @@ void cmakeGen(const fs::path &vcbldPath)
 
       ofs << "target_include_directories(${PROJECT_NAME} PUBLIC "
              "${_VCPKG_ROOT_DIR}/installed/${VCPKG_TARGET_TRIPLET}"
-          << "/include)\n"
-          << "target_link_libraries(${PROJECT_NAME} debug ${dbgLIBS})\n"
-          << "target_link_libraries(${PROJECT_NAME} optimized ${rlsLIBS})\n";
+          << "/include)\n";
+      if (confClass.libs.size() != 0)
+      {
+        ofs << "target_link_libraries(${PROJECT_NAME} debug ${dbgLIBS})\n"
+            << "target_link_libraries(${PROJECT_NAME} optimized ${rlsLIBS})\n";
+      }
       ofs.flush();
       ofs.close();
     }

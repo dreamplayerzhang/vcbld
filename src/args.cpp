@@ -159,15 +159,15 @@ void clean(const fs::path &vcbldPath)
 
 void run(const std::string &buildType, const fs::path &vcbldPath)
 {
+  std::ostringstream command;
   if (buildType == "debug")
   {
     try
     {
       ConfClass confClass(vcbldPath);
-      std::string command = "cd " + confClass.outputDirectory().string() +
-                            " && " + "." + "/" + "debug" + "/" +
-                            confClass.binaryName();
-      system(command.c_str());
+      command << "./" << confClass.outputDirectory() << "/debug/"
+              << confClass.binaryName();
+      system(command.str().c_str());
     }
     catch (const std::exception &e)
     {
@@ -179,10 +179,9 @@ void run(const std::string &buildType, const fs::path &vcbldPath)
     try
     {
       ConfClass confClass(vcbldPath);
-      std::string command = "cd " + confClass.outputDirectory().string() +
-                            " && " + "." + "/" + "release" + "/" +
-                            confClass.binaryName();
-      system(command.c_str());
+      command << "./" << confClass.outputDirectory() << "/release/"
+              << confClass.binaryName();
+      system(command.str().c_str());
     }
     catch (const std::exception &e)
     {
@@ -207,7 +206,8 @@ void available(const fs::path &vcbldPath)
       std::copy(fs::directory_iterator(vcpkgDirPath), fs::directory_iterator(),
                 back_inserter(dirEntry));
 
-      for (std::vector<fs::directory_entry>::const_iterator it = dirEntry.begin();
+      for (std::vector<fs::directory_entry>::const_iterator it =
+               dirEntry.begin();
            it != dirEntry.end(); ++it)
       {
         if (sinTriplet((*it).path().filename().string()).at(0) != '.')
@@ -245,7 +245,8 @@ void search(const std::string &pkg, const fs::path &vcbldPath)
       std::copy(fs::directory_iterator(vcpkgDirPath), fs::directory_iterator(),
                 back_inserter(dirEntry));
 
-      for (std::vector<fs::directory_entry>::const_iterator it = dirEntry.begin();
+      for (std::vector<fs::directory_entry>::const_iterator it =
+               dirEntry.begin();
            it != dirEntry.end(); ++it)
         if (sinTriplet((*it).path().filename().string()).find(pkg) !=
             std::string::npos)
@@ -265,14 +266,8 @@ void search(const std::string &pkg, const fs::path &vcbldPath)
   }
 }
 
-void includes(const fs::path &vcbldPath)
-{
-  gen::includePathGen(vcbldPath);
-}
-void generate(const fs::path &vcbldPath)
-{
-  gen::cmakeGen(vcbldPath);
-}
+void includes(const fs::path &vcbldPath) { gen::includePathGen(vcbldPath); }
+void generate(const fs::path &vcbldPath) { gen::cmakeGen(vcbldPath); }
 
 void list(const fs::path &vcbldPath)
 {
@@ -376,7 +371,8 @@ void cmake(const std::string &cmakeArgs, const fs::path &vcbldPath)
   ConfClass confClass(vcbldPath);
   std::ostringstream cmakeCmnd;
   cmakeCmnd << "cd " << confClass.outputDirectory() << " && "
-            << confClass.cmakePath() << " -G \"Unix Makefiles\" " << cmakeArgs << " .. ";
+            << confClass.cmakePath() << " -G \"Unix Makefiles\" " << cmakeArgs
+            << " .. ";
   system(cmakeCmnd.str().c_str());
 }
 

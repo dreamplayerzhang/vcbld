@@ -19,7 +19,7 @@ void includes();
 void generate();
 void vcpkg(const std::string &vcpkgCmnds);
 void cmake(const std::string &cmakeCmnds);
-void make();
+void make(const std::string &makeArgs);
 
 std::string sinTriplet(const std::string &);
 bool findPackage(const std::string &);

@@ -374,7 +374,7 @@ void cmake(const std::string &cmakeArgs)
   system(cmakeCmnd.str().c_str());
 }
 
-void make()
+void make(const std::string &makeArgs)
 {
   ConfClass confClass;
   std::ostringstream makeCmnd;

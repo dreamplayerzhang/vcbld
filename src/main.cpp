@@ -221,7 +221,21 @@ int main(int argc, char *argv[])
     }
     else if (strcmp(argv[1], "make") == 0)
     {
-      args::make();
+      if (!argv[2])
+      {
+        std::string empty = " ";
+        args::cmake(empty);
+      }
+      else
+      {
+        std::string makeArgs;
+        for (int i = 2; i < argc; i++)
+        {
+          makeArgs += " ";
+          makeArgs += argv[i];
+        }
+        args::cmake(makeArgs);
+      }
     }
     else if (strcmp(argv[1], "--version") == 0)
     {

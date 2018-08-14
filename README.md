@@ -38,10 +38,15 @@ $ git clone https://github.com/MoAlyousef/vcbld.git
 $ cd vcbld
 $ mkdir bin
 $ cd bin
-$ cmake ..
+$ cmake -DCMAKE_TOOLCHAIN_FILE=[vcpkg root]/vcpkg/scripts/buildsystems/vcpkg.cmake ..
 $ make
 ```
-vcbld doesn't automatically add itself to your PATH, however you can do so after building from source on mac os x and linux using:
+The cmake command should use the CMAKE_TOOLCHAIN_FILE definition which should point to your vcpkg.cmake script. For more information, check the vcpkg readme or documentation:
+https://github.com/Microsoft/vcpkg
+
+i.e if vcpkg were installed in your home directory it would be ~/vcpkg/scripts/buildsystems/vcpkg.cmake (the tilde points to the home directory in posix systems).
+
+The executable can be found in the release directory. vcbld doesn't automatically add itself to your PATH, however you can do so after building from source on mac os x and linux using:
 ```
 $ make install
 ```
@@ -177,6 +182,10 @@ https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html
 Additionally you can run vcpkg commands using vcbld, this is useful if you don't have vcpkg in your PATH, or if you're using several instances of vcpkg for different projects. You just need to check the path of the instance you're using in the conf.json file.
 ```
 $ vcbld vcpkg install boost-filesystem nlohmann-json asio
+```
+You can also use it to apply user-wide integration using:
+```
+$ vcbld vcpkg integrate install
 ```
 
 

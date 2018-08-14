@@ -27,6 +27,11 @@ SDK commands:
 ```
 
 Building vcbld:
+vcbld has some external library dependencies, namely Boost::filesystem (which depends on Boost::system) and Nlohmann_json.
+These can be installed using vcpkg using the following command:
+```
+$ vcpkg install boost-filesystem boost-system nlohmann-json
+```
 Create a directory called vcbld. Access that directory using the command line. Clone this repository and build using cmake. The command line commands would look something like this. 
 ```
 $ git clone https://github.com/MoAlyousef/vcbld.git
@@ -168,6 +173,11 @@ $ cmake -G "Visual Studio 15 2017 Win64" ..
 ```
 Which would generate a visual studio project file. For a full list of available generators, see here:
 https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html
+
+Additionally you can run vcpkg commands using vcbld, this is useful if you don't have vcpkg in your PATH, or if you're using several instances of vcpkg for different projects. You just need to check the path of the instance you're using in the conf.json file.
+```
+$ vcbld vcpkg install boost-filesystem nlohmann-json asio
+```
 
 
 

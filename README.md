@@ -19,7 +19,7 @@ SDK commands:
     add                             Add package to the project.
     remove                          Remove package from the project.
     vcpkg   [vcpkg command]         Runs vcpkg commands.
-    cmake   [cmake arguments]       Runs cmake in the output directory generating makefiles.
+    cmake   [cmake arguments]       Runs cmake in the output directory using the vcpkg toolchain.
     make    [make arguments]        Runs make in the output directory.
     help                            Show help.
 
@@ -46,7 +46,7 @@ https://github.com/Microsoft/vcpkg
 
 Namely if vcpkg were installed in your home directory, it would be ~/vcpkg/scripts/buildsystems/vcpkg.cmake (the tilde points to the home directory in posix systems).
 
-The executable can be found in the release directory. vcbld doesn't automatically add itself to your PATH, however you can do so after building from source on mac os x and linux using:
+The built vcbld executable can be found in the release directory. vcbld doesn't automatically add itself to your PATH, however you can do so after building from source on mac os x and linux using:
 ```
 $ make install
 ```
@@ -176,7 +176,11 @@ $ mkdir build
 $ cd build
 $ cmake -G "Visual Studio 15 2017 Win64" ..
 ```
-Which would generate a visual studio project file. For a full list of available generators, see here:
+Which would generate a visual studio project file, or to generate makefiles (which is the default output on linux and mac os x): 
+```
+$ cmake -G "Unix Makefiles" ..
+```
+For a full list of available generators, see here:
 https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html
 
 Additionally you can run vcpkg commands using vcbld, this is useful if you don't have vcpkg in your PATH, or if you're using several instances of vcpkg for different projects. You just need to check the path of the instance you're using in the conf.json file.

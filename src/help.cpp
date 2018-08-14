@@ -25,7 +25,7 @@ SDK commands:
     add                             Add package to the project.
     remove                          Remove package from the project.
     vcpkg   [vcpkg command]         Runs vcpkg commands.
-    cmake   [cmake arguments]       Runs cmake in the output directory generating makefiles.
+    cmake   [cmake arguments]       Runs cmake in the output directory using the vcpkg toolchain.
     make    [make arguments]        Runs make in the output directory.
     help                            Show help.
 

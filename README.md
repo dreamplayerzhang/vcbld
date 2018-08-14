@@ -197,7 +197,7 @@ $ vcbld vcpkg integrate install
 ```
 
 ## License:
-Code licensed under [the MIT License.](https://github.com/MoAlyousef/vcbld/blob/master/LICENSE)
+Code licensed under the [MIT License.](https://github.com/MoAlyousef/vcbld/blob/master/LICENSE)
 
 
 

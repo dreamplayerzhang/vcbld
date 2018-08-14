@@ -26,7 +26,7 @@ SDK commands:
     remove                          Remove package from the project.
     vcpkg   [vcpkg command]         Runs vcpkg commands.
     cmake   [cmake arguments]       Runs cmake in the output directory generating makefiles.
-    make                            Runs make in the output directory.
+    make    [make arguments]        Runs make in the output directory.
     help                            Show help.
 
     --version                       Current vcbld version in use.

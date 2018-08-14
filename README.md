@@ -25,7 +25,7 @@ SDK commands:
     --version                       Current vcbld version in use.
 ```
 
-##Building vcbld:
+## Building vcbld:
 vcbld has some external library dependencies, namely Boost::filesystem (which depends on Boost::system) and Nlohmann_json.
 These can be installed using vcpkg using the following command:
 ```
@@ -56,7 +56,7 @@ Remember you can always access the help menu using:
 $ vcbld help
 ```
 
-##New application project:
+## New application project:
 Run: 
 ```
 $ vcbld new app
@@ -102,7 +102,7 @@ A vcbld.json would look like the following (without the comments):
 ```
 The resulting dynamic library extension depends on the used compiler. libname.so for gcc and libname.dylib for clang.
 
-##Adding and removing packages:
+## Adding and removing packages:
 The package.json would start empty in a new project, but adding packages using the sdk command it should look like the following:
 ```json
 {
@@ -147,7 +147,7 @@ $ vcbld run [debug or release]
 ```
 Then you can run the executable using the run command. Notice that if the build type isn't given, the default would be a debug build and debug run.
 
-##Generating CMakeLists and includePath files
+## Generating CMakeLists and includePath files
 The sdk also offers the possiblity to generate and includePath.json file which can be used to get intellisense if you're using an editor like visual studio code or atom.
 
 Generating CMakeLists.txt files can be done using the following command:
@@ -186,7 +186,7 @@ $ cmake -DCMAKE_TOOLCHAIN_FILE=[vcpkg root]/vcpkg/scripts/buildsystems/vcpkg.cma
 
 For a full list of available generators, see [here.](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html)
 
-##vcpkg integration:
+## vcpkg integration:
 Additionally you can run vcpkg commands using vcbld, this is useful if you don't have vcpkg in your PATH, or if you're using several instances of vcpkg for different projects. You just need to check the path of the instance you're using in the conf.json file.
 ```
 $ vcbld vcpkg install boost-filesystem nlohmann-json asio
@@ -196,7 +196,7 @@ You can also use it to apply user-wide integration using:
 $ vcbld vcpkg integrate install
 ```
 
-##License:
+## License:
 Code licensed under [the MIT License.](https://github.com/MoAlyousef/vcbld/blob/master/LICENSE)
 
 

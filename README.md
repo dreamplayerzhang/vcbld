@@ -23,7 +23,11 @@ SDK commands:
 
     --version                       Current vcbld version in use.
 ```
-With a first download of a prebuilt vcbld executable, or after compiling one from source, the first thing to do is run vcbld setup on the command line. This will generate a conf.json file in the directory of the executable. It contains several default variables depending on the operating system, which can also be changed if need be. A conf.json file will look like the following:
+With a first download of a prebuilt vcbld executable, or after compiling one from source, the first thing to do is to run 
+```
+$ ./vcbld setup 
+```
+on the command line. This will generate a conf.json file in the directory of the executable. It contains several default variables depending on the operating system, which can also be changed if need be. A conf.json file will look like the following:
 ```json
 {
 	"cCompilerPath" : "/usr/bin/clang",

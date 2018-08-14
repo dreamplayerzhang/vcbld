@@ -11,7 +11,7 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
-	message(FATAL_ERROR "Prevented in-tree build. Please create a build directory outside of the source code and call cmake from there. Thank you.")
+	message(FATAL_ERROR "Prevented in-tree build. Please create a build directory outside of the source directory and call cmake from there.")
 endif()
 
 find_package(Boost COMPONENTS filesystem system REQUIRED)
@@ -34,7 +34,7 @@ include(CPackIFW REQUIRED)
 cpack_add_component(${PROJECT_NAME}.exe
     DISPLAY_NAME "vcbld"
     DESCRIPTION "A build system to work with vcpkg")
-cpack_ifw_configure_component(${PROJECT_NAME}.app
+cpack_ifw_configure_component(${PROJECT_NAME}.exe
     VERSION "0.1.0")
 cpack_ifw_add_repository(myrepo
     URL "https://github.com/MoAlyousef/vcbld"

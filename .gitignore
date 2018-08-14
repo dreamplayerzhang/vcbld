@@ -13,3 +13,4 @@ bin
 vcbld
 cmake_bin
 .vscode
+conf.json

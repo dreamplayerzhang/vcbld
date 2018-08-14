@@ -64,12 +64,13 @@ This will generate a conf.json file in the directory of the executable. It conta
     	"makePath" : "/usr/bin/make"
 }
 ```
-The conf.json is not supposed to be pushed to a version control repository like github since it's dependant on local variables.
+The conf.json is not supposed to be pushed to a version control repository like github since it's dependant on local variables and thus should be added to your gitignore (if you were using git).
 The first 2 variables are the paths of the c and c++ compilers. The default compilers for mac os x is clang, while for linux it would be gcc and g++ respectively. On windows, the default compiler is the MinGW gcc.
 The vcpkgDirectory variable is the parent directory of the vcpkg executable you wish to choose for your project. It defaults to the home path on linux and mac os x, while on windows it defaults to C:/Program Files/vcpkg.
 
 The architecture depends on the host operating system. You can check the vcpkg triplet documentation here:
-https://github.com/Microsoft/vcpkg/blob/master/docs/users/triplets.md
+https://github.com/Microsoft/vcpkg/blob/master/docs/users/triplets.md.
+
 Although vcbld doesn't support cross-compilation on the same machine, vcbld projects can be cross-compiled on different operating systems.
 cmakePath and makePath are your installation locations of cmake and make. vcbld supports building using cmake and make within the executable. It can also generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
 On windows, the default make file is the one supplied by the MinGW installation.

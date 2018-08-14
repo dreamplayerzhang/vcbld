@@ -44,7 +44,7 @@ $ make
 The cmake command should use the CMAKE_TOOLCHAIN_FILE definition which should point to your vcpkg.cmake script. For more information, check the vcpkg readme or documentation:
 https://github.com/Microsoft/vcpkg
 
-i.e if vcpkg were installed in your home directory it would be ~/vcpkg/scripts/buildsystems/vcpkg.cmake (the tilde points to the home directory in posix systems).
+Namely if vcpkg were installed in your home directory, it would be ~/vcpkg/scripts/buildsystems/vcpkg.cmake (the tilde points to the home directory in posix systems).
 
 The executable can be found in the release directory. vcbld doesn't automatically add itself to your PATH, however you can do so after building from source on mac os x and linux using:
 ```

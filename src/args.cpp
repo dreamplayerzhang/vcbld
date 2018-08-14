@@ -7,7 +7,6 @@
 #include <fstream>
 #include <iostream>
 #include <iterator>
-#include <nlohmann/json.hpp>
 #include <sstream>
 #include <thread>
 #include <vector>
@@ -18,7 +17,6 @@
 #include "init.h"
 
 namespace fs = boost::filesystem;
-using json = nlohmann::json;
 
 namespace vcbld::args
 {

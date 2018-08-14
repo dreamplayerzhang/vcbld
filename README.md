@@ -157,7 +157,7 @@ $ vcbld gen
 ```
 and it would include many of the variables in the vcbld.json file. Packages with known components and with find_package support would use the find_package command in the CMakeLists.txt file. For the time being it includes Boost and Qt components. Other libraries would be located using the find_library command. And although vcbld doesn't support meta-object compilation, generating CMakeLists would allow meta-object compilation.
 
-CMake can be run using vcbld which would generate a makefile within the output directory. You can then run make similarly to build the binary. You can also then run the run command on the generated executable.
+CMake can be run using vcbld which would run within the output directory and use the vcpkg toolchain by default. You can then run make (on mac os x and linux) similarly to build the binary. You can also then run the run command on the generated executable.
 ```
 $ vcbld cmake
 $ vcbld make
@@ -169,19 +169,25 @@ $ vcbld cmake -DCMAKE_BUILD_TYPE=Release
 $ vcbld make
 $ vcbld run release
 ```
+Or to generate a visual studio project for example, you can run:
+```
+$ vcbld -G "Visual Studio 15 2017 Win64" ..
+```
 
-Alternatively, if you don't want to generate makefiles, you can run cmake manually on the generated CMakeLists.txt file. Creating an out of source build:
+Alternatively, you can run cmake manually on the generated CMakeLists.txt file, in which case you would need to use the vcpkg toolchain. Creating an out of source build:
 ```
 $ mkdir build
 $ cd build
-$ cmake -G "Visual Studio 15 2017 Win64" ..
+$ cmake -DCMAKE_TOOLCHAIN_FILE=[vcpkg root]/vcpkg/scripts/buildsystems/vcpkg.cmake -G "Visual Studio 15 2017 Win64" ..
 ```
 Which would generate a visual studio project file, or to generate makefiles (which is the default output on linux and mac os x): 
 ```
-$ cmake -G "Unix Makefiles" ..
+$ cmake -DCMAKE_TOOLCHAIN_FILE=[vcpkg root]/vcpkg/scripts/buildsystems/vcpkg.cmake -G "Unix Makefiles" ..
 ```
+
 For a full list of available generators, see here:
 https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html
+
 
 Additionally you can run vcpkg commands using vcbld, this is useful if you don't have vcpkg in your PATH, or if you're using several instances of vcpkg for different projects. You just need to check the path of the instance you're using in the conf.json file.
 ```

@@ -31,7 +31,7 @@ With a first download of a prebuilt vcbld executable, or after compiling one fro
 	"vcpkgDirectory" : "/Users/mohammedalyousef/vcpkg",
 	"architecture" : "x64-osx",
 	"cmakePath" : "/usr/local/bin/cmake",
-    "makePath" : "/usr/bin/make"
+    	"makePath" : "/usr/bin/make"
 }
 ```
 The conf,json is not supposed to be pushed to version control repository since it's dependant on local variables.
@@ -54,11 +54,11 @@ A vcbld.json would look like the following (without the comments):
 	"standard" : "11", // The minimum supported standards of both of c++ and c.
 	"binaryType" : "app", // or "staticLibrary" or "sharedLibrary"
 	"binaryName" : "myApp", // Name of the resulting binary, use a "lib" prefix if it were a library.
-    "sourceDirectory" : "./src", // Relative or absolute path of your source directory
-    "includeDirectory" : "./include",
+    	"sourceDirectory" : "./src", // Relative or absolute path of your source directory
+    	"includeDirectory" : "./include",
 	"libsDirectory" : "./libs",
-    "outputDirectory" : "./bin", // Relative or absolute path to your output directory
-    "compilerDefines" : [], // an array of any -D arguments you want to pass to the 
+    	"outputDirectory" : "./bin", // Relative or absolute path to your output directory
+    	"compilerDefines" : [], // an array of any -D arguments you want to pass to the 
 	"compilerFlags" : ["-Werror"] // an array of any compiler flags 
 }
 ```

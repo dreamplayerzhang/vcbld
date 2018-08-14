@@ -42,7 +42,11 @@ $ make install
 ```
 On windows you can add the vcbld binary directory to your path via accessing Control Panel -> System -> Advanced system settings -> Environment variables -> Edit System Variable (or New System Variable). There you can add the folder to your PATH.
 
-Now your ready to go!
+Now you're ready to go!
+Remember you can always access the help menu using:
+```
+$ vcbld help
+```
 
 New application project:
 Run: 
@@ -130,8 +134,9 @@ Setup creates a conf.json file for the project. Restore installs missing package
 You can use the vcbld build system using the command:
 ```
 $ vcbld build [debug or release]
+$ vcbld run [debug or release]
 ```
-Then you can run the executable using the run command.
+Then you can run the executable using the run command. Notice that if the build type isn't given, the default would be a debug build and debug run.
 
 The sdk also offers the possiblity to generate and includePath.json file which can be used to get intellisense if you're using an editor like visual studio code or atom.
 
@@ -141,7 +146,28 @@ $ vcbld gen
 ```
 and it would include many of the variables in the vcbld.json file. Packages with known components and with find_package support would use the find_package command in the CMakeLists.txt file. For the time being it includes Boost and Qt components. Other libraries would be located using the find_library command. And although vcbld doesn't support meta-object compilation, generating CMakeLists would allow meta-object compilation.
 
-CMake can be run using vcbld which would generate a makefile within the output directory.
+CMake can be run using vcbld which would generate a makefile within the output directory. You can then run make similarly to build the binary. You can also then run the run command on the generated executable.
+```
+$ vcbld cmake
+$ vcbld make
+$ vcbld run
+```
+Also you can supply arguments to your cmake command like the following:
+```
+$ vcbld cmake -DCMAKE_BUILD_TYPE=Release
+$ vcbld make
+$ vcbld run release
+```
+
+Alternatively, if you don't want to generate makefiles, you can run cmake manually on the generated CMakeLists.txt file. Creating an out of source build:
+```
+$ mkdir build
+$ cd build
+$ cmake -G "Visual Studio 15 2017 Win64" ..
+```
+Which would generate a visual studio project file. For a full list of available generators, see here:
+https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html
+
 
 
 

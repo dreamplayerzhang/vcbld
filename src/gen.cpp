@@ -133,9 +133,9 @@ void cmakeGen()
              "ON)\n#set(CMAKE_AUTORCC ON)\n\n"
           << "if(${CMAKE_SOURCE_DIR} STREQUAL "
              "${CMAKE_BINARY_DIR})\n\tmessage(FATAL_ERROR \"Prevented in-tree "
-             "built. Please create a build directory outside of the source "
+             "build. Please create a build directory outside of the source "
              "code and call cmake from there. Thank you.\")\nendif()\n\n"
-          << "set(SOURCEFILES " << confClass.sourceFilesSinPath() << ")\n\n"
+          << "set(SOURCE_FILES " << confClass.sourceFilesSinPath() << ")\n\n"
           << "set(DBG_LIB_PATH "
              "${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}/debug/lib)\n"
           << "set(RLS_LIB_PATH "
@@ -144,15 +144,15 @@ void cmakeGen()
 
       if (confClass.binaryType() == "app")
       {
-        ofs << "add_executable(${PROJECT_NAME} ${SOURCEFILES})\n\n";
+        ofs << "add_executable(${PROJECT_NAME} ${SOURCE_FILES})\n\n";
       }
       else if (confClass.binaryType() == "statLib")
       {
-        ofs << "add_library(${PROJECT_NAME} STATIC ${SOURCEFILES})\n\n";
+        ofs << "add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})\n\n";
       }
       else
       {
-        ofs << "add_library(${PROJECT_NAME} SHARED ${SOURCEFILES})\n\n";
+        ofs << "add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})\n\n";
       }
 
       ofs << "target_include_directories(${PROJECT_NAME} PUBLIC "

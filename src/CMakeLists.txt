@@ -11,7 +11,7 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
-	message(FATAL_ERROR "Prevented in-tree built. Please create a build directory outside of the source code and call cmake from there. Thank you.")
+	message(FATAL_ERROR "Prevented in-tree build. Please create a build directory outside of the source code and call cmake from there. Thank you.")
 endif()
 
 find_package(Boost COMPONENTS filesystem system REQUIRED)

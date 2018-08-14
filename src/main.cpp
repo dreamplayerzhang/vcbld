@@ -34,19 +34,19 @@ int main(int argc, char *argv[])
     }
     else if (strcmp(argv[1], "setup") == 0)
     {
-      init::setup(vcbldPath);
+      init::setup();
     }
     else if (strcmp(argv[1], "restore") == 0)
     {
-      args::restore(vcbldPath);
+      args::restore();
     }
     else if (strcmp(argv[1], "includes") == 0)
     {
-      args::includes(vcbldPath);
+      args::includes();
     }
     else if (strcmp(argv[1], "gen") == 0)
     {
-      args::generate(vcbldPath);
+      args::generate();
     }
     else if (strcmp(argv[1], "build") == 0)
     {
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
       {
         try
         {
-          args::build("debug", vcbldPath);
+          args::build("debug");
         }
         catch (...)
         {
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
         {
           try
           {
-            args::build("release", vcbldPath);
+            args::build("release");
           }
           catch (...)
           {
@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
         {
           try
           {
-            args::build("debug", vcbldPath);
+            args::build("debug");
           }
           catch (...)
           {
@@ -92,11 +92,11 @@ int main(int argc, char *argv[])
     }
     else if (strcmp(argv[1], "clean") == 0)
     {
-      args::clean(vcbldPath);
+      args::clean();
     }
     else if (strcmp(argv[1], "available") == 0)
     {
-      args::available(vcbldPath);
+      args::available();
     }
     else if (strcmp(argv[1], "run") == 0)
     {
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
       {
         try
         {
-          args::run("debug", vcbldPath);
+          args::run("debug");
         }
         catch (...)
         {
@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
         {
           try
           {
-            args::run("release", vcbldPath);
+            args::run("release");
           }
           catch (...)
           {
@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
         {
           try
           {
-            args::run("debug", vcbldPath);
+            args::run("debug");
           }
           catch (const std::exception &e)
           {
@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
       }
       else
       {
-        args::search(static_cast<std::string>(argv[2]), vcbldPath);
+        args::search(static_cast<std::string>(argv[2]));
       }
     }
     else if (strcmp(argv[1], "add") == 0)
@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
       }
       else
       {
-        args::add(static_cast<std::string>(argv[2]), vcbldPath);
+        args::add(static_cast<std::string>(argv[2]));
       }
     }
     else if (strcmp(argv[1], "remove") == 0)
@@ -170,12 +170,12 @@ int main(int argc, char *argv[])
       }
       else
       {
-        args::remove(static_cast<std::string>(argv[2]), vcbldPath);
+        args::remove(static_cast<std::string>(argv[2]));
       }
     }
     else if (strcmp(argv[1], "list") == 0)
     {
-      args::list(vcbldPath);
+      args::list();
     }
     else if (strcmp(argv[1], "help") == 0)
     {
@@ -188,7 +188,7 @@ int main(int argc, char *argv[])
       if (!argv[2])
       {
         std::string help = "help";
-        args::vcpkg(help, vcbldPath);
+        args::vcpkg(help);
       }
       else
       {
@@ -198,7 +198,7 @@ int main(int argc, char *argv[])
           vcpkgArgs += " ";
           vcpkgArgs += argv[i];
         }
-        args::vcpkg(vcpkgArgs, vcbldPath);
+        args::vcpkg(vcpkgArgs);
       }
     }
     else if (strcmp(argv[1], "cmake") == 0)
@@ -206,7 +206,7 @@ int main(int argc, char *argv[])
       if (!argv[2])
       {
         std::string empty = " ";
-        args::cmake(empty, vcbldPath);
+        args::cmake(empty);
       }
       else
       {
@@ -216,12 +216,12 @@ int main(int argc, char *argv[])
           cmakeArgs += " ";
           cmakeArgs += argv[i];
         }
-        args::cmake(cmakeArgs, vcbldPath);
+        args::cmake(cmakeArgs);
       }
     }
     else if (strcmp(argv[1], "make") == 0)
     {
-      args::make(vcbldPath);
+      args::make();
     }
     else if (strcmp(argv[1], "--version") == 0)
     {

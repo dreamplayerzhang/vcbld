@@ -129,21 +129,21 @@ void New(const std::string &binType)
   {
     std::cout << "main.cpp already exists." << std::endl;
   }
-
+  init::setup();
   init::init(binType);
 }
 
-void build(const std::string &buildType, const fs::path &vcbldPath)
+void build(const std::string &buildType)
 {
-  Builder builder(buildType, vcbldPath);
+  Builder builder(buildType);
   builder.build();
 }
 
-void clean(const fs::path &vcbldPath)
+void clean()
 {
   try
   {
-    ConfClass confClass(vcbldPath);
+    ConfClass confClass;
     std::string command = "rm -rf " + confClass.outputDirectory().string() +
                           "/" + "debug" + "/" + "**";
     system(command.c_str());
@@ -157,14 +157,14 @@ void clean(const fs::path &vcbldPath)
   }
 }
 
-void run(const std::string &buildType, const fs::path &vcbldPath)
+void run(const std::string &buildType)
 {
   std::ostringstream command;
   if (buildType == "debug")
   {
     try
     {
-      ConfClass confClass(vcbldPath);
+      ConfClass confClass;
       command << "./" << confClass.outputDirectory() << "/debug/"
               << confClass.binaryName();
       system(command.str().c_str());
@@ -178,7 +178,7 @@ void run(const std::string &buildType, const fs::path &vcbldPath)
   {
     try
     {
-      ConfClass confClass(vcbldPath);
+      ConfClass confClass;
       command << "./" << confClass.outputDirectory() << "/release/"
               << confClass.binaryName();
       system(command.str().c_str());
@@ -190,11 +190,11 @@ void run(const std::string &buildType, const fs::path &vcbldPath)
   }
 }
 
-void available(const fs::path &vcbldPath)
+void available()
 {
   try
   {
-    ConfClass confClass(vcbldPath);
+    ConfClass confClass;
     std::vector<fs::directory_entry> dirEntry;
 
     std::string vcpkgDirPath = confClass.vcpkgDirPath();
@@ -229,11 +229,11 @@ void available(const fs::path &vcbldPath)
   }
 }
 
-void search(const std::string &pkg, const fs::path &vcbldPath)
+void search(const std::string &pkg)
 {
   try
   {
-    ConfClass confClass(vcbldPath);
+    ConfClass confClass;
     std::vector<fs::directory_entry> dirEntry;
 
     std::string vcpkgDirPath = confClass.vcpkgDirPath();
@@ -266,14 +266,14 @@ void search(const std::string &pkg, const fs::path &vcbldPath)
   }
 }
 
-void includes(const fs::path &vcbldPath) { gen::includePathGen(vcbldPath); }
-void generate(const fs::path &vcbldPath) { gen::cmakeGen(vcbldPath); }
+void includes() { gen::includePathGen(); }
+void generate() { gen::cmakeGen(); }
 
-void list(const fs::path &vcbldPath)
+void list()
 {
   try
   {
-    ConfClass confClass(vcbldPath);
+    ConfClass confClass;
     for (std::vector<std::string>::iterator it = confClass.packageNames.begin();
          it != confClass.packageNames.end(); ++it)
     {
@@ -289,9 +289,9 @@ void list(const fs::path &vcbldPath)
   }
 }
 
-void add(const std::string &pkg, const fs::path &vcbldPath)
+void add(const std::string &pkg)
 {
-  ConfClass confClass(vcbldPath);
+  ConfClass confClass;
   std::string addDep = confClass.vcpkgDirPath() + "/" + "packages" + "/" + pkg +
                        "_" + confClass.architecture();
 
@@ -325,9 +325,9 @@ void add(const std::string &pkg, const fs::path &vcbldPath)
   }
 }
 
-void remove(const std::string &pkg, const fs::path &vcbldPath)
+void remove(const std::string &pkg)
 {
-  ConfClass confClass(vcbldPath);
+  ConfClass confClass;
   for (std::vector<std::string>::iterator it = confClass.packageNames.begin();
        it != confClass.packageNames.end(); ++it)
   {
@@ -343,17 +343,17 @@ void remove(const std::string &pkg, const fs::path &vcbldPath)
   }
 }
 
-void vcpkg(const std::string &vcpkgCmnds, const fs::path &vcbldPath)
+void vcpkg(const std::string &vcpkgCmnds)
 {
-  ConfClass confClass(vcbldPath);
+  ConfClass confClass;
   std::string temp =
       confClass.vcpkgDirPath() + "/" + "vcpkg" + " " + vcpkgCmnds;
   system(temp.c_str());
 }
 
-void restore(const fs::path &vcbldPath)
+void restore()
 {
-  ConfClass confClass(vcbldPath);
+  ConfClass confClass;
   std::ostringstream pkg;
 
   for (std::vector<std::string>::iterator it = confClass.packageNames.begin();
@@ -366,9 +366,9 @@ void restore(const fs::path &vcbldPath)
   system(instlCmnd.c_str());
 }
 
-void cmake(const std::string &cmakeArgs, const fs::path &vcbldPath)
+void cmake(const std::string &cmakeArgs)
 {
-  ConfClass confClass(vcbldPath);
+  ConfClass confClass;
   std::ostringstream cmakeCmnd;
   cmakeCmnd << "cd " << confClass.outputDirectory() << " && "
             << confClass.cmakePath() << " -G \"Unix Makefiles\" " << cmakeArgs
@@ -376,9 +376,9 @@ void cmake(const std::string &cmakeArgs, const fs::path &vcbldPath)
   system(cmakeCmnd.str().c_str());
 }
 
-void make(const fs::path &vcbldPath)
+void make()
 {
-  ConfClass confClass(vcbldPath);
+  ConfClass confClass;
   std::ostringstream makeCmnd;
   makeCmnd << "cd " << confClass.outputDirectory() << " && "
            << " " << confClass.makePath();

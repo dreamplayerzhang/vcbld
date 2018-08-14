@@ -33,7 +33,7 @@ namespace fs = boost::filesystem;
 namespace vcbld::init
 {
 
-void setup(const fs::path &vcbldPath)
+void setup()
 {
   std::string cCompilerPath, cppCompilerPath, cmakePath, makePath;
   if (PLATFORM_NAME == "x64-osx")
@@ -58,12 +58,11 @@ void setup(const fs::path &vcbldPath)
     makePath= "C:/MinGW/bin/mingw32-make.exe";
   }
 
-  std::string confJsonPath = vcbldPath.string() + "/" + "conf.json";
 
-  if (!fs::exists(confJsonPath))
+  if (!fs::exists("conf.json"))
   {
 
-    std::ofstream confOutput(confJsonPath);
+    std::ofstream confOutput("conf.json");
     if (confOutput.is_open())
     {
       confOutput << std::setw(4) << "{\n\t\"cCompilerPath\" : \""

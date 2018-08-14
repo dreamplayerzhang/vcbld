@@ -11,9 +11,9 @@ namespace fs = boost::filesystem;
 namespace vcbld
 {
 
-Builder::Builder(const std::string &buildType, const fs::path &vcbldPath)
+Builder::Builder(const std::string &buildType)
 {
-  this->confClass = new ConfClass(vcbldPath);
+  this->confClass = new ConfClass();
   this->_buildType = buildType;
   if (!fs::exists("vcbld.json"))
   {

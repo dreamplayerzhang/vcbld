@@ -20,3 +20,23 @@ add_executable(${PROJECT_NAME} "main.cpp" "args.cpp" "builder.cpp" "help.cpp" "c
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}/include)
 target_link_libraries(${PROJECT_NAME} PUBLIC Boost::filesystem Boost::system)
+
+install(
+	TARGETS ${PROJECT_NAME}
+	CONFIGURATIONS Release
+    RUNTIME DESTINATION bin
+)
+
+if(WIN32)
+include(CPack REQUIRED)
+include(CPackIFW REQUIRED)
+
+cpack_add_component(${PROJECT_NAME}.exe
+    DISPLAY_NAME "vcbld"
+    DESCRIPTION "A build system to work with vcpkg")
+cpack_ifw_configure_component(${PROJECT_NAME}.app
+    VERSION "0.1.0")
+cpack_ifw_add_repository(myrepo
+    URL "https://github.com/MoAlyousef/vcbld"
+	DISPLAY_NAME "vcbld repository.")
+endif()

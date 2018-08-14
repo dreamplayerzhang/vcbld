@@ -1,7 +1,6 @@
 #ifndef BUILDER_H
 #define BUILDER_H
 
-#include <boost/filesystem.hpp>
 #include <string>
 
 #include "conf.h"
@@ -11,7 +10,7 @@ namespace vcbld
 class Builder
 {
 public:
-  Builder(const std::string &buildType, const fs::path &vcbldPath);
+  Builder(const std::string &buildType);
 
   std::string compile();
   std::string appLink();

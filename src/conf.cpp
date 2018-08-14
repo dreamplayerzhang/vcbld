@@ -15,10 +15,9 @@ namespace fs = boost::filesystem;
 namespace vcbld
 {
 
-ConfClass::ConfClass(const fs::path &vcbldPath)
+ConfClass::ConfClass()
 {
   json vcbldJson, confJson, pkgsJson;
-  this->_vcbldPath = vcbldPath;
   this->_projPath = fs::current_path();
 
   if (!fs::exists("vcbld.json"))
@@ -66,16 +65,14 @@ ConfClass::ConfClass(const fs::path &vcbldPath)
   {
     std::cerr << "Error reading vcbld.json." << std::endl;
   }
-
-  std::string confJsonPath = vcbldPath.string() + "/" + "conf.json";
-  if (!fs::exists(confJsonPath))
+  if (!fs::exists("conf.json"))
   {
-    init::setup(this->_vcbldPath);
+    init::setup();
   }
 
   try
   {
-    std::ifstream confInput(confJsonPath);
+    std::ifstream confInput("conf.json");
     if (confInput.is_open())
     {
       confJson = json::parse(confInput);

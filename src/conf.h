@@ -14,7 +14,7 @@ namespace vcbld
 class ConfClass
 {
 public:
-  explicit ConfClass(const fs::path &vcbldPath); // reads all configuration files
+  ConfClass(); // reads all configuration files
 
   std::string compilerPath() const;
   std::string vcpkgDirPath() const;
@@ -53,7 +53,6 @@ public:
   std::vector<std::string> libs;
 
 private:
-  fs::path _vcbldPath;
   fs::path _projPath;
   std::string _cCompilerPath;
   std::string _cppCompilerPath;

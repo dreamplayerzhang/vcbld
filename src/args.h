@@ -1,28 +1,25 @@
 #ifndef ARGS_H
 #define ARGS_H
 
-#include <boost/filesystem.hpp>
 #include <string>
-
-namespace fs = boost::filesystem;
 
 namespace vcbld::args
 {
 void New(const std::string &binType);
-void restore(const fs::path &vcbldPath);
-void build(const std::string &buildType, const fs::path &vcbldPath);
-void clean(const fs::path &vcbldPath);
-void run(const std::string &buildType, const fs::path &vcbldPath);
-void available(const fs::path &vcbldPath);
-void add(const std::string &pkg, const fs::path &vcbldPath);
-void remove(const std::string &pkg, const fs::path &vcbldPath);
-void list(const fs::path &vcbldPath);
-void search(const std::string &pkg, const fs::path &vcbldPath);
-void includes(const fs::path &vcbldPath);
-void generate(const fs::path &vcbldPath);
-void vcpkg(const std::string &vcpkgCmnds, const fs::path &vcbldPath);
-void cmake(const std::string &cmakeCmnds, const fs::path &vcbldPath);
-void make(const fs::path &vcbldPath);
+void restore();
+void build(const std::string &buildType);
+void clean();
+void run(const std::string &buildType);
+void available();
+void add(const std::string &pkg);
+void remove(const std::string &pkg);
+void list();
+void search(const std::string &pkg);
+void includes();
+void generate();
+void vcpkg(const std::string &vcpkgCmnds);
+void cmake(const std::string &cmakeCmnds);
+void make();
 
 std::string sinTriplet(const std::string &);
 bool findPackage(const std::string &);

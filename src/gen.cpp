@@ -17,10 +17,10 @@ using json = nlohmann::json;
 namespace vcbld::gen
 {
 
-void includePathGen(const fs::path &vcbldPath)
+void includePathGen()
 {
   json incJson;
-  ConfClass confClass(vcbldPath);
+  ConfClass confClass;
   incJson.push_back(confClass.sourceDirectory().relative_path().string());
   incJson.push_back(confClass.vcpkgDirPath() + "/" + "installed" + "/" +
                     "include");
@@ -50,9 +50,9 @@ void includePathGen(const fs::path &vcbldPath)
   }
 }
 
-void cmakeGen(const fs::path &vcbldPath)
+void cmakeGen()
 {
-  ConfClass confClass(vcbldPath);
+  ConfClass confClass;
 
   if (!fs::exists("CMakeLists.txt"))
   {

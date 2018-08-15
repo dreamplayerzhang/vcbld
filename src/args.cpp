@@ -1,9 +1,9 @@
 #include "args.h"
 
-#include <boost/filesystem.hpp>
 #include <cstdlib>
 #include <cstring>
 #include <errno.h>
+#include <experimental/filesystem>
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -16,7 +16,7 @@
 #include "gen.h"
 #include "init.h"
 
-namespace fs = boost::filesystem;
+namespace fs = std::experimental::filesystem;
 
 namespace vcbld::args
 {

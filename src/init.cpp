@@ -1,6 +1,6 @@
 #include "init.h"
 
-#include <boost/filesystem.hpp>
+#include <experimental/filesystem>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -8,10 +8,10 @@
 
 #if defined(_WIN32)
 #define PLATFORM_NAME "x86-windows"
-#define PATHSEP "\"
+#define PATHSEP "\\"
 #elif defined(_WIN64)
 #define PLATFORM_NAME "x64-windows"
-#define PATHSEP "\"
+#define PATHSEP "\\"
 #elif defined(__CYGWIN__) && !defined(_WIN32)
 #define PLATFORM_NAME "x64-windows"
 #define PATHSEP "/"
@@ -28,7 +28,7 @@
 #define PLATFORM_NAME NULL
 #endif
 
-namespace fs = boost::filesystem;
+namespace fs = std::experimental::filesystem;
 
 namespace vcbld::init
 {

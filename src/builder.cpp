@@ -1,12 +1,12 @@
 #include "builder.h"
 
 #include <algorithm>
-#include <boost/filesystem.hpp>
+#include <experimental/filesystem>
 #include <iostream>
 #include <iterator>
 #include <vector>
 
-namespace fs = boost::filesystem;
+namespace fs = std::experimental::filesystem;
 
 namespace vcbld
 {
@@ -77,8 +77,8 @@ std::string Builder::appLink()
     for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
          it != dirEntry.end(); ++it)
     {
-      if (fs::extension((*it).path().filename().string()) == ".o" ||
-          fs::extension((*it).path().filename().string()) == ".obj")
+      if (fs::path((*it).path().filename().string()).extension() == ".o" ||
+          fs::path((*it).path().filename().string()).extension() == ".obj")
       {
         temp += " ";
         temp += (*it).path().filename().string();
@@ -127,7 +127,7 @@ std::string Builder::dylibLink()
     for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
          it != dirEntry.end(); ++it)
     {
-      if (fs::extension((*it).path().filename().string()) == ".o")
+      if (fs::path((*it).path().filename().string()).extension() == ".o")
       {
         temp += " ";
         temp += (*it).path().string();
@@ -187,7 +187,7 @@ std::string Builder::archive()
     for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
          it != dirEntry.end(); ++it)
     {
-      if (fs::extension((*it).path().filename().string()) == ".o")
+      if (fs::path((*it).path().filename().string()).extension() == ".o")
       {
         temp += " ";
         temp += (*it).path().string();

@@ -5,12 +5,11 @@
 #include <iostream>
 #include <iterator>
 #include <nlohmann/json.hpp>
-#include <vector>
 
 #include "init.h"
 
 using json = nlohmann::json;
-namespace fs = boost::filesystem;
+namespace fs = std::experimental::filesystem;
 
 namespace vcbld
 {
@@ -261,12 +260,12 @@ std::string ConfClass::sourceFiles() const
     for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
          it != dirEntry.end(); ++it)
     {
-      if (fs::extension((*it).path().filename().string()) == ".cpp" ||
-          fs::extension((*it).path().filename().string()) == ".rc" ||
-          fs::extension((*it).path().filename().string()) == ".c" ||
-          fs::extension((*it).path().filename().string()) == ".cxx" ||
-          fs::extension((*it).path().filename().string()) == ".qrc" ||
-          fs::extension((*it).path().filename().string()) == ".ui")
+      if (fs::path((*it).path().filename().string()).extension() == ".cpp" ||
+          fs::path((*it).path().filename().string()).extension()  == ".rc" ||
+          fs::path((*it).path().filename().string()).extension()  == ".c" ||
+          fs::path((*it).path().filename().string()).extension()  == ".cxx" ||
+          fs::path((*it).path().filename().string()).extension() == ".qrc" ||
+          fs::path((*it).path().filename().string()).extension()  == ".ui")
       {
         temp << this->_projPath.c_str() << "/" << tempPath + "/"
              << (*it).path().filename().string() << " ";
@@ -292,10 +291,10 @@ std::string ConfClass::sourceFilesSinPath() const
     for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
          it != dirEntry.end(); ++it)
     {
-      if (fs::extension((*it).path().filename().string()) == ".cpp" ||
-          fs::extension((*it).path().filename().string()) == ".rc" ||
-          fs::extension((*it).path().filename().string()) == ".c" ||
-          fs::extension((*it).path().filename().string()) == ".cxx")
+      if (fs::path((*it).path().filename().string()).extension()  == ".cpp" ||
+          fs::path((*it).path().filename().string()).extension()  == ".rc" ||
+          fs::path((*it).path().filename().string()).extension()  == ".c" ||
+          fs::path((*it).path().filename().string()).extension()  == ".cxx")
       {
         temp << "\"" << (*it).path().filename().string() << "\" ";
       }

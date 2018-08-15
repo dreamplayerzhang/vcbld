@@ -1,5 +1,6 @@
-#include <boost/filesystem.hpp>
 #include <cstdlib>
+#include <cstring>
+#include <experimental/filesystem>
 #include <iostream>
 
 #include "args.h"
@@ -10,7 +11,7 @@
 #define MINOR_VERSION 1
 #define PATCH_VERSION 0
 
-namespace fs = boost::filesystem;
+namespace fs = std::experimental::filesystem;
 
 using namespace vcbld;
 

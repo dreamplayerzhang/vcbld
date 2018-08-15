@@ -1,12 +1,12 @@
 #ifndef CONF_H
 #define CONF_H
 
-#include <boost/filesystem.hpp>
+#include <experimental/filesystem>
 #include <nlohmann/json.hpp>
 #include <string>
 #include <vector>
 
-namespace fs = boost::filesystem;
+namespace fs = std::experimental::filesystem;
 
 namespace vcbld
 {

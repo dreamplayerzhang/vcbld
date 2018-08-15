@@ -11,7 +11,7 @@
 
 #include "conf.h"
 
-namespace fs = boost::filesystem;
+namespace fs = std::experimental::filesystem;
 using json = nlohmann::json;
 
 namespace vcbld::gen

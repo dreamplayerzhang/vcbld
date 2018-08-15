@@ -157,7 +157,9 @@ void cmakeGen()
 
       ofs << "target_include_directories(${PROJECT_NAME} PUBLIC "
              "${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}"
-          << "/include)\n";
+          << "/include)\n"
+          << "target_include_directories(${PROJECT_NAME} PUBLIC "
+             "${CMAKE_CURRENT_SOURCE_DIR}/../include)";
       if (confClass.libs.size() != 0)
       {
         ofs << "target_link_libraries(${PROJECT_NAME} debug ${dbgLIBS})\n"

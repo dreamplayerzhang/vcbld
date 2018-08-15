@@ -209,8 +209,18 @@ int main(int argc, char *argv[])
         std::string empty = " ";
         args::cmake(empty);
       }
-      else
+      else if (strcmp(argv[2], "debug") ==0 || strcmp(argv[2], "release") ==0)
       {
+        std::string config = static_cast<std::string> (argv[2]);
+        config[0] = toupper(config[0]);
+        std::string cmakeArgs;
+        for (int i = 2; i < argc; i++)
+        {
+          cmakeArgs += " -DCMAKE_BUILD_TYPE=" + config + " ";
+          cmakeArgs += argv[i];
+        }
+
+      } else {
         std::string cmakeArgs;
         for (int i = 2; i < argc; i++)
         {

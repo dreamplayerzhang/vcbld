@@ -1,7 +1,0 @@
-    {
-        "packages":
-        [
-            "boost-filesystem",
-            "boost-system"
-        ]
-    }

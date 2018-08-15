@@ -1,6 +1,6 @@
 # vcbld
 A build system that works with vcpkg. It works for the moment on posix systems, i.e. linux and mac os x. It runs on windows if you're using MinGW or MSYS. It has a minimal build system which works for small single hierarchy projects which allows for faster prototyping, however it has support for cmake and can be used to generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
-The vcbld executable is about 600kb large, and depends on the presence of vcpkg and cmake. Of course you would also need a posix C/C++ compiler such as gcc, clang or mingGW.
+The vcbld executable is about 500kb large, and depends on the presence of vcpkg and cmake. Of course you would also need a posix C/C++ compiler such as gcc, clang or mingGW.
 
 ```
 SDK commands:
@@ -26,23 +26,16 @@ SDK commands:
 ```
 
 ## Building vcbld:
-vcbld has some external library dependencies, namely Boost::filesystem (which depends on Boost::system) and Nlohmann_json.
-These can be installed using vcpkg using the following command:
-```
-$ vcpkg install boost-filesystem boost-system nlohmann-json
-```
-Create a directory called vcbld. Access that directory using the command line. Clone this repository and build using cmake. The command line commands would look something like this. 
+vcbld has a single external library dependency, namely Nlohmann-json. Which is included in this git repository.
+Create a directory called vcbld. Access that directory using the command line. Clone this repository and build using cmake. The command line commands would look something like this:
 ```
 $ git clone https://github.com/MoAlyousef/vcbld.git
 $ cd vcbld
 $ mkdir bin
 $ cd bin
-$ cmake -DCMAKE_TOOLCHAIN_FILE=[vcpkg root]/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+$ cmake ..
 $ make
 ```
-The cmake command should use the CMAKE_TOOLCHAIN_FILE definition which should point to your vcpkg.cmake script. For more information, check the vcpkg [readme](https://github.com/Microsoft/vcpkg) or documentation:
-
-Namely if vcpkg were installed in your home directory, it would be ~/vcpkg/scripts/buildsystems/vcpkg.cmake (the tilde points to the home directory in posix systems).
 
 The built vcbld executable can be found in the release directory. vcbld doesn't automatically add itself to your PATH, however you can do so after building from source on mac os x and linux using:
 ```
@@ -173,7 +166,10 @@ Or to generate a visual studio project for example, you can run:
 $ vcbld -G "Visual Studio 15 2017 Win64" ..
 ```
 
-Alternatively, you can run cmake manually on the generated CMakeLists.txt file, in which case you would need to use the vcpkg toolchain. Creating an out of source build:
+Alternatively, you can run cmake manually on the generated CMakeLists.txt file, in which case you would need to use the vcpkg toolchain.
+In which case, the cmake command should use the CMAKE_TOOLCHAIN_FILE definition which should point to your vcpkg.cmake script. For more information, check the vcpkg [readme](https://github.com/Microsoft/vcpkg) or documentation:
+
+Namely if vcpkg were installed in your home directory, it would be ~/vcpkg/scripts/buildsystems/vcpkg.cmake (the tilde points to the home directory in posix systems).Creating an out of source build:
 ```
 $ mkdir build
 $ cd build

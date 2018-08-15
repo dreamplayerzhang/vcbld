@@ -15,7 +15,9 @@ Apple clang versions 9 and below do not have support for it.
 Please install gcc6 or newer from homebrew (brew install gcc6 or brew install llvm).")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "[Cc]lang")
     set(CLANG 1)
-    set(CMAKE_EXE_LINKER_FLAGS -L/usr/local/opt/llvm/lib) #if clang was installed via homebrew on MacOS X
+    if(APPLE)
+        set(CMAKE_EXE_LINKER_FLAGS -L/usr/local/opt/llvm/lib) #if clang was installed via homebrew on MacOS X
+    endif()
 elseif(MSVC)
     add_compile_options(/std:c++latest)
 else()

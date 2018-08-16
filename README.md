@@ -1,5 +1,5 @@
 # vcbld
-A minimalist command-line build system that works with vcpkg. It works for the moment on posix systems, i.e. linux and macOS X. It runs on windows if you're using MinGW or MSYS. It has a minimal build system which works for small single hierarchy projects which allows for faster prototyping, however it has support for cmake and can be used to generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
+A minimalist command-line build system and software development kit that works with vcpkg. It works for the moment on posix systems, i.e. linux and macOS X. It runs on windows if you're using MinGW or MSYS. It has a minimal build system which works for small single hierarchy projects which allows for faster prototyping, however it has support for cmake and can be used to generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
 The vcbld executable is about 500kb large, and depends on the presence of vcpkg and cmake. Of course you would also need a posix C/C++ compiler such as gcc, clang or mingGW.
 
 ```
@@ -26,7 +26,7 @@ SDK commands:
 ```
 
 ## Building vcbld:
-vcbld has a single external library dependency, namely Nlohmann-json. Which is included in this git repository. To build vcbld, create a directory called vcbld. Access that directory using the command line. Clone this repository and build using cmake. The command line commands would look something like this:
+vcbld has a single external dependency, namely Nlohmann-json which is a header-only library and is included in this git repository. To build vcbld, create a directory called vcbld. Access that directory using the command line. Clone this repository and build using cmake. The command line commands would look something like this:
 ```
 $ git clone https://github.com/MoAlyousef/vcbld.git
 $ cd vcbld

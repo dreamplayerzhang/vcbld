@@ -1,9 +1,12 @@
 #ifndef GEN_H
 #define GEN_H
 
-namespace vcbld::gen
+namespace vcbld
+{
+namespace gen
 {
 void includePathGen();
 void cmakeGen();
-} // namespace vcbld::gen
+} // namespace gen
+} // namespace vcbld
 #endif // !GEN_H

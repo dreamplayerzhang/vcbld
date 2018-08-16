@@ -30,9 +30,10 @@
 
 namespace fs = std::experimental::filesystem;
 
-namespace vcbld::init
+namespace vcbld
 {
-
+namespace init
+{
 void setup()
 {
   std::string cCompilerPath, cppCompilerPath, cmakePath, makePath;
@@ -41,23 +42,23 @@ void setup()
     cCompilerPath = "/usr/bin/clang";
     cppCompilerPath = "/usr/bin/clang++";
     cmakePath = "/usr/local/bin/cmake";
-    makePath= "/usr/bin/make";
+    makePath = "/usr/bin/make";
   }
   else if (PLATFORM_NAME == "x64-linux")
   {
     cCompilerPath = "/usr/bin/gcc";
     cppCompilerPath = "/usr/bin/g++";
     cmakePath = "/usr/bin/cmake";
-    makePath= "/usr/bin/make";
+    makePath = "/usr/bin/make";
   }
   else if (PLATFORM_NAME == "x64-windows" || PLATFORM_NAME == "x86-windows")
   {
     cCompilerPath = "C:/MinGW/bin/gcc";
     cppCompilerPath = "C:/MinGW/bin/g++";
-    cmakePath = static_cast<std::string>(getenv("PROGRAMFILES")) + "/CMake/cmake";
-    makePath= "C:/MinGW/bin/mingw32-make.exe";
+    cmakePath =
+        static_cast<std::string>(getenv("PROGRAMFILES")) + "/CMake/cmake";
+    makePath = "C:/MinGW/bin/mingw32-make.exe";
   }
-
 
   if (!fs::exists("conf.json"))
   {
@@ -162,4 +163,5 @@ void init(const std::string &binType)
     }
   }
 }
-} // namespace vcbld::init
+} // namespace init
+} // namespace vcbld

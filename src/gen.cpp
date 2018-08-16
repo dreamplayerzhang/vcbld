@@ -14,9 +14,10 @@
 namespace fs = std::experimental::filesystem;
 using json = nlohmann::json;
 
-namespace vcbld::gen
+namespace vcbld
 {
-
+namespace gen
+{
 void includePathGen()
 {
   json incJson;
@@ -174,4 +175,5 @@ void cmakeGen()
         << std::endl;
   }
 }
-} // namespace vcbld::gen
+} // namespace gen
+} // namespace vcbld

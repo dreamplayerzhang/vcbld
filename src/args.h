@@ -3,7 +3,9 @@
 
 #include <string>
 
-namespace vcbld::args
+namespace vcbld
+{
+namespace args
 {
 void New(const std::string &binType);
 void restore();
@@ -23,5 +25,6 @@ void make(const std::string &makeArgs);
 
 std::string sinTriplet(const std::string &);
 bool findPackage(const std::string &);
-} // namespace vcbld::args
+} // namespace args
+} // namespace vcbld
 #endif // ARGS_H

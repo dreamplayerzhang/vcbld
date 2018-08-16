@@ -3,9 +3,10 @@
 #include <iomanip>
 #include <iostream>
 
-namespace vcbld::help
+namespace vcbld
 {
-
+namespace help
+{
 void mainHelp()
 {
   const char *lit = R"lit(
@@ -36,4 +37,5 @@ SDK commands:
 
   std::cout << std::setw(4) << lit << std::endl;
 }
-} // namespace vcbld::help
+} // namespace help
+} // namespace vcbld

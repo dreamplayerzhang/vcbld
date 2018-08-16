@@ -3,9 +3,12 @@
 
 #include <string>
 
-namespace vcbld::init
+namespace vcbld
+{
+namespace init
 {
 void init(const std::string &binType);
 void setup();
-} // namespace vcbld::init
+} // namespace init
+} // namespace vcbld
 #endif // !INIT_H

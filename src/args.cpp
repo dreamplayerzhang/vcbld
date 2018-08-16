@@ -17,7 +17,9 @@
 
 namespace fs = std::experimental::filesystem;
 
-namespace vcbld::args
+namespace vcbld
+{
+namespace args
 {
 
 void New(const std::string &binType)
@@ -312,7 +314,8 @@ void list()
 void add(const std::vector<std::string> &pkg)
 {
   ConfClass confClass;
-  for (std::vector<std::string>::const_iterator it = pkg.begin(); it != pkg.end(); ++it)
+  for (std::vector<std::string>::const_iterator it = pkg.begin();
+       it != pkg.end(); ++it)
   {
     std::string addDep = confClass.vcpkgDirPath() + "/" + "installed" + "/" +
                          confClass.architecture() + "/" + "share" + "/" + *it;
@@ -320,7 +323,8 @@ void add(const std::vector<std::string> &pkg)
     if (fs::is_directory(static_cast<fs::path>(addDep)))
     {
       bool isExist = false;
-      for (std::vector<std::string>::iterator jt = confClass.packageNames.begin();
+      for (std::vector<std::string>::iterator jt =
+               confClass.packageNames.begin();
            jt != confClass.packageNames.end(); ++jt)
       {
         if (*jt == *it)
@@ -351,7 +355,8 @@ void add(const std::vector<std::string> &pkg)
 void remove(const std::vector<std::string> &pkg)
 {
   ConfClass confClass;
-  for (std::vector<std::string>::const_iterator it = pkg.begin(); it != pkg.end(); ++it)
+  for (std::vector<std::string>::const_iterator it = pkg.begin();
+       it != pkg.end(); ++it)
   {
     for (std::vector<std::string>::iterator jt = confClass.packageNames.begin();
          jt != confClass.packageNames.end(); ++jt)
@@ -396,7 +401,8 @@ void restore()
   int systemRet = system(instlCmnd.c_str());
   if (systemRet == -1)
   {
-    std::cout << "An error occured while getting missing dependencies." << std::endl;
+    std::cout << "An error occured while getting missing dependencies."
+              << std::endl;
   }
 }
 
@@ -455,4 +461,5 @@ bool findPackage(const std::string &pkg)
     return false;
   }
 }
-} // namespace vcbld::args
+} // namespace args
+} // namespace vcbld

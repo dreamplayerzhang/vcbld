@@ -51,7 +51,10 @@ std::string Builder::compile()
                           << this->confClass->headerPaths() << " ";
   }
   int systemRet = system(this->_compileCommand.str().c_str());
-  if (systemRet )
+  if (systemRet == -1) 
+  {
+    std::cout << "An error occured while compiling." << std::endl;
+  }
   return this->_compileCommand.str();
 }
 
@@ -101,7 +104,11 @@ std::string Builder::appLink()
                        << this->confClass->binaryName() << " " << temp << " "
                        << this->confClass->dbgLibPaths();
   }
-  system(this->_appLinkCmnd.str().c_str());
+  int systemRet = system(this->_appLinkCmnd.str().c_str());
+  if (systemRet == -1) 
+  {
+    std::cout << "An error occured while linking." << std::endl;
+  }
   return this->_appLinkCmnd.str();
 }
 
@@ -162,7 +169,11 @@ std::string Builder::dylibLink()
                        << this->confClass->binaryName() << dylibExt << " "
                        << temp << " " << this->confClass->dbgLibPaths();
   }
-  system(this->_libLinkCmnd.str().c_str());
+  int systemRet = system(this->_libLinkCmnd.str().c_str());
+  if (systemRet == -1) 
+  {
+    std::cout << "An error occured while linking." << std::endl;
+  }
   return this->_libLinkCmnd.str();
 }
 
@@ -208,7 +219,11 @@ std::string Builder::archive()
                        << "ar rcs " << this->confClass->binaryName() << ".a"
                        << " " << temp;
   }
-  system(this->_archiveCmnd.str().c_str());
+  int systemRet = system(this->_archiveCmnd.str().c_str());
+  if (systemRet == -1) 
+  {
+    std::cout << "An error occured while archiving." << std::endl;
+  }
   return this->_archiveCmnd.str();
 }
 

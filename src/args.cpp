@@ -145,10 +145,18 @@ void clean()
     ConfClass confClass;
     std::string command = "rm -rf " + confClass.outputDirectory().string() +
                           "/" + "debug" + "/" + "**";
-    system(command.c_str());
+    int systemRet = system(command.c_str());
+    if (systemRet == -1) 
+    {
+      std::cout << "An error occured while deleting output." << std::endl;
+    }
     command = "rm -rf " + confClass.outputDirectory().string() + "/" +
               "release" + "/" + "**";
-    system(command.c_str());
+    int systemRet2 = system(command.c_str());
+    if (systemRet2 == -1) 
+    {
+      std::cout << "An error occured while deleting output." << std::endl;
+    }
   }
   catch (const std::exception &e)
   {
@@ -166,7 +174,11 @@ void run(const std::string &buildType)
       ConfClass confClass;
       command << "./" << confClass.outputDirectory() << "/debug/"
               << confClass.binaryName();
-      system(command.str().c_str());
+      int systemRet = system(command.str().c_str());
+        if (systemRet == -1) 
+        {
+          std::cout << "An error occured while running the binary." << std::endl;
+        }
     }
     catch (const std::exception &e)
     {
@@ -180,7 +192,11 @@ void run(const std::string &buildType)
       ConfClass confClass;
       command << "./" << confClass.outputDirectory() << "/release/"
               << confClass.binaryName();
-      system(command.str().c_str());
+      int systemRet = system(command.str().c_str());
+        if (systemRet == -1) 
+  {
+    std::cout << "An error occured while running the binary." << std::endl;
+  }
     }
     catch (const std::exception &e)
     {
@@ -354,7 +370,11 @@ void vcpkg(const std::string &vcpkgCmnds)
   ConfClass confClass;
   std::string temp =
       confClass.vcpkgDirPath() + "/" + "vcpkg" + " " + vcpkgCmnds;
-  system(temp.c_str());
+  int systemRet = system(temp.c_str());
+  if (systemRet == -1) 
+  {
+    std::cout << "An error occured while running vcpkg." << std::endl;
+  }
 }
 
 void restore()
@@ -369,7 +389,11 @@ void restore()
   }
   std::string instlCmnd = confClass.vcpkgDirPath() + "/" + "vcpkg" + " " +
                           "install" + " " + pkg.str();
-  system(instlCmnd.c_str());
+  int systemRet = system(instlCmnd.c_str());
+  if (systemRet == -1) 
+  {
+    std::cout << "An error occured while getting missing dependencies." << std::endl;
+  }
 }
 
 void cmake(const std::string &cmakeArgs)
@@ -380,7 +404,11 @@ void cmake(const std::string &cmakeArgs)
             << confClass.cmakePath()
             << " -DCMAKE_TOOLCHAIN_FILE=" << confClass.vcpkgDirPath()
             << "/scripts/buildsystems/vcpkg.cmake " << cmakeArgs << " .. ";
-  system(cmakeCmnd.str().c_str());
+  int systemRet = system(cmakeCmnd.str().c_str());
+  if (systemRet == -1) 
+  {
+    std::cout << "An error occured while running cmake." << std::endl;
+  }
 }
 
 void make(const std::string &makeArgs)
@@ -389,7 +417,11 @@ void make(const std::string &makeArgs)
   std::ostringstream makeCmnd;
   makeCmnd << "cd " << confClass.outputDirectory() << " && "
            << " " << confClass.makePath();
-  system(makeCmnd.str().c_str());
+  int systemRet = system(makeCmnd.str().c_str());
+  if (systemRet == -1) 
+  {
+    std::cout << "An error occured while running make." << std::endl;
+  }
 }
 
 std::string sinTriplet(const std::string &pkg)

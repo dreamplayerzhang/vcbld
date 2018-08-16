@@ -134,7 +134,8 @@ void New(const std::string &binType)
 void build(const std::string &buildType)
 {
   Builder builder(buildType);
-  builder.build();
+  std::thread buildThread(&Builder::build, &builder);
+  buildThread.join();
 }
 
 void clean()

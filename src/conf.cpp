@@ -444,8 +444,10 @@ std::string ConfClass::dbgLibPaths()
       }
     }
   }
-  std::string dbgLibPath = this->vcpkgDirPath() + "/" + "installed" + "/" + this->architecture() + "/" + "debug" + "/" + "lib";
-  for (std::vector<std::string>::iterator it = this->libs.begin(); it != this->libs.end(); ++it)
+  std::string dbgLibPath = this->vcpkgDirPath() + "/" + "installed" + "/" +
+                           this->architecture() + "/" + "debug" + "/" + "lib";
+  for (std::vector<std::string>::iterator it = this->libs.begin();
+       it != this->libs.end(); ++it)
   {
     temp << " -L" << dbgLibPath << " "
          << "-l" << *it;
@@ -481,8 +483,10 @@ std::string ConfClass::rlsLibPaths()
   for (std::vector<std::string>::iterator it = this->packageNames.begin();
        it != this->packageNames.end(); ++it)
   {
-    std::string dbgLibPath = this->vcpkgDirPath() + "/" + "installed" + "/" + this->architecture() + "/" + "lib";
-    for (std::vector<std::string>::iterator it = this->libs.begin(); it != this->libs.end(); ++it)
+    std::string dbgLibPath = this->vcpkgDirPath() + "/" + "installed" + "/" +
+                             this->architecture() + "/" + "lib";
+    for (std::vector<std::string>::iterator it = this->libs.begin();
+         it != this->libs.end(); ++it)
     {
       temp << " -L" << dbgLibPath << " "
            << "-l" << *it;

@@ -8,7 +8,6 @@
 #include <iostream>
 #include <iterator>
 #include <sstream>
-#include <thread>
 #include <vector>
 
 #include "builder.h"
@@ -145,14 +144,14 @@ void clean()
     std::string command = "rm -rf " + confClass.outputDirectory().string() +
                           "/" + "debug" + "/" + "**";
     int systemRet = system(command.c_str());
-    if (systemRet == -1) 
+    if (systemRet == -1)
     {
       std::cout << "An error occured while deleting output." << std::endl;
     }
     command = "rm -rf " + confClass.outputDirectory().string() + "/" +
               "release" + "/" + "**";
     int systemRet2 = system(command.c_str());
-    if (systemRet2 == -1) 
+    if (systemRet2 == -1)
     {
       std::cout << "An error occured while deleting output." << std::endl;
     }
@@ -174,10 +173,10 @@ void run(const std::string &buildType)
       command << "./" << confClass.outputDirectory() << "/debug/"
               << confClass.binaryName();
       int systemRet = system(command.str().c_str());
-        if (systemRet == -1) 
-        {
-          std::cout << "An error occured while running the binary." << std::endl;
-        }
+      if (systemRet == -1)
+      {
+        std::cout << "An error occured while running the binary." << std::endl;
+      }
     }
     catch (const std::exception &e)
     {
@@ -192,10 +191,10 @@ void run(const std::string &buildType)
       command << "./" << confClass.outputDirectory() << "/release/"
               << confClass.binaryName();
       int systemRet = system(command.str().c_str());
-        if (systemRet == -1) 
-  {
-    std::cout << "An error occured while running the binary." << std::endl;
-  }
+      if (systemRet == -1)
+      {
+        std::cout << "An error occured while running the binary." << std::endl;
+      }
     }
     catch (const std::exception &e)
     {
@@ -310,56 +309,62 @@ void list()
   }
 }
 
-void add(const std::string &pkg)
+void add(const std::vector<std::string> &pkg)
 {
   ConfClass confClass;
-  std::string addDep = confClass.vcpkgDirPath() + "/" + "installed" + "/" +
-                       confClass.architecture() + "/" + "share" + "/" + pkg;
-
-  if (fs::is_directory(static_cast<fs::path>(addDep)))
+  for (std::vector<std::string>::const_iterator it = pkg.begin(); it != pkg.end(); ++it)
   {
-    bool isExist = false;
-    for (std::vector<std::string>::iterator it = confClass.packageNames.begin();
-         it != confClass.packageNames.end(); ++it)
+    std::string addDep = confClass.vcpkgDirPath() + "/" + "installed" + "/" +
+                         confClass.architecture() + "/" + "share" + "/" + *it;
+
+    if (fs::is_directory(static_cast<fs::path>(addDep)))
     {
-      if (((*it) == pkg))
+      bool isExist = false;
+      for (std::vector<std::string>::iterator jt = confClass.packageNames.begin();
+           jt != confClass.packageNames.end(); ++jt)
       {
-        std::cout << "Package already exists" << std::endl;
-        isExist = true;
+        if (*jt == *it)
+        {
+          std::cout << "Package already exists" << std::endl;
+          isExist = true;
+          break;
+        }
+        else
+        {
+          isExist = false;
+        }
+      }
+      if (isExist != true)
+      {
+        confClass.include(*it);
+        confClass.write();
+      }
+    }
+    else
+    {
+      std::cout << "Package not found!" << std::endl;
+      std::cout << "Please verify your vcpkg path." << std::endl;
+    }
+  }
+}
+
+void remove(const std::vector<std::string> &pkg)
+{
+  ConfClass confClass;
+  for (std::vector<std::string>::const_iterator it = pkg.begin(); it != pkg.end(); ++it)
+  {
+    for (std::vector<std::string>::iterator jt = confClass.packageNames.begin();
+         jt != confClass.packageNames.end(); ++jt)
+    {
+      if (*jt == *it)
+      {
+        confClass.remove(*it);
+        confClass.write();
         break;
       }
       else
       {
-        isExist = false;
       }
-    }
-    if (isExist != true)
-    {
-      confClass.include(pkg);
-      confClass.write();
-    }
-  }
-  else
-  {
-    std::cout << "Package not found!" << std::endl;
-    std::cout << "Please verify your vcpkg path." << std::endl;
-  }
-}
-
-void remove(const std::string &pkg)
-{
-  ConfClass confClass;
-  for (std::vector<std::string>::iterator it = confClass.packageNames.begin();
-       it != confClass.packageNames.end(); ++it)
-  {
-    if (((*it) == pkg))
-    {
-      confClass.remove(pkg);
-      confClass.write();
-      break;
-    }
-    else
-    {
     }
   }
 }
@@ -370,7 +375,7 @@ void vcpkg(const std::string &vcpkgCmnds)
   std::string temp =
       confClass.vcpkgDirPath() + "/" + "vcpkg" + " " + vcpkgCmnds;
   int systemRet = system(temp.c_str());
-  if (systemRet == -1) 
+  if (systemRet == -1)
   {
     std::cout << "An error occured while running vcpkg." << std::endl;
   }
@@ -389,7 +394,7 @@ void restore()
   std::string instlCmnd = confClass.vcpkgDirPath() + "/" + "vcpkg" + " " +
                           "install" + " " + pkg.str();
   int systemRet = system(instlCmnd.c_str());
-  if (systemRet == -1) 
+  if (systemRet == -1)
   {
     std::cout << "An error occured while getting missing dependencies." << std::endl;
   }
@@ -404,7 +409,7 @@ void cmake(const std::string &cmakeArgs)
             << " -DCMAKE_TOOLCHAIN_FILE=" << confClass.vcpkgDirPath()
             << "/scripts/buildsystems/vcpkg.cmake " << cmakeArgs << " .. ";
   int systemRet = system(cmakeCmnd.str().c_str());
-  if (systemRet == -1) 
+  if (systemRet == -1)
   {
     std::cout << "An error occured while running cmake." << std::endl;
   }
@@ -417,7 +422,7 @@ void make(const std::string &makeArgs)
   makeCmnd << "cd " << confClass.outputDirectory() << " && "
            << " " << confClass.makePath();
   int systemRet = system(makeCmnd.str().c_str());
-  if (systemRet == -1) 
+  if (systemRet == -1)
   {
     std::cout << "An error occured while running make." << std::endl;
   }

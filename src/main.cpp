@@ -2,6 +2,7 @@
 #include <cstring>
 #include <experimental/filesystem>
 #include <iostream>
+#include <vector>
 
 #include "args.h"
 #include "help.h"
@@ -160,7 +161,12 @@ int main(int argc, char *argv[])
       }
       else
       {
-        args::add(static_cast<std::string>(argv[2]));
+        std::vector<std::string> packages;
+        for (int i = 2; i < argc; i++)
+        {
+          packages.push_back(static_cast<std::string>(argv[i]));
+        }
+        args::add(packages);
       }
     }
     else if (strcmp(argv[1], "remove") == 0)
@@ -171,7 +177,12 @@ int main(int argc, char *argv[])
       }
       else
       {
-        args::remove(static_cast<std::string>(argv[2]));
+        std::vector<std::string> packages;
+        for (int i = 2; i < argc; i++)
+        {
+          packages.push_back(static_cast<std::string>(argv[i]));
+        }
+        args::remove(packages);
       }
     }
     else if (strcmp(argv[1], "list") == 0)
@@ -209,9 +220,9 @@ int main(int argc, char *argv[])
         std::string empty = " ";
         args::cmake(empty);
       }
-      else if (strcmp(argv[2], "debug") ==0 || strcmp(argv[2], "release") ==0)
+      else if (strcmp(argv[2], "debug") == 0 || strcmp(argv[2], "release") == 0)
       {
-        std::string config = static_cast<std::string> (argv[2]);
+        std::string config = static_cast<std::string>(argv[2]);
         config[0] = toupper(config[0]);
         std::string cmakeArgs;
         for (int i = 2; i < argc; i++)
@@ -219,8 +230,9 @@ int main(int argc, char *argv[])
           cmakeArgs += " -DCMAKE_BUILD_TYPE=" + config + " ";
           cmakeArgs += argv[i];
         }
-
-      } else {
+      }
+      else
+      {
         std::string cmakeArgs;
         for (int i = 2; i < argc; i++)
         {

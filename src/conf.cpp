@@ -121,29 +121,54 @@ ConfClass::ConfClass()
   }
 
   std::vector<fs::directory_entry> dirEntry;
-  for (std::vector<std::string>::iterator it = this->packageNames.begin();
-       it != this->packageNames.end(); ++it)
+  std::string arch = "_" + this->architecture() + ".list";
+  std::string temp, temp2;
+  size_t foundFile;
+  std::string listsPath =
+      this->vcpkgDirPath() + "/" + "installed" + "/" + +"vcpkg" + "/" + "info";
+  if (fs::is_directory(static_cast<fs::path>(listsPath)))
   {
-    std::string vcpkgRlsLibs = this->vcpkgDirPath() + "/" + "packages" + "/" +
-                               *it + "_" + this->architecture() + "/" + "lib";
-    if (fs::is_directory(static_cast<fs::path>(vcpkgRlsLibs)))
+    std::copy(fs::directory_iterator(listsPath), fs::directory_iterator(),
+              back_inserter(dirEntry));
+    std::sort(dirEntry.begin(), dirEntry.end());
+    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
+                   dirEntry.end());
+    for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
+         it != dirEntry.end(); ++it)
     {
-      std::copy(fs::directory_iterator(vcpkgRlsLibs), fs::directory_iterator(),
-                std::back_inserter(dirEntry));
 
-      std::sort(dirEntry.begin(), dirEntry.end());
-      dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
-      for (std::vector<fs::directory_entry>::iterator jt = dirEntry.begin();
-           jt != dirEntry.end(); ++jt)
+      for (std::vector<std::string>::iterator jt = this->packageNames.begin();
+           jt != this->packageNames.end(); ++jt)
       {
-        if (stripLibName((*jt).path().filename().string()).at(0) != '.')
+        foundFile = (*it).path().filename().string().find(*jt);
+        if (foundFile != std::string::npos && foundFile == 0)
         {
-          this->libs.push_back(stripLibName((*jt).path().filename().string()));
+          std::string fileName = (*it).path().filename().string();
+          std::string line;
+          std::ifstream ifs((*it).path());
+          try
+          {
+            if (ifs.is_open())
+            {
+              while (!ifs.eof())
+              {
+                getline(ifs, line);
+                if (findLib(line) != "")
+                {
+                  libs.push_back(stripLibName(findLib(line)));
+                }
+              }
+            }
+          }
+          catch (...)
+          {
+            // fail quietly!
+          }
         }
+        std::sort(libs.begin(), libs.end());
+        libs.erase(std::unique(libs.begin(), libs.end()), libs.end());
       }
     }
-    std::sort(libs.begin(), libs.end());
-    libs.erase(std::unique(libs.begin(), libs.end()), libs.end());
   }
 
   for (std::vector<std::string>::iterator it = this->libs.begin();
@@ -255,17 +280,18 @@ std::string ConfClass::sourceFiles() const
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
               back_inserter(dirEntry));
     std::sort(dirEntry.begin(), dirEntry.end());
-    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
+    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
+                   dirEntry.end());
 
     for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
          it != dirEntry.end(); ++it)
     {
       if (fs::path((*it).path().filename().string()).extension() == ".cpp" ||
-          fs::path((*it).path().filename().string()).extension()  == ".rc" ||
-          fs::path((*it).path().filename().string()).extension()  == ".c" ||
-          fs::path((*it).path().filename().string()).extension()  == ".cxx" ||
+          fs::path((*it).path().filename().string()).extension() == ".rc" ||
+          fs::path((*it).path().filename().string()).extension() == ".c" ||
+          fs::path((*it).path().filename().string()).extension() == ".cxx" ||
           fs::path((*it).path().filename().string()).extension() == ".qrc" ||
-          fs::path((*it).path().filename().string()).extension()  == ".ui")
+          fs::path((*it).path().filename().string()).extension() == ".ui")
       {
         temp << this->_projPath.c_str() << "/" << tempPath + "/"
              << (*it).path().filename().string() << " ";
@@ -286,15 +312,16 @@ std::string ConfClass::sourceFilesSinPath() const
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
               back_inserter(dirEntry));
     std::sort(dirEntry.begin(), dirEntry.end());
-    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
+    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
+                   dirEntry.end());
 
     for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
          it != dirEntry.end(); ++it)
     {
-      if (fs::path((*it).path().filename().string()).extension()  == ".cpp" ||
-          fs::path((*it).path().filename().string()).extension()  == ".rc" ||
-          fs::path((*it).path().filename().string()).extension()  == ".c" ||
-          fs::path((*it).path().filename().string()).extension()  == ".cxx")
+      if (fs::path((*it).path().filename().string()).extension() == ".cpp" ||
+          fs::path((*it).path().filename().string()).extension() == ".rc" ||
+          fs::path((*it).path().filename().string()).extension() == ".c" ||
+          fs::path((*it).path().filename().string()).extension() == ".cxx")
       {
         temp << "\"" << (*it).path().filename().string() << "\" ";
       }
@@ -317,36 +344,35 @@ std::string ConfClass::compilerPath() const
 
 std::string ConfClass::getVersion(const std::string &pkgName)
 {
-  std::string ctrlPath = this->vcpkgDirPath() + "/" + "packages" + "/" +
-                         pkgName + "_" + this->architecture() + "/" + "CONTROL";
-  std::string line;
-  try
+  std::vector<fs::directory_entry> dirEntry;
+  std::string tempPath =
+      this->vcpkgDirPath() + "/" + "installed" + "/" + +"vcpkg" + "/" + "info";
+  std::string temp, temp2;
+  size_t foundArch, foundPkg;
+  std::string arch = "_" + this->architecture() + ".list";
+  std::string pkg = pkgName + "_";
+  if (fs::is_directory(static_cast<fs::path>(tempPath)))
   {
-    std::ifstream input(ctrlPath);
-    if (input.is_open())
+    std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
+              back_inserter(dirEntry));
+    std::sort(dirEntry.begin(), dirEntry.end());
+    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
+                   dirEntry.end());
+    for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
+         it != dirEntry.end(); ++it)
     {
-      std::getline(input, line);
-      std::getline(input, line);
-
-      input.close();
+      std::string fileName = (*it).path().filename().string();
+      foundPkg = fileName.find(pkg);
+      if (foundPkg != std::string::npos && foundPkg == 0)
+      {
+        temp2 = (*it).path().filename().string().substr(pkg.length(),
+                                                        fileName.length());
+      }
     }
-    else
-    {
-      std::cerr << "Failed to open file : " << errno << std::endl;
-    }
   }
-  catch (const std::exception &e)
-  {
-    std::cout << "CONTROL file not found" << std::endl;
-  }
-  std::size_t found;
-  std::string cropVersion;
-  found = line.find(": ");
-  if (found != std::string::npos)
-  {
-    cropVersion = line.substr((found + 2), line.length());
-  }
-  return cropVersion;
+  foundArch = temp2.find(arch);
+  temp = temp2.substr(0, foundArch);
+  return temp;
 }
 
 std::string ConfClass::headerPaths()
@@ -357,15 +383,6 @@ std::string ConfClass::headerPaths()
        << "installed"
        << "/" << this->architecture() << "/"
        << "include";
-
-  for (std::vector<std::string>::iterator it = this->packageNames.begin();
-       it != this->packageNames.end(); ++it)
-  {
-    temp << " -I" << this->vcpkgDirPath() << "/"
-         << "packages"
-         << "/" << *it << "_" << this->architecture() << "/"
-         << "/";
-  }
   return temp.str();
 }
 
@@ -414,7 +431,8 @@ std::string ConfClass::dbgLibPaths()
     std::copy(fs::directory_iterator(localDbgLibs), fs::directory_iterator(),
               std::back_inserter(dirEntry));
     std::sort(dirEntry.begin(), dirEntry.end());
-    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
+    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
+                   dirEntry.end());
 
     for (std::vector<fs::directory_entry>::iterator jt = dirEntry.begin();
          jt != dirEntry.end(); ++jt)
@@ -426,29 +444,11 @@ std::string ConfClass::dbgLibPaths()
       }
     }
   }
-
-  for (std::vector<std::string>::iterator it = this->packageNames.begin();
-       it != this->packageNames.end(); ++it)
+  std::string dbgLibPath = this->vcpkgDirPath() + "/" + "installed" + "/" + this->architecture() + "/" + "debug" + "/" + "lib";
+  for (std::vector<std::string>::iterator it = this->libs.begin(); it != this->libs.end(); ++it)
   {
-    std::string vcpkgDbgLibs = this->vcpkgDirPath() + "/" + "packages" + "/" +
-                               *it + "_" + this->architecture() + "/" +
-                               "debug" + "/" + "lib";
-    if (fs::is_directory(static_cast<fs::path>(vcpkgDbgLibs)))
-    {
-      std::copy(fs::directory_iterator(vcpkgDbgLibs), fs::directory_iterator(),
-                std::back_inserter(dirEntry));
-      std::sort(dirEntry.begin(), dirEntry.end());
-      dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
-      for (std::vector<fs::directory_entry>::iterator jt = dirEntry.begin();
-           jt != dirEntry.end(); ++jt)
-      {
-        if (stripLibName((*jt).path().filename().string()).at(0) != '.')
-        {
-          temp << " -L" << (*jt).path().parent_path().string() << " "
-               << " -l" << stripLibName((*jt).path().filename().string());
-        }
-      }
-    }
+    temp << " -L" << dbgLibPath << " "
+         << "-l" << *it;
   }
   return temp.str();
 }
@@ -464,7 +464,8 @@ std::string ConfClass::rlsLibPaths()
     std::copy(fs::directory_iterator(localRlsLibs), fs::directory_iterator(),
               std::back_inserter(dirEntry));
     std::sort(dirEntry.begin(), dirEntry.end());
-    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
+    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
+                   dirEntry.end());
 
     for (std::vector<fs::directory_entry>::iterator jt = dirEntry.begin();
          jt != dirEntry.end(); ++jt)
@@ -480,23 +481,11 @@ std::string ConfClass::rlsLibPaths()
   for (std::vector<std::string>::iterator it = this->packageNames.begin();
        it != this->packageNames.end(); ++it)
   {
-    std::string vcpkgRlsLibs = this->vcpkgDirPath() + "/" + "packages" + "/" +
-                               *it + "_" + this->architecture() + "/" + "lib";
-    if (fs::is_directory(static_cast<fs::path>(vcpkgRlsLibs)))
+    std::string dbgLibPath = this->vcpkgDirPath() + "/" + "installed" + "/" + this->architecture() + "/" + "lib";
+    for (std::vector<std::string>::iterator it = this->libs.begin(); it != this->libs.end(); ++it)
     {
-      std::copy(fs::directory_iterator(vcpkgRlsLibs), fs::directory_iterator(),
-                std::back_inserter(dirEntry));
-      std::sort(dirEntry.begin(), dirEntry.end());
-      dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
-      for (std::vector<fs::directory_entry>::iterator jt = dirEntry.begin();
-           jt != dirEntry.end(); ++jt)
-      {
-        if (stripLibName((*jt).path().filename().string()).at(0) != '.')
-        {
-          temp << " -L" << (*jt).path().parent_path().string() << " "
-               << " -l" << stripLibName((*jt).path().filename().string());
-        }
-      }
+      temp << " -L" << dbgLibPath << " "
+           << "-l" << *it;
     }
   }
   return temp.str();
@@ -548,6 +537,17 @@ bool ConfClass::hasComponents(const std::string &libName)
   }
 }
 std::string ConfClass::cmakeOutput() const { return this->_cmakeOutput.str(); }
+std::string ConfClass::findLib(const std::string &line)
+{
+  std::string libName;
+  size_t found;
+  found = line.find("debug/lib/");
+  if (found != std::string::npos)
+  {
+    libName = line.substr(found + 10, line.length());
+  }
+  return libName;
+}
 std::string ConfClass::cmakePath() const { return _cmakePath; }
 std::string ConfClass::makePath() const { return _makePath; }
 std::string ConfClass::projectName() const { return _projectName; }

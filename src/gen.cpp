@@ -24,12 +24,6 @@ void includePathGen()
   incJson.push_back(confClass.sourceDirectory().relative_path().string());
   incJson.push_back(confClass.vcpkgDirPath() + "/" + "installed" + "/" +
                     "include");
-  for (std::vector<std::string>::iterator it = confClass.packageNames.begin();
-       it != confClass.packageNames.end(); ++it)
-  {
-    incJson.push_back(confClass.vcpkgDirPath() + "/" + "packages" + "/" + *it +
-                      "/" + confClass.architecture() + "/" + "include");
-  }
   std::string temp = confClass.sourceDirectory().string();
 
   if (!fs::exists("includePath.txt"))
@@ -159,7 +153,7 @@ void cmakeGen()
              "${VCPKG_ROOT}/installed/${VCPKG_TARGET_TRIPLET}"
           << "/include)\n"
           << "target_include_directories(${PROJECT_NAME} PUBLIC "
-             "${CMAKE_CURRENT_SOURCE_DIR}/../include)";
+             "${CMAKE_CURRENT_SOURCE_DIR}/../include)\n";
       if (confClass.libs.size() != 0)
       {
         ofs << "target_link_libraries(${PROJECT_NAME} debug ${dbgLIBS})\n"

@@ -197,7 +197,11 @@ void available()
 
     std::string vcpkgDirPath = confClass.vcpkgDirPath();
     vcpkgDirPath += "/";
-    vcpkgDirPath += "packages";
+    vcpkgDirPath += "installed";
+    vcpkgDirPath += "/";
+    vcpkgDirPath += confClass.architecture();
+    vcpkgDirPath += "/";
+    vcpkgDirPath += "share";
 
     if (fs::is_directory(static_cast<fs::path>(vcpkgDirPath)))
     {
@@ -208,10 +212,9 @@ void available()
                dirEntry.begin();
            it != dirEntry.end(); ++it)
       {
-        if (sinTriplet((*it).path().filename().string()).at(0) != '.')
+        if (((*it).path().filename().string()).at(0) != '.')
         {
-          std::cout << sinTriplet((*it).path().filename().string())
-                    << std::endl;
+          std::cout << ((*it).path().filename().string()) << std::endl;
         }
       }
     }
@@ -236,7 +239,11 @@ void search(const std::string &pkg)
 
     std::string vcpkgDirPath = confClass.vcpkgDirPath();
     vcpkgDirPath += "/";
-    vcpkgDirPath += "packages";
+    vcpkgDirPath += "installed";
+    vcpkgDirPath += "/";
+    vcpkgDirPath += confClass.architecture();
+    vcpkgDirPath += "/";
+    vcpkgDirPath += "share";
 
     if (fs::is_directory(static_cast<fs::path>(vcpkgDirPath)))
     {
@@ -246,12 +253,12 @@ void search(const std::string &pkg)
       for (std::vector<fs::directory_entry>::const_iterator it =
                dirEntry.begin();
            it != dirEntry.end(); ++it)
-        if (sinTriplet((*it).path().filename().string()).find(pkg) !=
-            std::string::npos)
+      {
+        if (((*it).path().filename().string()).find(pkg) != std::string::npos)
         {
-          std::cout << sinTriplet((*it).path().filename().string())
-                    << std::endl;
+          std::cout << ((*it).path().filename().string()) << std::endl;
         }
+      }
     }
     else
     {
@@ -290,8 +297,8 @@ void list()
 void add(const std::string &pkg)
 {
   ConfClass confClass;
-  std::string addDep = confClass.vcpkgDirPath() + "/" + "packages" + "/" + pkg +
-                       "_" + confClass.architecture();
+  std::string addDep = confClass.vcpkgDirPath() + "/" + "installed" + "/" +
+                       confClass.architecture() + "/" + "share" + "/" + pkg;
 
   if (fs::is_directory(static_cast<fs::path>(addDep)))
   {
@@ -369,8 +376,9 @@ void cmake(const std::string &cmakeArgs)
   ConfClass confClass;
   std::ostringstream cmakeCmnd;
   cmakeCmnd << "cd " << confClass.outputDirectory() << " && "
-            << confClass.cmakePath() << " -DCMAKE_TOOLCHAIN_FILE=" << confClass.vcpkgDirPath() << "/scripts/buildsystems/vcpkg.cmake " << cmakeArgs
-            << " .. ";
+            << confClass.cmakePath()
+            << " -DCMAKE_TOOLCHAIN_FILE=" << confClass.vcpkgDirPath()
+            << "/scripts/buildsystems/vcpkg.cmake " << cmakeArgs << " .. ";
   system(cmakeCmnd.str().c_str());
 }
 

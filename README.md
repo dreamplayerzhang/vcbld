@@ -1,5 +1,5 @@
 # vcbld
-A build system that works with vcpkg. It works for the moment on posix systems, i.e. linux and mac os x. It runs on windows if you're using MinGW or MSYS. It has a minimal build system which works for small single hierarchy projects which allows for faster prototyping, however it has support for cmake and can be used to generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
+A minimalist command-line build system that works with vcpkg. It works for the moment on posix systems, i.e. linux and macOS X. It runs on windows if you're using MinGW or MSYS. It has a minimal build system which works for small single hierarchy projects which allows for faster prototyping, however it has support for cmake and can be used to generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
 The vcbld executable is about 500kb large, and depends on the presence of vcpkg and cmake. Of course you would also need a posix C/C++ compiler such as gcc, clang or mingGW.
 
 ```
@@ -36,7 +36,7 @@ $ cmake ..
 $ make
 ```
 
-The built vcbld executable can be found in the release directory. vcbld doesn't automatically add itself to your PATH, however you can do so after building from source on mac os x and linux using:
+The built vcbld executable can be found in the release directory. vcbld doesn't automatically add itself to your PATH, however you can do so after building from source on macOS X and linux using:
 ```
 $ make install
 ```
@@ -65,8 +65,8 @@ This will generate a conf.json file in the directory of the executable. It conta
 }
 ```
 The conf.json is not supposed to be pushed to a version control repository like github since it's dependant on local variables and thus should be added to your gitignore (if you were using git).
-The first 2 variables are the paths of the c and c++ compilers. The default compilers for mac os x is clang, while for linux it would be gcc and g++ respectively. On windows, the default compiler is the MinGW gcc.
-The vcpkgDirectory variable is the parent directory of the vcpkg executable you wish to choose for your project. It defaults to the home path on linux and mac os x, while on windows it defaults to C:/Program Files/vcpkg.
+The first 2 variables are the paths of the c and c++ compilers. The default compilers for macOS X is clang, while for linux it would be gcc and g++ respectively. On windows, the default compiler is the MinGW gcc.
+The vcpkgDirectory variable is the parent directory of the vcpkg executable you wish to choose for your project. It defaults to the home path on linux and macOS X, while on windows it defaults to C:/Program Files/vcpkg.
 
 The architecture depends on the host operating system. You can check the vcpkg triplet documentation [here.](https://github.com/Microsoft/vcpkg/blob/master/docs/users/triplets.md)
 
@@ -148,7 +148,7 @@ $ vcbld gen
 ```
 and it would include many of the variables in the vcbld.json file. Packages with known components and with find_package support would use the find_package command in the CMakeLists.txt file. For the time being it includes Boost and Qt components. Other libraries would be located using the find_library command. And although vcbld doesn't support meta-object compilation, generating CMakeLists would allow meta-object compilation.
 
-CMake can be run using vcbld which would run within the output directory and use the vcpkg toolchain by default. You can then run make (on mac os x and linux) similarly to build the binary. You can also then run the run command on the generated executable.
+CMake can be run using vcbld which would run within the output directory and use the vcpkg toolchain by default. You can then run make (on macOS X and linux) similarly to build the binary. You can also then run the run command on the generated executable.
 ```
 $ vcbld cmake
 $ vcbld make

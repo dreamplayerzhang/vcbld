@@ -74,7 +74,7 @@ Although vcbld doesn't support cross-compilation on the same machine, vcbld proj
 cmakePath and makePath are your installation locations of cmake and make. vcbld supports building using cmake and make within the executable. It can also generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
 On windows, the default make file is the one supplied by the MinGW installation.
 
-A new project will also have a vcbld.json and package.json files in project directory.
+A new project will also have a vcbld.json and package.json files in the project directory.
 A vcbld.json would look like the following (without the comments):
 ```
 {

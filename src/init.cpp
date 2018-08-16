@@ -47,7 +47,7 @@ void setup()
   {
     cCompilerPath = "/usr/bin/gcc";
     cppCompilerPath = "/usr/bin/g++";
-    cmakePath = "/usr/local/bin/cmake";
+    cmakePath = "/usr/bin/cmake";
     makePath= "/usr/bin/make";
   }
   else if (PLATFORM_NAME == "x64-windows" || PLATFORM_NAME == "x86-windows")

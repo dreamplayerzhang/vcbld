@@ -50,7 +50,8 @@ std::string Builder::compile()
                           << this->confClass->standard() << " "
                           << this->confClass->headerPaths() << " ";
   }
-  system(this->_compileCommand.str().c_str());
+  int systemRet = system(this->_compileCommand.str().c_str());
+  if (systemRet )
   return this->_compileCommand.str();
 }
 

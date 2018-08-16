@@ -548,6 +548,14 @@ std::string ConfClass::findLib(const std::string &line)
   }
   return libName;
 }
+std::string ConfClass::compilerDefines() const
+{
+  return this->_compilerDefines.str();
+}
+std::string ConfClass::compilerFlags() const
+{
+  return this->_compilerFlags.str();
+}
 std::string ConfClass::cmakePath() const { return _cmakePath; }
 std::string ConfClass::makePath() const { return _makePath; }
 std::string ConfClass::projectName() const { return _projectName; }
@@ -562,12 +570,4 @@ fs::path ConfClass::sourceDirectory() const { return _sourceDirectory; }
 fs::path ConfClass::includeDirectory() const { return _includeDirectory; }
 fs::path ConfClass::libsDirectory() const { return _libsDirectory; }
 std::string ConfClass::architecture() const { return _architecture; }
-std::string ConfClass::compilerDefines() const
-{
-  return this->_compilerDefines.str();
-}
-std::string ConfClass::compilerFlags() const
-{
-  return this->_compilerFlags.str();
-}
 } // namespace vcbld

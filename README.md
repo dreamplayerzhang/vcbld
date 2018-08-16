@@ -174,7 +174,7 @@ $ mkdir build
 $ cd build
 $ cmake -DCMAKE_TOOLCHAIN_FILE=[vcpkg root]/vcpkg/scripts/buildsystems/vcpkg.cmake -G "Visual Studio 15 2017 Win64" ..
 ```
-Which would generate a visual studio project file, or to generate makefiles (which is the default output on linux and mac os x): 
+Which would generate a visual studio project file, or to generate makefiles (which is the default output on linux and macOS X): 
 ```
 $ cmake -DCMAKE_TOOLCHAIN_FILE=[vcpkg root]/vcpkg/scripts/buildsystems/vcpkg.cmake -G "Unix Makefiles" ..
 ```

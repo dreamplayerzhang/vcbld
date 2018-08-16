@@ -2,6 +2,7 @@
 #define ARGS_H
 
 #include <string>
+#include <vector>
 
 namespace vcbld
 {

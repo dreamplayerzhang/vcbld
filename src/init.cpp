@@ -189,18 +189,23 @@ void init(const std::string &binType)
 std::string findCmake(const std::string &dir)
 {
   std::string temp;
+  std::string fileName;
   if (PLATFORM_NAME == "x86-windows" || PLATFORM_NAME == "x64-windows")
   {
-    std::string fileName = "cmake";
+    fileName = "cmake.exe";
   } else
   {
-    std::string fileName = "cmake";
+    fileName = "cmake";
   }
-  std::string fileName = "cmake";
   const fs::recursive_directory_iterator end;
   const auto it = std::find_if(fs::recursive_directory_iterator(dir), end,
                           [&fileName](const fs::directory_entry& e) {
-                            return e.path().filename() == fileName;
+                            size_t found = e.path().string().find("/bin/");
+                            if (found != std::string::npos)
+                            {
+                              return e.path().filename() == fileName;
+                            }
+                        
                           });
   if (it == end) {
     temp = "";

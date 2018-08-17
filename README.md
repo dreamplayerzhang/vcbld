@@ -26,7 +26,7 @@ SDK commands:
 ```
 
 ## Getting vcbld:
-You can download a prebuilt vcbld executable [here](https://github.com/MoAlyousef/vcbld/releases). Currently there are prebuilt binaries for macOS X and debian linux. Otherwise you can build from source. 
+You can download a prebuilt vcbld executable [here](https://github.com/MoAlyousef/vcbld/releases). Currently there are prebuilt binaries for macOS X and debian linux. Otherwise you can build from source. After downlowding or building the executable, move the vcbld executable to your default vcpkg directory where the vcpkg executable is located.
 
 ## Building vcbld:
 vcbld has a single external dependency, namely Nlohmann-json which is a header-only library and is included in this git repository. To build vcbld, create a directory called vcbld. Access that directory using the command line. Clone this repository and build using cmake. The command line commands would look something like this:

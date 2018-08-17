@@ -95,14 +95,16 @@ std::string Builder::appLink()
     this->_appLinkCmnd << "cd " << this->_rlsDir << " && "
                        << this->confClass->compilerPath() << " -o "
                        << this->confClass->binaryName() << " " << temp << " "
-                       << this->confClass->rlsLibPaths();
+                       << this->confClass->rlsLibPaths() << " "
+                       << this->confClass->linkerFlags();
   }
   else
   {
     this->_appLinkCmnd << "cd " << this->_dbgDir << " && "
                        << this->confClass->compilerPath() << " -o "
                        << this->confClass->binaryName() << " " << temp << " "
-                       << this->confClass->dbgLibPaths();
+                       << this->confClass->dbgLibPaths() << " "
+                       << this->confClass->linkerFlags();
   }
   int systemRet = system(this->_appLinkCmnd.str().c_str());
   if (systemRet == -1)
@@ -160,14 +162,16 @@ std::string Builder::dylibLink()
     this->_libLinkCmnd << "cd " << this->_rlsDir << " && "
                        << this->confClass->compilerPath() << dylibArg << " -o "
                        << this->confClass->binaryName() << dylibExt << " "
-                       << temp << " " << this->confClass->rlsLibPaths();
+                       << temp << " " << this->confClass->rlsLibPaths() << " "
+                       << this->confClass->linkerFlags();
   }
   else
   {
     this->_libLinkCmnd << "cd " << this->_dbgDir << " && "
                        << this->confClass->compilerPath() << dylibArg << " -o "
                        << this->confClass->binaryName() << dylibExt << " "
-                       << temp << " " << this->confClass->dbgLibPaths();
+                       << temp << " " << this->confClass->dbgLibPaths() << " "
+                       << this->confClass->linkerFlags();
   }
   int systemRet = system(this->_libLinkCmnd.str().c_str());
   if (systemRet == -1)

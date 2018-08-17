@@ -113,7 +113,7 @@ A vcbld.json would look like the following (without the comments):
 	"binaryName" : "myApp", // Name of the resulting binary, use a "lib" prefix if it were a library.
     	"sourceDirectory" : "src", // Relative or absolute path of your source directory
     	"includeDirectory" : "include",
-	"libsDirectory" : "libs",
+	"libDirectory" : "lib",
     	"outputDirectory" : "bin", // Relative or absolute path to your output directory
     	"compilerDefines" : [], // an array of any -D arguments you want to pass to the 
 	"compilerFlags" : ["-Werror"], // an array of any compiler flags 

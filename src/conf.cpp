@@ -46,7 +46,7 @@ ConfClass::ConfClass()
     this->_outputDirectory = vcbldJson["outputDirectory"];
     this->_sourceDirectory = vcbldJson["sourceDirectory"];
     this->_includeDirectory = vcbldJson["includeDirectory"];
-    this->_libsDirectory = vcbldJson["libsDirectory"];
+    this->_libDirectory = vcbldJson["libDirectory"];
 
     for (json::iterator it = vcbldJson["compilerDefines"].begin();
          it != vcbldJson["compilerDefines"].end(); ++it)
@@ -376,7 +376,7 @@ std::string ConfClass::stripLibName(const std::string &lib)
 std::string ConfClass::dbgLibPaths()
 {
   std::ostringstream temp;
-  std::string localDbgLibs = this->libsDirectory().string() + "/" + "debug";
+  std::string localDbgLibs = this->libDirectory().string() + "/" + "debug";
   std::vector<fs::directory_entry> dirEntry;
 
   if (fs::is_directory(static_cast<fs::path>(localDbgLibs)))
@@ -411,7 +411,7 @@ std::string ConfClass::dbgLibPaths()
 std::string ConfClass::rlsLibPaths()
 {
   std::ostringstream temp;
-  std::string localRlsLibs = this->libsDirectory().string() + "/" + "lib";
+  std::string localRlsLibs = this->libDirectory().string() + "/" + "lib";
   std::vector<fs::directory_entry> dirEntry;
 
   if (fs::is_directory(static_cast<fs::path>(localRlsLibs)))
@@ -583,6 +583,6 @@ std::string ConfClass::vcpkgDirPath() const { return _vcpkgDirPath; }
 fs::path ConfClass::outputDirectory() const { return _outputDirectory; }
 fs::path ConfClass::sourceDirectory() const { return _sourceDirectory; }
 fs::path ConfClass::includeDirectory() const { return _includeDirectory; }
-fs::path ConfClass::libsDirectory() const { return _libsDirectory; }
+fs::path ConfClass::libDirectory() const { return _libDirectory; }
 std::string ConfClass::architecture() const { return _architecture; }
 } // namespace vcbld

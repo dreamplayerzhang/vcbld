@@ -45,34 +45,34 @@ void New(const std::string &binType)
     std::cout << "include directroy exists." << std::endl;
   }
 
-  if (!fs::exists("libs"))
+  if (!fs::exists("lib"))
   {
-    fs::create_directory("libs");
-    std::cout << "libs directory created successfully." << std::endl;
+    fs::create_directory("lib");
+    std::cout << "lib directory created successfully." << std::endl;
   }
   else
   {
-    std::cout << "libs directroy exists." << std::endl;
+    std::cout << "lib directroy exists." << std::endl;
   }
 
-  if (!fs::exists("./libs/debug"))
+  if (!fs::exists("./lib/debug"))
   {
-    fs::create_directory("./libs/debug");
-    std::cout << "libs/debug directory created successfully." << std::endl;
+    fs::create_directory("./lib/debug");
+    std::cout << "lib/debug directory created successfully." << std::endl;
   }
   else
   {
-    std::cout << "libs/debug directroy exists." << std::endl;
+    std::cout << "lib/debug directroy exists." << std::endl;
   }
 
   if (!fs::exists("./libs/release"))
   {
     fs::create_directory("./libs/release");
-    std::cout << "libs/release directory created successfully." << std::endl;
+    std::cout << "lib/release directory created successfully." << std::endl;
   }
   else
   {
-    std::cout << "libs/release directroy exists." << std::endl;
+    std::cout << "lib/release directroy exists." << std::endl;
   }
 
   if (!fs::exists("bin"))

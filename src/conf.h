@@ -31,7 +31,7 @@ public:
   fs::path outputDirectory() const;
   fs::path sourceDirectory() const;
   fs::path includeDirectory() const;
-  fs::path libsDirectory() const;
+  fs::path libDirectory() const;
   std::string sourceFiles() const;
   std::string sourceFilesSinPath() const;
   std::string compilerDefines() const;
@@ -73,7 +73,7 @@ private:
   std::string _outputDirectory;
   std::string _sourceDirectory;
   std::string _includeDirectory;
-  std::string _libsDirectory;
+  std::string _libDirectory;
   std::ostringstream _compilerDefines;
   std::ostringstream _compilerFlags;
   std::ostringstream _linkerFlags;

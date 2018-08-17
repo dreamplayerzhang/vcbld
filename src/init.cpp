@@ -216,6 +216,7 @@ std::string findVcbld(const std::string &PATH)
     std::string home = std::getenv("HOME");
     temp.replace(0, 1, home);
   }
+  
   return temp;
 }
 

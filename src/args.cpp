@@ -65,9 +65,9 @@ void New(const std::string &binType)
     std::cout << "lib/debug directroy exists." << std::endl;
   }
 
-  if (!fs::exists("./libs/release"))
+  if (!fs::exists("./lib/release"))
   {
-    fs::create_directory("./libs/release");
+    fs::create_directory("./lib/release");
     std::cout << "lib/release directory created successfully." << std::endl;
   }
   else

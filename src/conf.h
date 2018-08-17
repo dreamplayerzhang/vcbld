@@ -48,10 +48,11 @@ public:
   std::string rlsLibPaths();
 
   bool hasComponents(const std::string &libName);
-  std::string cmakeOutput() const;
+  std::string cmakeOutput();
 
   std::vector<std::string> packageNames;
   std::vector<std::string> libs;
+  std::vector<std::string> fullLibNames;
 
 private:
   fs::path _projPath;

@@ -51,7 +51,7 @@ std::string Builder::compile()
                           << this->confClass->headerPaths() << " ";
   }
   int systemRet = system(this->_compileCommand.str().c_str());
-  if (systemRet == -1) 
+  if (systemRet == -1)
   {
     std::cout << "An error occured while compiling." << std::endl;
   }
@@ -105,7 +105,7 @@ std::string Builder::appLink()
                        << this->confClass->dbgLibPaths();
   }
   int systemRet = system(this->_appLinkCmnd.str().c_str());
-  if (systemRet == -1) 
+  if (systemRet == -1)
   {
     std::cout << "An error occured while linking." << std::endl;
   }
@@ -170,7 +170,7 @@ std::string Builder::dylibLink()
                        << temp << " " << this->confClass->dbgLibPaths();
   }
   int systemRet = system(this->_libLinkCmnd.str().c_str());
-  if (systemRet == -1) 
+  if (systemRet == -1)
   {
     std::cout << "An error occured while linking." << std::endl;
   }
@@ -220,7 +220,7 @@ std::string Builder::archive()
                        << " " << temp;
   }
   int systemRet = system(this->_archiveCmnd.str().c_str());
-  if (systemRet == -1) 
+  if (systemRet == -1)
   {
     std::cout << "An error occured while archiving." << std::endl;
   }
@@ -264,6 +264,7 @@ void Builder::build()
   {
     this->compile();
     this->appLink();
+    this->copy();
   }
   else if (this->confClass->binaryType() == "staticLibrary")
   {
@@ -274,10 +275,46 @@ void Builder::build()
   {
     this->compile();
     this->dylibLink();
+    this->copy();
   }
   else
   {
     std::cout << "Unknown binary type defined in vcbld.json" << std::endl;
+  }
+}
+
+void Builder::copy()
+{
+  std::string dbgLibPath = this->confClass->vcpkgDirPath() + "/" + "installed" + "/" + this->confClass->architecture() + "/" + "debug/lib";
+  std::string rlsLibPath = this->confClass->vcpkgDirPath() + "/" + "installed" + "/" + this->confClass->architecture() + "/" + "lib";
+  std::string fullName;
+  for (std::vector<std::string>::iterator it = this->confClass->fullLibNames.begin(); it != this->confClass->fullLibNames.end(); ++it)
+  {
+    if (this->_buildType == "debug")
+    {
+      fullName = dbgLibPath + "/" + (*it);
+    }
+    else
+    {
+      fullName = rlsLibPath + "/" + (*it);
+    }
+    if (fs::exists(fullName))
+    {
+      if (this->_buildType == "debug")
+      {
+        if (fs::path(*it).extension() != ".a")
+        {
+          fs::copy(fullName, this->_dbgDir);
+        }
+      }
+      else
+      {
+        if (fs::path(*it).extension() != ".a")
+        {
+          fs::copy(fullName, this->_rlsDir);
+        }
+      }
+    }
   }
 }
 

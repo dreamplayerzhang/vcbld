@@ -151,7 +151,9 @@ ConfClass::ConfClass()
                 getline(ifs, line);
                 if (findLib(line) != "")
                 {
-                  libs.push_back(stripLibName(findLib(line)));
+                  std::string libFound = findLib(line);
+                  libs.push_back(stripLibName(libFound));
+                  fullLibNames.push_back(libFound);
                 }
               }
             }
@@ -165,57 +167,6 @@ ConfClass::ConfClass()
         libs.erase(std::unique(libs.begin(), libs.end()), libs.end());
       }
     }
-  }
-
-  for (std::vector<std::string>::iterator it = this->libs.begin();
-       it != this->libs.end(); ++it)
-  {
-    std::string libName = *it;
-    std::string module = libName;
-    module[0] = toupper(module[0]);
-    if (!hasComponents(libName))
-    {
-      this->_cmakeOutput << "#Find " << libName << "\n"
-                         << "find_library(" << libName << "_DBG NAMES "
-                         << libName << " HINTS "
-                         << "${DBG_LIB_PATH})\n"
-                         << "find_library(" << libName << "_RLS NAMES "
-                         << libName << " HINTS "
-                         << "${RLS_LIB_PATH})\n"
-                         << "set(dbgLIBS ${dbgLIBS} ${" << libName << "_DBG})\n"
-                         << "set(rlsLIBS ${rlsLIBS} ${" << libName
-                         << "_RLS})\n\n";
-    }
-  }
-  if (this->boostComponents.size() > 1)
-  {
-    this->_cmakeOutput << "#Find "
-                       << "Boost components"
-                       << "\n"
-                       << "find_package(Boost COMPONENTS ";
-    for (std::vector<std::string>::iterator it = this->boostComponents.begin();
-         it != this->boostComponents.end(); ++it)
-    {
-      this->_cmakeOutput << *it << " ";
-    }
-    this->_cmakeOutput << "REQUIRED)\n"
-                       << "set(dbgLIBS ${dbgLIBS} ${Boost_LIBRARIES})\n"
-                       << "set(rlsLIBS ${rlsLIBS} ${Boost_LIBRARIES})\n\n";
-  }
-  if (this->QtComponents.size() > 1)
-  {
-    this->_cmakeOutput << "#Find "
-                       << "Qt components"
-                       << "\n"
-                       << "find_package(Qt5 COMPONENTS ";
-    for (std::vector<std::string>::iterator jt = this->QtComponents.begin();
-         jt != this->QtComponents.end(); ++jt)
-    {
-      this->_cmakeOutput << *jt << " ";
-    }
-    this->_cmakeOutput << "REQUIRED)\n"
-                       << "set(dbgLIBS ${dbgLIBS} ${Qt5_LIBRARIES})\n"
-                       << "set(rlsLIBS ${rlsLIBS} ${Qt5_LIBRARIES})\n\n";
   }
 }
 
@@ -536,7 +487,61 @@ bool ConfClass::hasComponents(const std::string &libName)
     return false;
   }
 }
-std::string ConfClass::cmakeOutput() const { return this->_cmakeOutput.str(); }
+std::string ConfClass::cmakeOutput()
+{
+  for (std::vector<std::string>::iterator it = this->libs.begin();
+       it != this->libs.end(); ++it)
+  {
+    std::string libName = *it;
+    std::string module = libName;
+    module[0] = toupper(module[0]);
+    if (!hasComponents(libName))
+    {
+      this->_cmakeOutput << "#Find " << libName << "\n"
+                         << "find_library(" << libName << "_DBG NAMES "
+                         << libName << " HINTS "
+                         << "${DBG_LIB_PATH})\n"
+                         << "find_library(" << libName << "_RLS NAMES "
+                         << libName << " HINTS "
+                         << "${RLS_LIB_PATH})\n"
+                         << "set(dbgLIBS ${dbgLIBS} ${" << libName << "_DBG})\n"
+                         << "set(rlsLIBS ${rlsLIBS} ${" << libName
+                         << "_RLS})\n\n";
+    }
+  }
+  if (this->boostComponents.size() > 1)
+  {
+    this->_cmakeOutput << "#Find "
+                       << "Boost components"
+                       << "\n"
+                       << "find_package(Boost COMPONENTS ";
+    for (std::vector<std::string>::iterator it = this->boostComponents.begin();
+         it != this->boostComponents.end(); ++it)
+    {
+      this->_cmakeOutput << *it << " ";
+    }
+    this->_cmakeOutput << "REQUIRED)\n"
+                       << "set(dbgLIBS ${dbgLIBS} ${Boost_LIBRARIES})\n"
+                       << "set(rlsLIBS ${rlsLIBS} ${Boost_LIBRARIES})\n\n";
+  }
+  if (this->QtComponents.size() > 1)
+  {
+    this->_cmakeOutput << "#Find "
+                       << "Qt components"
+                       << "\n"
+                       << "find_package(Qt5 COMPONENTS ";
+    for (std::vector<std::string>::iterator jt = this->QtComponents.begin();
+         jt != this->QtComponents.end(); ++jt)
+    {
+      this->_cmakeOutput << *jt << " ";
+    }
+    this->_cmakeOutput << "REQUIRED)\n"
+                       << "set(dbgLIBS ${dbgLIBS} ${Qt5_LIBRARIES})\n"
+                       << "set(rlsLIBS ${rlsLIBS} ${Qt5_LIBRARIES})\n\n";
+  }
+  return this->_cmakeOutput.str();
+}
+
 std::string ConfClass::findLib(const std::string &line)
 {
   std::string libName;

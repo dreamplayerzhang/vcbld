@@ -18,6 +18,7 @@ public:
   std::string archive();
   std::string getBldCommands();
   void build();
+  void copy();
 
   ~Builder();
 

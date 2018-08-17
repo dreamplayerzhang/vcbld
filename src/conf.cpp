@@ -64,10 +64,6 @@ ConfClass::ConfClass()
   {
     std::cerr << "Error reading vcbld.json." << std::endl;
   }
-  if (!fs::exists("conf.json"))
-  {
-    init::setup();
-  }
 
   try
   {

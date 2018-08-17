@@ -20,6 +20,10 @@ int main(int argc, char *argv[])
 {
   fs::path vcbldPath = argv[0];
   vcbldPath = vcbldPath.parent_path();
+  if (!fs::exists("conf.json"))
+  {
+    init::setup(vcbldPath);
+  }
 
   if (argc >= 2)
   {
@@ -36,7 +40,7 @@ int main(int argc, char *argv[])
     }
     else if (strcmp(argv[1], "setup") == 0)
     {
-      init::setup();
+      init::setup(vcbldPath);
     }
     else if (strcmp(argv[1], "restore") == 0)
     {

@@ -1,5 +1,5 @@
 # vcbld
-A minimalist command-line build system and software development kit that works with vcpkg. It works for the moment on posix systems, i.e. linux and macOS X. It runs on windows if you're using MinGW or MSYS. It has a minimal build system which works for small single hierarchy projects and allows for faster prototyping, however it has support for cmake and can be used to generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
+A minimalist command-line build system and software development kit that works with vcpkg. It works for the moment on posix systems, i.e. linux and macOS X. It runs on windows if you're using MinGW, MSYS or Cygwin. It has a minimal build system which works for small single hierarchy projects and allows for faster prototyping, however it has support for cmake and can be used to generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
 The vcbld executable is about 500kb large, and depends on the presence of vcpkg and cmake. Of course you would also need a posix C/C++ compiler such as gcc, clang or mingGW.
 
 ```
@@ -36,11 +36,12 @@ $ cmake ..
 $ make
 ```
 
-The built vcbld executable can be found in the release directory. vcbld doesn't automatically add itself to your PATH, however you can do so after building from source on macOS X and linux using:
+The built vcbld executable can be found in the release directory. You should copy the built executable and add it to your default vcpkg directory.
+Note that vcpkg doesn't automatically add itself to your PATH, however you can do so after building from source on macOS X and linux using:
 ```
-$ make install
+$ echo 'export PATH=$PATH:/path/to/vcpkg/directory' >> ~/.bashrc 
 ```
-On windows you can add the vcbld binary directory to your path via accessing Control Panel -> System -> Advanced system settings -> Environment variables -> Edit System Variable (or New System Variable). There you can add the folder to your PATH.
+On windows you can add the vcpkg binary directory to your path via accessing Control Panel -> System -> Advanced system settings -> Environment variables -> Edit System Variable (or New System Variable). There you can add the vcpkg folder to your PATH.
 
 Now you're ready to go!
 Remember you can always access the help menu using:
@@ -60,18 +61,19 @@ This will generate a conf.json file in the directory of the executable. It conta
 	"cppCompilerPath" : "/usr/bin/clang++",
 	"vcpkgDirectory" : "/Users/mohammedalyousef/vcpkg",
 	"architecture" : "x64-osx",
-	"cmakePath" : "/usr/local/bin/cmake",
+	"cmakePath" : "/Users/mohammedalyousef/vcpkg/downloads/tools/cmake-3.11.4-osx/cmake-3.11.4-Darwin-x86_64/CMake.app/Contents/bin/cmake",
     	"makePath" : "/usr/bin/make"
 }
 ```
 The conf.json is not supposed to be pushed to a version control repository like github since it's dependant on local variables and thus should be added to your gitignore (if you were using git).
 The first 2 variables are the paths of the C and C++ compilers. The default compilers for macOS X is clang, while for linux it would be gcc and g++ respectively. On windows, the default compiler is the MinGW gcc.
-The vcpkgDirectory variable is the parent directory of the vcpkg executable you wish to choose for your project. It defaults to the home path on linux and macOS X, while on windows it defaults to C:/Program Files/vcpkg.
+The vcpkgDirectory variable is the parent directory of the vcpkg executable you wish to choose for your project. It defaults to the vcpkg path to which the vcbld executable was added.
 
 The architecture depends on the host operating system. You can check the vcpkg triplet documentation [here.](https://github.com/Microsoft/vcpkg/blob/master/docs/users/triplets.md)
 
 Although vcbld doesn't support cross-compilation on the same machine, vcbld projects can be cross-compiled on different operating systems.
-cmakePath and makePath are your installation locations of cmake and make. vcbld supports building using cmake and make within the executable. It can also generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
+cmakePath and makePath are your installation locations of cmake and make. vcbld checks the presence of an installed cmake in your vcpkg/downloads/tools directory which it would choose by default, otherwise, it specifies the cmake executable in your PATH.
+vcbld supports building using cmake and make within the executable. It can also generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
 On windows, the default make file is the one supplied by the MinGW installation.
 
 A new project will also have a vcbld.json and package.json files in the project directory.
@@ -189,6 +191,10 @@ You can also use it to apply user-wide integration using:
 ```
 $ vcbld vcpkg integrate install
 ```
+
+## Contributing
+All contributions are welcome!
+For the moment, vcbld was tried on macOS X and linux, however, since my windows machine died recently, I wasn't able to test it on windows. I would appreciate if contributors could try building and using vcbld on windows. That would be of great help.
 
 ## License:
 Code licensed under the [MIT License.](https://github.com/MoAlyousef/vcbld/blob/master/LICENSE)

@@ -128,7 +128,6 @@ void New(const std::string &binType)
   {
     std::cout << "main.cpp already exists." << std::endl;
   }
-  init::setup();
   init::init(binType);
 }
 

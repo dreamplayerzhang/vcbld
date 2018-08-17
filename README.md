@@ -51,11 +51,36 @@ $ vcbld help
 ```
 
 ## New application project:
-Run: 
+Create a directory for your binary and run: 
 ```
 $ vcbld new app
 ```
-This will generate a conf.json file in the directory of the executable. It contains several default variables depending on the operating system, which can also be changed if need be. A conf.json file will look like the following:
+This will generate a project with the following structure:
+```
+|
+|__vcbld.json
+|
+|__conf.json
+|
+|__package.json
+|
+|__src
+|
+|__include
+|
+|__libs
+|	|
+|	|__debug
+|	|
+|	|__release
+|
+|__bin
+	|
+	|__debug
+	|
+	|__release
+```
+The conf.json contains several default variables depending on the operating system. Thus it is not supposed to be pushed to a version control repository like github and should be added to your gitignore (if you were using git). The default variables can also be changed if need be. A conf.json file will look like the following:
 ```json
 {
 	"cCompilerPath" : "/usr/bin/clang",
@@ -66,7 +91,6 @@ This will generate a conf.json file in the directory of the executable. It conta
     	"makePath" : "/usr/bin/make"
 }
 ```
-The conf.json is not supposed to be pushed to a version control repository like github since it's dependant on local variables and thus should be added to your gitignore (if you were using git).
 The first 2 variables are the paths of the C and C++ compilers. The default compilers for macOS X is clang, while for linux it would be gcc and g++ respectively. On windows, the default compiler is the MinGW gcc.
 The vcpkgDirectory variable is the parent directory of the vcpkg executable you wish to choose for your project. It defaults to the vcpkg path to which the vcbld executable was added.
 

@@ -40,7 +40,7 @@ namespace init
 void setup(const fs::path &vcbldPath)
 {
   std::string cCompilerPath, cppCompilerPath, cmakePath, makePath;
-  std::string cmakeDir = vcbldPath.string() + "/downloads/tools"; 
+  std::string cmakeDir = vcbldPath.string() + "/downloads/tools";
   if (PLATFORM_NAME == "x64-osx")
   {
     cCompilerPath = "/usr/bin/clang";
@@ -48,7 +48,8 @@ void setup(const fs::path &vcbldPath)
     if (findCmake(cmakeDir) == "")
     {
       cmakePath = "/usr/local/bin/cmake";
-    } else
+    }
+    else
     {
       cmakePath = findCmake(cmakeDir);
     }
@@ -58,10 +59,11 @@ void setup(const fs::path &vcbldPath)
   {
     cCompilerPath = "/usr/bin/gcc";
     cppCompilerPath = "/usr/bin/g++";
-        if (findCmake(cmakeDir) == "")
+    if (findCmake(cmakeDir) == "")
     {
       cmakePath = "/usr/local/bin/cmake";
-    } else
+    }
+    else
     {
       cmakePath = findCmake(cmakeDir);
     }
@@ -72,14 +74,16 @@ void setup(const fs::path &vcbldPath)
   {
     cCompilerPath = "C:/MinGW/bin/gcc";
     cppCompilerPath = "C:/MinGW/bin/g++";
-        if (findCmake(cmakeDir) == "")
+    if (findCmake(cmakeDir) == "")
     {
       cmakePath = "/usr/local/bin/cmake";
-    } else
+    }
+    else
     {
       cmakePath = findCmake(cmakeDir);
     }
-    // cmakePath = static_cast<std::string>(getenv("PROGRAMFILES")) + "/CMake/cmake.exe";
+    // cmakePath = static_cast<std::string>(getenv("PROGRAMFILES")) +
+    // "/CMake/cmake.exe";
     makePath = "C:/MinGW/bin/mingw32-make.exe";
   }
 
@@ -92,8 +96,8 @@ void setup(const fs::path &vcbldPath)
       confOutput << std::setw(4) << "{\n\t\"cCompilerPath\" : \""
                  << cCompilerPath << "\",\n\t"
                  << "\"cppCompilerPath\" : \"" << cppCompilerPath << "\",\n\t"
-                 << "\"vcpkgDirectory\" : \"" << static_cast<std::string> (vcbldPath)
-                 << "\",\n\t"
+                 << "\"vcpkgDirectory\" : \""
+                 << static_cast<std::string>(vcbldPath) << "\",\n\t"
                  << "\"architecture\" : \"" << PLATFORM_NAME << "\",\n\t"
                  << "\"cmakePath\" : \"" << cmakePath << "\",\n\t"
                  << "\"makePath\" : \"" << makePath << "\"\n}";
@@ -189,35 +193,30 @@ void init(const std::string &binType)
 std::string findCmake(const std::string &dir)
 {
   std::string temp;
-  std::string fileName;
-  if (PLATFORM_NAME == "x86-windows" || PLATFORM_NAME == "x64-windows")
-  {
-    fileName = "cmake.exe";
-  } else
-  {
-    fileName = "cmake";
-  }
+  std::string fileName = "bin";
   const fs::recursive_directory_iterator end;
   const auto it = std::find_if(fs::recursive_directory_iterator(dir), end,
-                          [&fileName](const fs::directory_entry& e) {
-                            size_t found = e.path().string().find("/bin/");
-                            if (found != std::string::npos)
-                            {
-                              return e.path().filename() == fileName;
-                            }
-                        
-                          });
-  if (it == end) {
+                               [&fileName](const fs::directory_entry &e) {
+                                 return e.path().filename() == fileName;
+                               });
+  if (it == end)
+  {
     temp = "";
     return temp;
-  } else {
+  }
+  else
+  {
     temp = it->path();
-    if (temp.find("/bin/") != std::string::npos)
+    std::string cmakeName;
+    if (PLATFORM_NAME == "x86-windows" || PLATFORM_NAME == "x64-windows")
     {
-      return temp;
-    } else if (temp.find("/lib/") != std::string::npos)
-      temp.replace(temp.find("/lib/"), 5, "/bin/");
-      return temp;
+      cmakeName = "cmake.exe";
+    }
+    else
+    {
+      cmakeName = "cmake";
+    }
+    return temp + "/" + cmakeName;
   }
 }
 } // namespace init

@@ -98,7 +98,7 @@ void setup(const fs::path &vcbldPath)
     makePath = "C:/MinGW/bin/mingw32-make.exe";
   }
 
-  if (!fs::exists("conf.json") && fs::exists("vcbld.json"))
+  if (!fs::exists("conf.json"))
   {
 
     std::ofstream confOutput("conf.json");
@@ -119,13 +119,14 @@ void setup(const fs::path &vcbldPath)
     }
     else
     {
-      std::cout << "conf.json couldn't be written." << std::endl;
+      
     }
   }
   else
   {
     std::cout << "conf.json was found in the directory." << std::endl;
   }
+
   if (!fs::exists("package.json"))
   {
 
@@ -139,7 +140,7 @@ void setup(const fs::path &vcbldPath)
     }
   }
 
-  if (fs::exists("conf.json") && fs::exists("vcbld.json"))
+  if (fs::exists("vcbld.json"))
   {
     ConfClass confClass;
 

@@ -37,11 +37,7 @@ $ make
 ```
 
 The built vcbld executable can be found in the release directory. You should copy the built executable and add it to your default vcpkg directory.
-Note that vcpkg doesn't automatically add itself to your PATH, however you can do so after building from source on macOS X and linux using:
-```
-$ echo 'export PATH=$PATH:/path/to/vcpkg/directory' >> ~/.bashrc 
-```
-On windows you can add the vcpkg binary directory to your path via accessing Control Panel -> System -> Advanced system settings -> Environment variables -> Edit System Variable (or New System Variable). There you can add the vcpkg folder to your PATH.
+Note that since vcpkg doesn't automatically add itself to your PATH since you might end up using multiple instances of vcpkg, vcbld doesn't support running as a PATH executable. 
 
 Now you're ready to go!
 Remember you can always access the help menu using:

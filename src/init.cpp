@@ -39,8 +39,18 @@ namespace init
 {
 void setup(const fs::path &vcbldPath)
 {
+  fs::path vcbldPATH;
+  if (vcbldPath == "")
+  {
+  std::string vcbldExec = std::getenv("PATH");
+  vcbldPATH = static_cast<fs::path> (findVcbld(vcbldExec));
+  } else 
+  {
+    vcbldPATH = vcbldPath;
+  }
+
   std::string cCompilerPath, cppCompilerPath, cmakePath, makePath;
-  std::string cmakeDir = vcbldPath.string() + "/downloads/tools";
+  std::string cmakeDir = vcbldPATH.string() + "/downloads/tools";
   if (PLATFORM_NAME == "x64-osx")
   {
     cCompilerPath = "/usr/bin/clang";
@@ -97,7 +107,8 @@ void setup(const fs::path &vcbldPath)
                  << cCompilerPath << "\",\n\t"
                  << "\"cppCompilerPath\" : \"" << cppCompilerPath << "\",\n\t"
                  << "\"vcpkgDirectory\" : \""
-                 << static_cast<std::string> (fs::canonical(vcbldPath)) << "\",\n\t"
+                 << static_cast<std::string>(fs::canonical(vcbldPATH))
+                 << "\",\n\t"
                  << "\"architecture\" : \"" << PLATFORM_NAME << "\",\n\t"
                  << "\"cmakePath\" : \"" << cmakePath << "\",\n\t"
                  << "\"makePath\" : \"" << makePath << "\"\n}";
@@ -190,34 +201,61 @@ void init(const std::string &binType)
   }
 }
 
+std::string findVcbld(const std::string &PATH)
+{
+  std::string temp;
+  size_t foundVcpkg = PATH.find("/vcpkg/");
+  if (PATH.find("/vcpkg/") != std::string::npos)
+  {
+    temp = PATH.substr(0, foundVcpkg + 6);
+  }
+  size_t foundSep = temp.find_last_of(":");
+  temp = temp.substr(foundSep + 1, temp.length());
+  if (temp[0] == '~')
+  {
+    std::string home = std::getenv("HOME");
+    temp.replace(0, 1, home);
+  }
+  return temp;
+}
+
 std::string findCmake(const std::string &dir)
 {
   std::string temp;
   std::string fileName = "bin";
   const fs::recursive_directory_iterator end;
-  const auto it = std::find_if(fs::recursive_directory_iterator(dir), end,
-                               [&fileName](const fs::directory_entry &e) {
-                                 return e.path().filename() == fileName;
-                               });
-  if (it == end)
+  try
   {
-    temp = "";
-    return temp;
-  }
-  else
-  {
-    temp = fs::canonical(it->path()).string();
-    std::string cmakeName;
-    if (PLATFORM_NAME == "x86-windows" || PLATFORM_NAME == "x64-windows")
+    const auto it = std::find_if(fs::recursive_directory_iterator(dir), end,
+                                 [&fileName](const fs::directory_entry &e) {
+                                   return e.path().filename() == fileName;
+                                 });
+    if (it == end)
     {
-      cmakeName = "cmake.exe";
+      temp = "";
+      return temp;
     }
     else
     {
-      cmakeName = "cmake";
+      temp = fs::canonical(it->path()).string();
+      std::string cmakeName;
+      if (PLATFORM_NAME == "x86-windows" || PLATFORM_NAME == "x64-windows")
+      {
+        cmakeName = "cmake.exe";
+      }
+      else
+      {
+        cmakeName = "cmake";
+      }
+      temp += "/" + cmakeName;
     }
-    return temp + "/" + cmakeName;
   }
+  catch (const std::exception &exception)
+  {
+    std::cout << "Couldn't find a cmake executable in the current directory."
+              << std::endl;
+  }
+  return temp;
 }
 } // namespace init
 } // namespace vcbld

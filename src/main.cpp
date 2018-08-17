@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
 {
   fs::path vcbldPath = argv[0];
   vcbldPath = vcbldPath.parent_path();
+
   if (!fs::exists("conf.json"))
   {
     init::setup(vcbldPath);

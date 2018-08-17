@@ -25,17 +25,17 @@ SDK commands:
     --version                         Current vcbld version in use.
 ```
 
+## Getting vcbld:
+You can download a prebuilt vcbld executable [here](https://github.com/MoAlyousef/vcbld/releases). Currently there are prebuilt binaries for macOS X and debian linux. Otherwise you can build from source. 
+
 ## Building vcbld:
 vcbld has a single external dependency, namely Nlohmann-json which is a header-only library and is included in this git repository. To build vcbld, create a directory called vcbld. Access that directory using the command line. Clone this repository and build using cmake. The command line commands would look something like this:
 ```
 $ git clone https://github.com/MoAlyousef/vcbld.git
-$ cd vcbld
-$ mkdir bin
-$ cd bin
-$ cmake ..
-$ make
+$ cd vcbld && mkdir bin && cd bin
+$ cmake .. && make
 ```
-
+Notice that vcbld needs cmake version 3.10 or higher to build. vcpkg ships with an updated version of cmake that you can use to build vcbld, which can be found in [vcpkg-root]/download/tools/cmake*/cmake*/bin/cmake.
 The built vcbld executable can be found in the release directory. You should copy the built executable and add it to your default vcpkg directory.
 Note that since vcpkg doesn't automatically add itself to your PATH since you might end up using multiple instances of vcpkg.
 However you can add your default vcpkg directory to PATH using:

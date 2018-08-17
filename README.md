@@ -80,7 +80,7 @@ This will generate a project with the following structure:
 	|
 	|__release
 ```
-The conf.json contains several default variables depending on the operating system. Thus it is not supposed to be pushed to a version control repository like github and should be added to your gitignore (if you were using git). The default variables can also be changed if need be. A conf.json file will look like the following:
+The conf.json file contains several default variables depending on the operating system. Thus it is not supposed to be pushed to a version control repository like github and should be added to your gitignore (if you were using git). The default variables can also be changed if need be. A conf.json file will look like the following:
 ```json
 {
 	"cCompilerPath" : "/usr/bin/clang",

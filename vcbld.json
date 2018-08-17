@@ -10,5 +10,6 @@
 	"libsDirectory" : "libs",
 	"outputDirectory" : "bin",
 	"compilerDefines" : [],
-	"compilerFlags" : []
+	"compilerFlags" : [],
+	"linkerFlags" : []
 }

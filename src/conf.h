@@ -36,6 +36,7 @@ public:
   std::string sourceFilesSinPath() const;
   std::string compilerDefines() const;
   std::string compilerFlags() const;
+  std::string linkerFlags() const;
 
   void write();
   void include(const std::string &pkg);
@@ -75,6 +76,7 @@ private:
   std::string _libsDirectory;
   std::ostringstream _compilerDefines;
   std::ostringstream _compilerFlags;
+  std::ostringstream _linkerFlags;
 
   std::ostringstream _cmakeOutput;
   std::vector<std::string> boostComponents;

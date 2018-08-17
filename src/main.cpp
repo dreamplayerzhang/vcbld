@@ -220,21 +220,10 @@ int main(int argc, char *argv[])
     }
     else if (strcmp(argv[1], "cmake") == 0)
     {
-      if (!argv[2])
+      if (argc < 3)
       {
         std::string empty = " ";
         args::cmake(empty);
-      }
-      else if (strcmp(argv[2], "debug") == 0 || strcmp(argv[2], "release") == 0)
-      {
-        std::string config = static_cast<std::string>(argv[2]);
-        config[0] = toupper(config[0]);
-        std::string cmakeArgs;
-        for (int i = 2; i < argc; i++)
-        {
-          cmakeArgs += " -DCMAKE_BUILD_TYPE=" + config + " ";
-          cmakeArgs += argv[i];
-        }
       }
       else
       {
@@ -252,7 +241,7 @@ int main(int argc, char *argv[])
       if (!argv[2])
       {
         std::string empty = " ";
-        args::cmake(empty);
+        args::make(empty);
       }
       else
       {
@@ -262,7 +251,7 @@ int main(int argc, char *argv[])
           makeArgs += " ";
           makeArgs += argv[i];
         }
-        args::cmake(makeArgs);
+        args::make(makeArgs);
       }
     }
     else if (strcmp(argv[1], "--version") == 0)

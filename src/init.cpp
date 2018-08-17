@@ -171,6 +171,8 @@ void init(const std::string &binType)
                   << "\"compilerDefines\" : "
                   << "[],\n\t"
                   << "\"compilerFlags\" : "
+                  << "[],\n\t"
+                  << "\"linkerFlags\" : "
                   << "[]\n"
                   << "}";
       vcbldOutput.flush();

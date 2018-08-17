@@ -18,8 +18,8 @@ SDK commands:
     add                               Add package to the project.
     remove                            Remove package from the project.
     vcpkg   [vcpkg command]           Runs vcpkg commands.
-    cmake   [debug|release ± args]    Runs cmake in the output directory using the vcpkg toolchain.
-    make    [± make arguments]        Runs make in the output directory.
+    cmake   [cmake arguments]         Runs cmake in the output directory using the vcpkg toolchain.
+    make    [make arguments]          Runs make in the output directory.
     help                              Show help.
 
     --version                         Current vcbld version in use.
@@ -116,7 +116,8 @@ A vcbld.json would look like the following (without the comments):
 	"libsDirectory" : "libs",
     	"outputDirectory" : "bin", // Relative or absolute path to your output directory
     	"compilerDefines" : [], // an array of any -D arguments you want to pass to the 
-	"compilerFlags" : ["-Werror"] // an array of any compiler flags 
+	"compilerFlags" : ["-Werror"], // an array of any compiler flags 
+    "linkerFlags" : ["-Werror"] // an array of any compiler flags 
 }
 ```
 The resulting dynamic library extension depends on the used compiler. libname.so for gcc and libname.dylib for clang.
@@ -182,7 +183,7 @@ $ vcbld run
 ```
 Also you can supply arguments to your cmake command like the following:
 ```
-$ vcbld cmake release
+$ vcbld cmake -DCMAKE_BUILD_TYPE=Release
 $ vcbld make
 $ vcbld run release
 ```

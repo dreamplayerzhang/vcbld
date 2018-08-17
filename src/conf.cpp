@@ -59,6 +59,12 @@ ConfClass::ConfClass()
     {
       this->_compilerFlags << " " << *it << " ";
     }
+
+    for (json::iterator it = vcbldJson["linkerFlags"].begin();
+         it != vcbldJson["linkerFlags"].end(); ++it)
+    {
+      this->_linkerFlags << " " << *it << " ";
+    }
   }
   catch (const json::parse_error e)
   {
@@ -558,6 +564,10 @@ std::string ConfClass::compilerDefines() const
   return this->_compilerDefines.str();
 }
 std::string ConfClass::compilerFlags() const
+{
+  return this->_compilerFlags.str();
+}
+std::string ConfClass::linkerFlags() const
 {
   return this->_compilerFlags.str();
 }

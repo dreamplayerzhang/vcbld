@@ -44,13 +44,6 @@ elseif(CLANG)
     target_link_libraries(${PROJECT_NAME} PRIVATE c++experimental)
 endif()
 
-install(
-	TARGETS ${PROJECT_NAME}
-	CONFIGURATIONS Release
-    RUNTIME DESTINATION bin
-)
-
-
 if(WIN32)
 include(CPack REQUIRED)
 include(CPackIFW REQUIRED)

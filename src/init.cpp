@@ -97,7 +97,7 @@ void setup(const fs::path &vcbldPath)
                  << cCompilerPath << "\",\n\t"
                  << "\"cppCompilerPath\" : \"" << cppCompilerPath << "\",\n\t"
                  << "\"vcpkgDirectory\" : \""
-                 << static_cast<std::string>(vcbldPath) << "\",\n\t"
+                 << static_cast<std::string> (fs::absolute(vcbldPath)) << "\",\n\t"
                  << "\"architecture\" : \"" << PLATFORM_NAME << "\",\n\t"
                  << "\"cmakePath\" : \"" << cmakePath << "\",\n\t"
                  << "\"makePath\" : \"" << makePath << "\"\n}";
@@ -206,7 +206,7 @@ std::string findCmake(const std::string &dir)
   }
   else
   {
-    temp = it->path();
+    temp = fs::absolute(it->path()).string();
     std::string cmakeName;
     if (PLATFORM_NAME == "x86-windows" || PLATFORM_NAME == "x64-windows")
     {

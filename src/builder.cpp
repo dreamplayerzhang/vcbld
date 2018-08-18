@@ -214,13 +214,13 @@ std::string Builder::archive()
   if (this->_buildType == "release")
   {
     this->_archiveCmnd << "cd " << this->_rlsDir << " && "
-                       << "ar rcs " << this->confClass->binaryName() << ".a"
+                       << this->confClass->archiverPath() << " rcs " << this->confClass->binaryName() << ".a"
                        << " " << temp;
   }
   else
   {
     this->_archiveCmnd << "cd " << this->_dbgDir << " && "
-                       << "ar rcs " << this->confClass->binaryName() << ".a"
+                       << this->confClass->archiverPath()  << " rcs " << this->confClass->binaryName() << ".a"
                        << " " << temp;
   }
   int systemRet = system(this->_archiveCmnd.str().c_str());
@@ -306,14 +306,14 @@ void Builder::copy()
     {
       if (this->_buildType == "debug")
       {
-        if (fs::path(*it).extension() != ".a")
+        if (fs::path(*it).extension() != ".a" || fs::path(*it).extension() != ".lib")
         {
           fs::copy(fullName, this->_dbgDir);
         }
       }
       else
       {
-        if (fs::path(*it).extension() != ".a")
+        if (fs::path(*it).extension() != ".a" || fs::path(*it).extension() != ".lib")
         {
           fs::copy(fullName, this->_rlsDir);
         }

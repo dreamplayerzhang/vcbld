@@ -52,7 +52,7 @@ void setup(const fs::path &vcbldPath)
     vcbldPATH = vcbldPath;
   }
 
-  std::string cCompilerPath, cppCompilerPath, cmakePath, makePath;
+  std::string cCompilerPath, cppCompilerPath, cmakePath, makePath, archiverPath;
   std::string cmakeDir = vcbldPATH.string() + "/downloads/tools";
   if (PLATFORM_NAME == "x64-osx")
   {
@@ -67,6 +67,7 @@ void setup(const fs::path &vcbldPath)
       cmakePath = findCmake(cmakeDir);
     }
     makePath = "/usr/bin/make";
+    archiverPath = "/usr/bin/ar";
   }
   else if (PLATFORM_NAME == "x64-linux")
   {
@@ -81,14 +82,15 @@ void setup(const fs::path &vcbldPath)
       cmakePath = findCmake(cmakeDir);
     }
     makePath = "/usr/bin/make";
+    archiverPath = "/usr/bin/ar";
   }
   else if (PLATFORM_NAME == "x64-windows" || PLATFORM_NAME == "x86-windows")
   {
-    cCompilerPath = "C:/MinGW/bin/gcc";
-    cppCompilerPath = "C:/MinGW/bin/g++";
+    cCompilerPath = "C:/MinGW/bin/gcc.exe";
+    cppCompilerPath = "C:/MinGW/bin/g++.exe";
     if (findCmake(cmakeDir) == "")
     {
-      cmakePath = static_cast<std::string>(getenv("PROGRAMFILES")) +
+      cmakePath = static_cast<std::string>(fs::canonical(getenv("PROGRAMFILES"))) +
                   "/CMake/cmake.exe";
     }
     else
@@ -96,6 +98,7 @@ void setup(const fs::path &vcbldPath)
       cmakePath = findCmake(cmakeDir);
     }
     makePath = "C:/MinGW/bin/mingw32-make.exe";
+    archiverPath = "C:/MinGW/bin/ar.exe";
   }
 
   if (!fs::exists("conf.json"))
@@ -112,7 +115,8 @@ void setup(const fs::path &vcbldPath)
                  << "\",\n\t"
                  << "\"architecture\" : \"" << PLATFORM_NAME << "\",\n\t"
                  << "\"cmakePath\" : \"" << cmakePath << "\",\n\t"
-                 << "\"makePath\" : \"" << makePath << "\"\n}";
+                 << "\"makePath\" : \"" << makePath << "\",\n\t"
+                 << "\"archiverPath\" : \"" << archiverPath << "\"\n}";
       confOutput.flush();
       confOutput.close();
       std::cout << "conf.json written successfully." << std::endl;

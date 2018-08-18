@@ -88,16 +88,17 @@ The conf.json file contains several default variables depending on the operating
 	"vcpkgDirectory" : "/Users/mohammedalyousef/vcpkg",
 	"architecture" : "x64-osx",
 	"cmakePath" : "/Users/mohammedalyousef/vcpkg/downloads/tools/cmake-3.11.4-osx/cmake-3.11.4-Darwin-x86_64/CMake.app/Contents/bin/cmake",
-    	"makePath" : "/usr/bin/make"
+        "makePath" : "/usr/bin/make",
+        "archiverPath" : "/usr/bin/ar"
 }
 ```
 The first 2 variables are the paths of the C and C++ compilers. The default compilers for macOS X is clang, while for linux it would be gcc and g++ respectively. On windows, the default compiler is the MinGW gcc.
-The vcpkgDirectory variable is the parent directory of the vcpkg executable you wish to choose for your project. It defaults to the vcpkg path to which the vcbld executable was added.
+The vcpkgDirectory variable is the parent directory of the vcpkg executable you wish to choose for your project and the current instance of the vcbld executable. It defaults to the vcpkg path to which the vcbld executable was added.
 
 The architecture depends on the host operating system. You can check the vcpkg triplet documentation [here.](https://github.com/Microsoft/vcpkg/blob/master/docs/users/triplets.md)
 
 Although vcbld doesn't support cross-compilation on the same machine, vcbld projects can be cross-compiled on different operating systems.
-cmakePath and makePath are your installation locations of cmake and make. vcbld checks the presence of an installed cmake in your vcpkg/downloads/tools directory which it would choose by default, otherwise, it specifies the cmake executable in your PATH.
+cmakePath and makePath are your installation locations of cmake and make. The archiverPath is the path of the archiver used to build static libraries. vcbld checks the presence of an installed cmake in your vcpkg/downloads/tools directory which it would choose by default, otherwise, it specifies the cmake executable in your PATH.
 vcbld supports building using cmake and make within the executable. It can also generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
 On windows, the default make file is the one supplied by the MinGW installation.
 

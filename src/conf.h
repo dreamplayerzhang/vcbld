@@ -21,6 +21,7 @@ public:
   std::string architecture() const;
   std::string cmakePath() const;
   std::string makePath() const;
+  std::string archiverPath() const;
 
   std::string projectName() const;
   std::string version() const;
@@ -64,6 +65,7 @@ private:
   std::string _architecture;
   std::string _cmakePath;
   std::string _makePath;
+  std::string _archiverPath;
   std::string _projectName;
   std::string _version;
   std::string _language;

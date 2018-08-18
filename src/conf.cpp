@@ -97,6 +97,7 @@ ConfClass::ConfClass()
   this->_architecture = confJson["architecture"];
   this->_cmakePath = confJson["cmakePath"];
   this->_makePath = confJson["makePath"];
+  this->_archiverPath = confJson["archiverPath"];
   this->_vcpkgDirPath = vcpkgPath.string();
 
   try
@@ -369,6 +370,11 @@ std::string ConfClass::stripLibName(const std::string &lib)
   {
     stripExt = stripLib.substr(0, (stripLib.length() - 4));
   }
+  found = stripLib.find(".lib");
+  if (found != std::string::npos)
+  {
+    stripExt = stripLib.substr(0, (stripLib.length() - 4));
+  }
 
   return stripExt;
 }
@@ -573,6 +579,7 @@ std::string ConfClass::linkerFlags() const
 }
 std::string ConfClass::cmakePath() const { return _cmakePath; }
 std::string ConfClass::makePath() const { return _makePath; }
+std::string ConfClass::archiverPath() const { return _archiverPath; }
 std::string ConfClass::projectName() const { return _projectName; }
 std::string ConfClass::version() const { return _version; }
 std::string ConfClass::language() const { return _language; }

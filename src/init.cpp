@@ -147,25 +147,32 @@ void setup(const fs::path &vcbldPath)
   if (fs::exists("vcbld.json"))
   {
     ConfClass confClass;
-
-    if (!fs::exists(confClass.includeDirectory()))
-    {
-      fs::create_directory(confClass.includeDirectory());
-      std::cout << "include directory created successfully." << std::endl;
-    }
-    if (!fs::exists(confClass.libDirectory()))
-    {
-      fs::create_directory(confClass.libDirectory());
-      fs::create_directory(confClass.libDirectory().string() + "/debug");
-      fs::create_directory(confClass.libDirectory().string() + "/release");
-      std::cout << "lib directory created successfully." << std::endl;
-    }
     if (!fs::exists(confClass.outputDirectory()))
     {
       fs::create_directory(confClass.outputDirectory());
       fs::create_directory(confClass.outputDirectory().string() + "/debug");
       fs::create_directory(confClass.outputDirectory().string() + "/release");
       std::cout << "output directory created successfully." << std::endl;
+    }
+
+    if (confClass.includeDirectory() != "")
+    {
+      if (!fs::exists(confClass.includeDirectory()))
+      {
+        fs::create_directory(confClass.includeDirectory());
+        std::cout << "include directory created successfully." << std::endl;
+      }
+    }
+
+    if (confClass.includeDirectory() != "")
+    {
+      if (!fs::exists(confClass.libDirectory()) && confClass.libDirectory() != "")
+      {
+        fs::create_directory(confClass.libDirectory());
+        fs::create_directory(confClass.libDirectory().string() + "/debug");
+        fs::create_directory(confClass.libDirectory().string() + "/release");
+        std::cout << "lib directory created successfully." << std::endl;
+      }
     }
   }
 }

@@ -32,23 +32,23 @@ std::string Builder::compile()
   {
     this->_compileCommand << "cd " << this->_rlsDir << " && "
                           << this->confClass->compilerPath() << " -c "
+                          << this->confClass->headerPaths() << " "
                           << this->confClass->sourceFiles() << " "
                           << this->confClass->compilerDefines() << " "
                           << this->confClass->compilerFlags()
                           << "-std=" << this->confClass->language()
-                          << this->confClass->standard() << " "
-                          << this->confClass->headerPaths() << " ";
+                          << this->confClass->standard() << " ";
   }
   else
   {
     this->_compileCommand << "cd " << this->_dbgDir << " && "
                           << this->confClass->compilerPath() << " -g "
-                          << "-c " << this->confClass->sourceFiles() << " "
+                          << "-c " << this->confClass->headerPaths() << " "
+                          << this->confClass->sourceFiles() << " "
                           << this->confClass->compilerDefines() << " "
                           << this->confClass->compilerFlags()
                           << "-std=" << this->confClass->language()
-                          << this->confClass->standard() << " "
-                          << this->confClass->headerPaths() << " ";
+                          << this->confClass->standard() << " ";
   }
   int systemRet = system(this->_compileCommand.str().c_str());
   if (systemRet == -1)

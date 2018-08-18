@@ -332,7 +332,9 @@ std::string ConfClass::getVersion(const std::string &pkgName)
 std::string ConfClass::headerPaths()
 {
   std::ostringstream temp;
-  temp << " -I" << this->sourceDirectory() << " -I" << this->includeDirectory()
+  temp << " -I" << fs::canonical(this->sourceDirectory()) 
+       << " -I" << fs::canonical(this->includeDirectory())
+       << " -I" << fs::canonical(this->outputDirectory())
        << " -I" << this->vcpkgDirPath() << "/"
        << "installed"
        << "/" << this->architecture() << "/"

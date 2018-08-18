@@ -83,8 +83,8 @@ This will generate a project with the following structure:
 The conf.json file contains several default variables depending on the operating system. Thus it is not supposed to be pushed to a version control repository like github and should be added to your gitignore (if you were using git). The default variables can also be changed if need be. A conf.json file will look like the following:
 ```json
 {
-	"cCompilerPath" : "/usr/bin/clang",
-	"cppCompilerPath" : "/usr/bin/clang++",
+	"cCompilerPath" : "/usr/bin/gcc-8",
+	"cppCompilerPath" : "/usr/bin/g++-8",
 	"vcpkgDirectory" : "/Users/mohammedalyousef/vcpkg",
 	"architecture" : "x64-osx",
 	"cmakePath" : "/Users/mohammedalyousef/vcpkg/downloads/tools/cmake-3.11.4-osx/cmake-3.11.4-Darwin-x86_64/CMake.app/Contents/bin/cmake",
@@ -119,7 +119,7 @@ A vcbld.json would look like the following (without the comments):
     	"outputDirectory" : "bin", // Name your output directory
     	"compilerDefines" : [], // an array of any -D arguments you want to pass to the compiler
 	"compilerFlags" : ["-Werror"], // an array of any compiler flags 
-    	"linkerFlags" : ["-lc++experimental"] // an array of any linker flags 
+    	"linkerFlags" : ["-lstdc++fs"] // an array of any linker flags 
 }
 ```
 The resulting dynamic library extension depends on the used compiler. libname.so for gcc and libname.dylib for clang.

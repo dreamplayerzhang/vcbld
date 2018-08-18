@@ -23,6 +23,7 @@ void includePathGen()
   json incJson;
   ConfClass confClass;
   incJson.push_back(confClass.sourceDirectory().relative_path().string());
+  incJson.push_back(confClass.includeDirectory().relative_path().string());
   incJson.push_back(confClass.vcpkgDirPath() + "/" + "installed" + "/" +
                     "include");
   std::string temp = confClass.sourceDirectory().string();

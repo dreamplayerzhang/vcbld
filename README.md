@@ -92,6 +92,7 @@ The conf.json file contains several default variables depending on the operating
         "archiverPath" : "/usr/bin/ar"
 }
 ```
+Notice that it contains absolute paths!
 The first 2 variables are the paths of the C and C++ compilers. The default compilers for macOS X is clang, while for linux it would be gcc and g++ respectively. On windows, the default compiler is the MinGW gcc.
 The vcpkgDirectory variable is the parent directory of the vcpkg executable you wish to choose for your project and the current instance of the vcbld executable. It defaults to the vcpkg path to which the vcbld executable was added.
 
@@ -112,13 +113,13 @@ A vcbld.json would look like the following (without the comments):
 	"standard" : "11", // The minimum supported standards of both of c++ and c.
 	"binaryType" : "app", // or "staticLibrary" or "sharedLibrary"
 	"binaryName" : "myApp", // Name of the resulting binary, use a "lib" prefix if it were a library.
-    	"sourceDirectory" : "src", // Relative or absolute path of your source directory
-    	"includeDirectory" : "include",
-	"libDirectory" : "lib",
-    	"outputDirectory" : "bin", // Relative or absolute path to your output directory
-    	"compilerDefines" : [], // an array of any -D arguments you want to pass to the 
+    	"sourceDirectory" : "src", // Name of your source directory
+    	"includeDirectory" : "include", // Name of your include directory
+	"libDirectory" : "lib", // Name of your lib directory
+    	"outputDirectory" : "bin", // Name your output directory
+    	"compilerDefines" : [], // an array of any -D arguments you want to pass to the compiler
 	"compilerFlags" : ["-Werror"], // an array of any compiler flags 
-    	"linkerFlags" : ["-lc++experimental"] // an array of any compiler flags 
+    	"linkerFlags" : ["-lc++experimental"] // an array of any linker flags 
 }
 ```
 The resulting dynamic library extension depends on the used compiler. libname.so for gcc and libname.dylib for clang.

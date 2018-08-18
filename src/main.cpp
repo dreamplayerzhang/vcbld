@@ -16,10 +16,23 @@ namespace fs = std::experimental::filesystem;
 
 using namespace vcbld;
 
+std::string findVcbld(const std::string &PATH);
+
 int main(int argc, char *argv[])
 {
-  fs::path vcbldPath = argv[0];
-  vcbldPath = vcbldPath.parent_path();
+  fs::path vcbldPath;
+  fs::path temp = argv[0];
+  temp = temp.parent_path();
+
+  if (temp == "")
+  {
+    std::string vcbldExec = std::getenv("PATH");
+    vcbldPath = fs::canonical(static_cast<fs::path>(findVcbld(vcbldExec)));
+  }
+  else
+  {
+    vcbldPath = fs::canonical(temp);
+  }
 
   if (!fs::exists("conf.json"))
   {
@@ -59,18 +72,17 @@ int main(int argc, char *argv[])
     {
       if (!argv[2])
       {
-                  args::build("debug");
+        args::build("debug");
       }
       else
       {
         if (strcmp(argv[2], "release") == 0)
         {
-                      args::build("release");
-
+          args::build("release");
         }
         else if (strcmp(argv[2], "debug") == 0)
         {
-                      args::build("debug");
+          args::build("debug");
         }
       }
     }
@@ -249,4 +261,23 @@ int main(int argc, char *argv[])
     std::cout << "Type help to get the help menu." << std::endl;
     std::exit(1);
   }
+}
+
+std::string findVcbld(const std::string &PATH)
+{
+  std::string temp;
+  size_t foundVcpkg = PATH.find("/vcpkg/");
+  if (PATH.find("/vcpkg/") != std::string::npos)
+  {
+    temp = PATH.substr(0, foundVcpkg + 6);
+  }
+  size_t foundSep = temp.find_last_of(":");
+  temp = temp.substr(foundSep + 1, temp.length());
+  if (temp[0] == '~')
+  {
+    std::string home = std::getenv("HOME");
+    temp.replace(0, 1, home);
+  }
+
+  return temp;
 }

@@ -43,7 +43,7 @@ std::string Builder::compile()
   {
     this->_compileCommand << "cd " << this->_dbgDir << " && "
                           << this->confClass->compilerPath() << " -c -g "
-                          << this->confClass->sourceFiles() << " " 
+                          << this->confClass->sourceFiles() << " "
                           << this->confClass->headerPaths() << " "
                           << this->confClass->compilerDefines() << " "
                           << this->confClass->compilerFlags() << " "
@@ -220,7 +220,7 @@ std::string Builder::archive()
   else
   {
     this->_archiveCmnd << "cd " << this->_dbgDir << " && "
-                       << this->confClass->archiverPath()  << " rcs " << this->confClass->binaryName() << ".a"
+                       << this->confClass->archiverPath() << " rcs " << this->confClass->binaryName() << ".a"
                        << " " << temp;
   }
   int systemRet = system(this->_archiveCmnd.str().c_str());
@@ -268,7 +268,14 @@ void Builder::build()
   {
     this->compile();
     this->appLink();
-    this->copy();
+    try
+    {
+      this->copy();
+    }
+    catch (...)
+    {
+      std::cout << "Libraries exist in output directory" << std::endl;
+    }
   }
   else if (this->confClass->binaryType() == "staticLibrary")
   {
@@ -279,7 +286,14 @@ void Builder::build()
   {
     this->compile();
     this->dylibLink();
-    this->copy();
+    try
+    {
+      this->copy();
+    }
+    catch (...)
+    {
+      std::cout << "Libraries exist in output directory" << std::endl;
+    }
   }
   else
   {
@@ -306,14 +320,16 @@ void Builder::copy()
     {
       if (this->_buildType == "debug")
       {
-        if (fs::path(*it).extension() != ".a" || fs::path(*it).extension() != ".lib")
+        fs::path temp = static_cast<fs::path>(fullName);
+        if ((temp.filename().extension() != ".a" || temp.filename().extension() != ".lib") && (!fs::exists(this->_dbgDir + "/" + (*it))))
         {
           fs::copy(fullName, this->_dbgDir);
         }
       }
       else
       {
-        if (fs::path(*it).extension() != ".a" || fs::path(*it).extension() != ".lib")
+        fs::path temp = static_cast<fs::path>(fullName);
+        if ((temp.filename().extension() != ".a" || temp.filename().extension() != ".lib") && (!fs::exists(this->_dbgDir + "/" + (*it))))
         {
           fs::copy(fullName, this->_rlsDir);
         }

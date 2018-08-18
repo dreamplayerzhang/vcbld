@@ -41,19 +41,9 @@ namespace init
 {
 void setup(const fs::path &vcbldPath)
 {
-  fs::path vcbldPATH;
-  if (vcbldPath == "")
-  {
-    std::string vcbldExec = std::getenv("PATH");
-    vcbldPATH = static_cast<fs::path>(findVcbld(vcbldExec));
-  }
-  else
-  {
-    vcbldPATH = vcbldPath;
-  }
-
   std::string cCompilerPath, cppCompilerPath, cmakePath, makePath, archiverPath;
-  std::string cmakeDir = vcbldPATH.string() + "/downloads/tools";
+  std::string cmakeDir = vcbldPath.string() + "/downloads/tools";
+
   if (PLATFORM_NAME == "x64-osx")
   {
     cCompilerPath = "/usr/bin/clang";
@@ -111,7 +101,7 @@ void setup(const fs::path &vcbldPath)
                  << cCompilerPath << "\",\n\t"
                  << "\"cppCompilerPath\" : \"" << cppCompilerPath << "\",\n\t"
                  << "\"vcpkgDirectory\" : \""
-                 << static_cast<std::string>(fs::canonical(vcbldPATH))
+                 << static_cast<std::string>(fs::canonical(vcbldPath))
                  << "\",\n\t"
                  << "\"architecture\" : \"" << PLATFORM_NAME << "\",\n\t"
                  << "\"cmakePath\" : \"" << cmakePath << "\",\n\t"
@@ -256,25 +246,6 @@ void init(const std::string &binType)
       std::cout << "package.json exists." << std::endl;
     }
   }
-}
-
-std::string findVcbld(const std::string &PATH)
-{
-  std::string temp;
-  size_t foundVcpkg = PATH.find("/vcpkg/");
-  if (PATH.find("/vcpkg/") != std::string::npos)
-  {
-    temp = PATH.substr(0, foundVcpkg + 6);
-  }
-  size_t foundSep = temp.find_last_of(":");
-  temp = temp.substr(foundSep + 1, temp.length());
-  if (temp[0] == '~')
-  {
-    std::string home = std::getenv("HOME");
-    temp.replace(0, 1, home);
-  }
-
-  return temp;
 }
 
 std::string findCmake(const std::string &dir)

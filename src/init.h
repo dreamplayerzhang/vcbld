@@ -12,7 +12,6 @@ namespace init
 {
 void init(const std::string &binType);
 void setup(const fs::path &vcbldPath);
-std::string findVcbld(const std::string &PATH);
 std::string findCmake(const std::string &dir);
 } // namespace init
 } // namespace vcbld

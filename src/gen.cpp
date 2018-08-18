@@ -27,9 +27,9 @@ void includePathGen()
                     "include");
   std::string temp = confClass.sourceDirectory().string();
 
-  if (!fs::exists("includePath.txt"))
+  if (!fs::exists("includePath.json"))
   {
-    std::ofstream ofs("includePath.txt");
+    std::ofstream ofs("includePath.json");
 
     if (ofs.is_open())
     {

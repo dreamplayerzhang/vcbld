@@ -161,14 +161,18 @@ $ vcbld restore
 ```
 Setup creates a conf.json file for the project. Restore installs missing packages via vcpkg.
 
+## Building using vcbld:
 You can use the vcbld build system using the command:
 ```
 $ vcbld build [debug or release]
+```
+Then you can run the executable using the run command:
+```
 $ vcbld run [debug or release]
 ```
-Then you can run the executable using the run command. Notice that if the build type isn't given, the default would be a debug build and debug run.
+Notice that if the build type isn't given, the default would be a debug build and debug run. vcbld keeps object files in the output directory alongside the built binary since certain licenses require you to supply your object files along with the binary. It also copies dynamically linked libraries into the output directory which are required to run your binary in other systems.
 
-## Generating CMakeLists and includePath files
+## Generating CMakeLists and includePath files:
 The sdk also offers the possiblity to generate and includePath.json file which can be used to get intellisense if you're using an editor like visual studio code or atom.
 
 Generating CMakeLists.txt files can be done using the following command:
@@ -220,9 +224,10 @@ You can also use it to apply user-wide integration using:
 $ vcbld vcpkg integrate install
 ```
 
-## Tutorials
+## Tutorials:
 Some video tutorials will be added to my youtube channel [here.](https://www.youtube.com/user/Xevorim)
-## Contributing
+
+## Contributing:
 All contributions are welcome!
 For the moment, vcbld was tried on macOS X and linux, however, since my windows machine died recently, I wasn't able to test it on windows. I would appreciate if contributors could try building and using vcbld on windows. That would be of great help.
 

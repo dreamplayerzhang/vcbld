@@ -32,21 +32,21 @@ std::string Builder::compile()
   {
     this->_compileCommand << "cd " << this->_rlsDir << " && "
                           << this->confClass->compilerPath() << " -c "
-                          << this->confClass->headerPaths() << " "
                           << this->confClass->sourceFiles() << " "
+                          << this->confClass->headerPaths() << " "
                           << this->confClass->compilerDefines() << " "
-                          << this->confClass->compilerFlags()
+                          << this->confClass->compilerFlags() << " "
                           << "-std=" << this->confClass->language()
                           << this->confClass->standard() << " ";
   }
   else
   {
     this->_compileCommand << "cd " << this->_dbgDir << " && "
-                          << this->confClass->compilerPath() << " -g "
-                          << "-c " << this->confClass->headerPaths() << " "
-                          << this->confClass->sourceFiles() << " "
+                          << this->confClass->compilerPath() << " -c -g "
+                          << this->confClass->sourceFiles() << " " 
+                          << this->confClass->headerPaths() << " "
                           << this->confClass->compilerDefines() << " "
-                          << this->confClass->compilerFlags()
+                          << this->confClass->compilerFlags() << " "
                           << "-std=" << this->confClass->language()
                           << this->confClass->standard() << " ";
   }

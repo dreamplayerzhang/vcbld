@@ -118,8 +118,8 @@ A vcbld.json would look like the following (without the comments):
 	"libDirectory" : "lib", // Name of your lib directory
     	"outputDirectory" : "bin", // Name your output directory
     	"compilerDefines" : [], // an array of any -D arguments you want to pass to the compiler
-	"compilerFlags" : ["-Werror"], // an array of any compiler flags 
-    	"linkerFlags" : ["-lstdc++fs"] // an array of any linker flags 
+	"compilerFlags" : ["-lstdc++fs"], // an array of any compiler flags 
+    	"linkerFlags" : [] // an array of any linker flags 
 }
 ```
 The resulting dynamic library extension depends on the used compiler. libname.so for gcc and libname.dylib for clang.

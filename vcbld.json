@@ -10,6 +10,6 @@
 	"libDirectory" : "lib",
 	"outputDirectory" : "bin",
 	"compilerDefines" : [],
-	"compilerFlags" : [],
+	"compilerFlags" : ["-lstdc++fs"],
 	"linkerFlags" : []
 }

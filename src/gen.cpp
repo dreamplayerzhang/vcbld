@@ -68,8 +68,6 @@ void cmakeGen()
             << "set(CMAKE_CXX_STANDARD " << confClass.standard() << ")\n\n"
             << "project(" << confClass.projectName() << " VERSION "
             << confClass.version() << ")\n\n"
-            << "include(" << confClass.vcpkgDirPath()
-            << "/scripts/buildsystems/vcpkg.cmake)\n\n"
             << "add_subdirectory(" << confClass.sourceDirectory() << ")\n\n";
         ofs.flush();
         ofs.close();

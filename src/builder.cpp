@@ -32,24 +32,24 @@ void Builder::compile()
   if (this->_buildType == "release")
   {
     this->_compileCommand << "cd " << this->_rlsDir << " && "
-                          << this->confClass->compilerPath() << " -c "
-                          << this->confClass->sourceFiles() << " "
+                          << this->confClass->compilerPath() << " "
                           << this->confClass->headerPaths() << " "
-                          << this->confClass->compilerDefines() << " "
                           << this->confClass->compilerFlags() << " "
+                          << this->confClass->compilerDefines() << " "
                           << "-std=" << this->confClass->language()
-                          << this->confClass->standard() << " ";
+                          << this->confClass->standard() << " -c "
+                          << this->confClass->sourceFiles();
   }
   else
   {
     this->_compileCommand << "cd " << this->_dbgDir << " && "
-                          << this->confClass->compilerPath() << " -c -g "
-                          << this->confClass->sourceFiles() << " "
+                          << this->confClass->compilerPath() << " "
                           << this->confClass->headerPaths() << " "
-                          << this->confClass->compilerDefines() << " "
                           << this->confClass->compilerFlags() << " "
+                          << this->confClass->compilerDefines() << " -g "
                           << "-std=" << this->confClass->language()
-                          << this->confClass->standard() << " ";
+                          << this->confClass->standard() << " -c "
+                          << this->confClass->sourceFiles();
   }
   int systemRet = system(this->_compileCommand.str().c_str());
   if (systemRet == -1)
@@ -366,18 +366,22 @@ void Builder::copy()
     {
       if (this->_buildType == "debug")
       {
-        fs::path temp = static_cast<fs::path>(fullName);
-        if ((temp.filename().extension() != ".a" || temp.filename().extension() != ".lib") && (!fs::exists(this->_dbgDir + "/" + (*it))))
+        if ((*it).find(".a") == std::string::npos || (*it).find(".a") == std::string::npos) 
         {
-          fs::copy(fullName, this->_dbgDir);
+          if (!fs::exists(this->_dbgDir + "/" + (*it)))
+          {
+            fs::copy(fullName, this->_dbgDir);
+          }
         }
       }
       else
       {
-        fs::path temp = static_cast<fs::path>(fullName);
-        if ((temp.filename().extension() != ".a" || temp.filename().extension() != ".lib") && (!fs::exists(this->_dbgDir + "/" + (*it))))
+        if ((*it).find(".a") == std::string::npos || (*it).find(".a") == std::string::npos) 
         {
-          fs::copy(fullName, this->_rlsDir);
+          if (!fs::exists(this->_rlsDir + "/" + (*it)))
+          {
+            fs::copy(fullName, this->_rlsDir);
+          }
         }
       }
     }

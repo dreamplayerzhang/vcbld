@@ -235,6 +235,9 @@ https://www.youtube.com/watch?v=hMTEm4Fzcgk
 Third video on using external 3rd party libraries with vcbld:
 https://www.youtube.com/watch?v=KBeY5pgsJQo
 
+Fourth video on building vcbld using vcbld:
+https://www.youtube.com/watch?v=zY-8IX6Lnsk
+
 ## Contributing:
 All contributions are welcome!
 

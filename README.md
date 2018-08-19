@@ -107,18 +107,18 @@ A new project will also have a vcbld.json and package.json files in the project 
 A vcbld.json would look like the following (without the comments):
 ```
 {
-	"projectName" : "myProj", // Name of the project.
+	"projectName" : "vcbld", // Name of the project.
 	"version" : "0.1.0",
 	"language" : "c++", // notice the lower case. camelCase is followed in vcbld JSON files.
-	"standard" : "11", // The minimum supported standards of both of c++ and c.
+	"standard" : "17",
 	"binaryType" : "app", // or "staticLibrary" or "sharedLibrary"
-	"binaryName" : "myApp", // Name of the resulting binary, use a "lib" prefix if it were a library.
+	"binaryName" : "vcbld", // Name of the resulting binary, use a "lib" prefix if it were a library.
     	"sourceDirectory" : "src", // Name of your source directory
-    	"includeDirectory" : "include", // Name of your include directory
-	"libDirectory" : "lib", // Name of your lib directory
-    	"outputDirectory" : "bin", // Name your output directory
+    	"includeDirectory" : "include", // Name of your include directory, can be blank.
+	"libDirectory" : "lib", // Name of your lib directory, can be left blank.
+    	"outputDirectory" : "bin", // Name of your output directory, and it should be provided!
     	"compilerDefines" : [], // an array of any -D arguments you want to pass to the compiler
-	"compilerFlags" : ["-lstdc++fs"], // an array of any compiler flags 
+	"compilerFlags" : ["-Weverything", "-lstdc++fs"], // an array of any compiler flags 
     	"linkerFlags" : [] // an array of any linker flags 
 }
 ```
@@ -229,6 +229,7 @@ Some video tutorials will be added to my youtube channel [here.](https://www.you
 
 ## Contributing:
 All contributions are welcome!
+
 For the moment, vcbld was tried on macOS X and linux, however, since my windows machine died recently, I wasn't able to test it on windows. I would appreciate if contributors could try building and using vcbld on windows. That would be of great help.
 
 ## License:

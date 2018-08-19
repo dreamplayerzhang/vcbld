@@ -432,7 +432,7 @@ std::string ConfClass::dbgLibPaths()
 std::string ConfClass::rlsLibPaths()
 {
   std::ostringstream temp;
-  std::string localRlsLibs = this->libDirectory().string() + "/" + "lib";
+  std::string localRlsLibs = this->libDirectory().string() + "/" + "release";
   std::vector<fs::directory_entry> dirEntry;
 
   if (fs::is_directory(static_cast<fs::path>(localRlsLibs)))

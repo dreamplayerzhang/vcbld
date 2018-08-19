@@ -12,10 +12,10 @@ class Builder
 public:
   explicit Builder(const std::string &buildType);
 
-  std::string compile();
-  std::string appLink();
-  std::string dylibLink();
-  std::string archive();
+  void compile();
+  void appLink();
+  void dylibLink();
+  void archive();
   std::string getBldCommands();
   void build();
   void copy();

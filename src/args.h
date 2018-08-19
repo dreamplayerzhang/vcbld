@@ -20,6 +20,7 @@ void list();
 void search(const std::string &pkg);
 void includes();
 void generate();
+void commands();
 void vcpkg(const std::string &vcpkgCmnds);
 void cmake(const std::string &cmakeCmnds);
 void make(const std::string &makeArgs);

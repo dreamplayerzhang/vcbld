@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <cstring>
+#include <errno.h>
 #include <experimental/filesystem>
 #include <iostream>
 #include <vector>
@@ -26,17 +27,20 @@ int main(int argc, char *argv[])
 
   if (temp == "")
   {
-    std::string vcbldExec = std::getenv("PATH");
-    vcbldPath = fs::canonical(static_cast<fs::path>(findVcbld(vcbldExec)));
+    try
+    {
+      std::string vcbldExec = std::getenv("PATH");
+      vcbldPath = fs::canonical(static_cast<fs::path>(findVcbld(vcbldExec)));
+    }
+    catch (const std::exception &e)
+    {
+      std::cout << "Error starting vcbld." << std::endl;
+      std::cerr << e.what() << " " << errno << std::endl;
+    }
   }
   else
   {
     vcbldPath = fs::canonical(temp);
-  }
-
-  if (!fs::exists("conf.json"))
-  {
-    init::setup(vcbldPath);
   }
 
   if (argc >= 2)
@@ -46,10 +50,12 @@ int main(int argc, char *argv[])
       if (!argv[2])
       {
         args::New("app");
+        init::setup(vcbldPath);
       }
       else
       {
         args::New(static_cast<std::string>(argv[2]));
+        init::setup(vcbldPath);
       }
     }
     else if (strcmp(argv[1], "setup") == 0)

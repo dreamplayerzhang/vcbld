@@ -1,6 +1,7 @@
 #include "builder.h"
 
 #include <algorithm>
+#include <errno.h>
 #include <experimental/filesystem>
 #include <iostream>
 #include <iterator>
@@ -25,7 +26,7 @@ Builder::Builder(const std::string &buildType)
   this->_rlsDir = this->confClass->outputDirectory().string() + "/" + "release";
 }
 
-std::string Builder::compile()
+void Builder::compile()
 {
 
   if (this->_buildType == "release")
@@ -55,10 +56,9 @@ std::string Builder::compile()
   {
     std::cout << "An error occured while compiling." << std::endl;
   }
-  return this->_compileCommand.str();
 }
 
-std::string Builder::appLink()
+void Builder::appLink()
 {
   std::vector<fs::directory_entry> dirEntry;
   std::string temp, tempPath;
@@ -111,10 +111,9 @@ std::string Builder::appLink()
   {
     std::cout << "An error occured while linking." << std::endl;
   }
-  return this->_appLinkCmnd.str();
 }
 
-std::string Builder::dylibLink()
+void Builder::dylibLink()
 {
   std::vector<fs::directory_entry> dirEntry;
   std::string temp, tempPath;
@@ -178,10 +177,9 @@ std::string Builder::dylibLink()
   {
     std::cout << "An error occured while linking." << std::endl;
   }
-  return this->_libLinkCmnd.str();
 }
 
-std::string Builder::archive()
+void Builder::archive()
 {
   std::vector<fs::directory_entry> dirEntry;
   std::string temp, tempPath;
@@ -228,7 +226,6 @@ std::string Builder::archive()
   {
     std::cout << "An error occured while archiving." << std::endl;
   }
-  return this->_archiveCmnd.str();
 }
 
 std::string Builder::getBldCommands()
@@ -236,19 +233,19 @@ std::string Builder::getBldCommands()
 
   if (this->confClass->binaryType() == "app")
   {
-    return this->compile() + "\n" + this->appLink();
+    return this->_compileCommand.str() + "\n" + this->_appLinkCmnd.str();
   }
   else if (this->confClass->binaryType() == "staticLibrary")
   {
-    return this->compile() + "\n" + this->archive();
+    return this->_compileCommand.str() + "\n" + this->_archiveCmnd.str();
   }
   else if (this->confClass->binaryType() == "sharedLibrary")
   {
-    return this->compile() + "\n" + this->dylibLink();
+    return this->_compileCommand.str() + "\n" + this->_libLinkCmnd.str();
   }
   else
   {
-    std::cout << "Unknown binary type defined in vcbld.json" << std::endl;
+    std::cout << "Unknown binary type defined in vcbld.json." << std::endl;
     return "";
   }
 }
@@ -266,38 +263,88 @@ void Builder::build()
 
   if (this->confClass->binaryType() == "app")
   {
-    this->compile();
-    this->appLink();
+    try
+    {
+      this->compile();
+    }
+    catch (const std::exception &e)
+    {
+      std::cout << "Compilation failed!" << std::endl;
+      std::cerr << e.what() << " " << errno << std::endl;
+    }
+    try
+    {
+      this->appLink();
+    }
+    catch (const std::exception &e)
+    {
+      std::cout << "Linking failed!" << std::endl;
+      std::cerr << e.what() << " " << errno << std::endl;
+    }
     try
     {
       this->copy();
     }
-    catch (...)
+    catch (const std::exception &e)
     {
-      std::cout << "Libraries exist in output directory" << std::endl;
+      std::cout << "Libraries exist in output directory." << std::endl;
+      std::cerr << e.what() << " " << errno << std::endl;
     }
   }
   else if (this->confClass->binaryType() == "staticLibrary")
   {
-    this->compile();
-    this->archive();
+    try
+    {
+      this->compile();
+    }
+    catch (const std::exception &e)
+    {
+      std::cout << "Compilation failed!" << std::endl;
+      std::cerr << e.what() << " " << errno << std::endl;
+    }
+    try
+    {
+      this->archive();
+    }
+    catch (const std::exception &e)
+    {
+      std::cout << "Archiving failed!" << std::endl;
+      std::cerr << e.what() << errno << std::endl;
+    }
   }
   else if (this->confClass->binaryType() == "sharedLibrary")
   {
-    this->compile();
-    this->dylibLink();
+    try
+    {
+      this->compile();
+    }
+    catch (const std::exception &e)
+    {
+      std::cout << "Compilation failed!" << std::endl;
+      std::cerr << e.what() << " " << errno << std::endl;
+    }
+    try
+    {
+      this->dylibLink();
+    }
+    catch (const std::exception &e)
+    {
+      std::cout << "Linking failed!" << std::endl;
+      std::cerr << e.what() << errno << std::endl;
+    }
     try
     {
       this->copy();
     }
-    catch (...)
+    catch (const std::exception &e)
     {
-      std::cout << "Libraries exist in output directory" << std::endl;
+      std::cout << "Libraries exist in output directory." << std::endl;
+      std::cerr << e.what() << " " << errno << std::endl;
     }
   }
   else
   {
-    std::cout << "Unknown binary type defined in vcbld.json" << std::endl;
+    std::cout << "Unknown binary type defined in vcbld.json." << std::endl;
   }
 }
 

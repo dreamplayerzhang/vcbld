@@ -290,6 +290,14 @@ void search(const std::string &pkg)
 void includes() { gen::includePathGen(); }
 void generate() { gen::cmakeGen(); }
 
+void commands() 
+{
+  Builder dbgBuilder("debug");
+  std::cout << dbgBuilder.getBldCommands() << std::endl;
+  Builder rlsBuilder("release");
+  std::cout << rlsBuilder.getBldCommands() << std::endl;
+}
+
 void list()
 {
   try
@@ -328,7 +336,7 @@ void add(const std::vector<std::string> &pkg)
       {
         if (*jt == *it)
         {
-          std::cout << "Package already exists" << std::endl;
+          std::cout << "Package already exists." << std::endl;
           isExist = true;
           break;
         }

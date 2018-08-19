@@ -1,6 +1,7 @@
 #include "conf.h"
 
 #include <algorithm>
+#include <errno.h>
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -66,9 +67,9 @@ ConfClass::ConfClass()
       this->_linkerFlags << " " << *it << " ";
     }
   }
-  catch (const json::parse_error e)
+  catch (const json::parse_error &e)
   {
-    std::cerr << "Error reading vcbld.json." << std::endl;
+    std::cerr << "Error reading vcbld.json. " << e.what() << std::endl;
   }
 
   try
@@ -84,9 +85,9 @@ ConfClass::ConfClass()
       std::cerr << "Failed to open conf.json file : " << errno << std::endl;
     }
   }
-  catch (const json::parse_error e)
+  catch (const json::parse_error &e)
   {
-    std::cerr << "Error reading conf.json." << std::endl;
+    std::cerr << "Error reading conf.json." << e.what() << std::endl;
   }
 
   fs::path vcpkgPath;
@@ -110,7 +111,7 @@ ConfClass::ConfClass()
     }
     else
     {
-      std::cerr << "Failed to open package.json file : " << errno << std::endl;
+      std::cerr << "Failed to open package.json file: " << errno << std::endl;
     }
     for (json::iterator it = pkgsJson["packages"].begin();
          it != pkgsJson["packages"].end(); ++it)
@@ -118,9 +119,9 @@ ConfClass::ConfClass()
       this->packageNames.push_back(*it);
     }
   }
-  catch (const json::parse_error e)
+  catch (const json::parse_error &e)
   {
-    std::cerr << "Error reading package.json" << std::endl;
+    std::cerr << "Error reading package.json: " << e.what() << std::endl;
   }
 
   std::vector<fs::directory_entry> dirEntry;
@@ -148,9 +149,9 @@ ConfClass::ConfClass()
         {
           std::string fileName = (*it).path().filename().string();
           std::string line;
-          std::ifstream ifs((*it).path());
           try
           {
+            std::ifstream ifs((*it).path());
             if (ifs.is_open())
             {
               while (!ifs.eof())
@@ -186,35 +187,47 @@ void ConfClass::write()
   {
     pkgsJson["packages"].push_back(*it);
   }
-  std::ofstream pkgsOutput("package.json");
-  if (pkgsOutput.is_open())
+  try
   {
-    pkgsOutput << std::setw(4) << pkgsJson;
-    pkgsOutput.flush();
-    pkgsOutput.close();
-    std::cout << "Packages updated successfully." << std::endl;
+    std::ofstream pkgsOutput("package.json");
+    if (pkgsOutput.is_open())
+    {
+      pkgsOutput << std::setw(4) << pkgsJson;
+      pkgsOutput.flush();
+      pkgsOutput.close();
+      std::cout << "Packages updated successfully." << std::endl;
+    }
+    else
+    {
+      std::cout << "Packages updated successfully." << std::endl;
+    }
   }
-  else
+  catch (const std::exception &e)
   {
-    std::cout << "Packages updated successfully." << std::endl;
-    std::cerr << "Failed to open file : " << errno << std::endl;
+    std::cerr << "Failed to open file: " << e.what() << " " << errno << std::endl;
   }
   std::string line;
   bool isEmpty = false;
-  std::ifstream pkgsInput("package.json");
-  if (pkgsInput.is_open())
+  try
   {
-    std::getline(pkgsInput, line);
-    if (line == "null")
+    std::ifstream pkgsInput("package.json");
+    if (pkgsInput.is_open())
     {
-      isEmpty = true;
-      pkgsInput.close();
+      std::getline(pkgsInput, line);
+      if (line == "null")
+      {
+        isEmpty = true;
+        pkgsInput.close();
+      }
+    }
+    else
+    {
+      std::cout << "Packages updated successfully." << std::endl;
     }
   }
-  else
+  catch (const std::exception &e)
   {
-    std::cout << "Packages updated successfully." << std::endl;
-    std::cerr << "Failed to open file : " << errno << std::endl;
+    std::cerr << "Failed to open file : " << e.what() << " " << errno << std::endl;
   }
   if (isEmpty == true)
   {
@@ -332,7 +345,7 @@ std::string ConfClass::getVersion(const std::string &pkgName)
 std::string ConfClass::headerPaths()
 {
   std::ostringstream temp;
-  temp << " -I" << fs::canonical(this->sourceDirectory()) 
+  temp << " -I" << fs::canonical(this->sourceDirectory())
        << " -I" << fs::canonical(this->includeDirectory())
        << " -I" << fs::canonical(this->outputDirectory())
        << " -I" << this->vcpkgDirPath() << "/"

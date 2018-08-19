@@ -1,6 +1,7 @@
 #include "init.h"
 
 #include <algorithm>
+#include <errno.h>
 #include <experimental/filesystem>
 #include <fstream>
 #include <iomanip>
@@ -93,27 +94,33 @@ void setup(const fs::path &vcbldPath)
 
   if (!fs::exists("conf.json"))
   {
-
-    std::ofstream confOutput("conf.json");
-    if (confOutput.is_open())
+    try
     {
-      confOutput << std::setw(4) << "{\n\t\"cCompilerPath\" : \""
-                 << cCompilerPath << "\",\n\t"
-                 << "\"cppCompilerPath\" : \"" << cppCompilerPath << "\",\n\t"
-                 << "\"vcpkgDirectory\" : \""
-                 << static_cast<std::string>(fs::canonical(vcbldPath))
-                 << "\",\n\t"
-                 << "\"architecture\" : \"" << PLATFORM_NAME << "\",\n\t"
-                 << "\"cmakePath\" : \"" << cmakePath << "\",\n\t"
-                 << "\"makePath\" : \"" << makePath << "\",\n\t"
-                 << "\"archiverPath\" : \"" << archiverPath << "\"\n}";
-      confOutput.flush();
-      confOutput.close();
-      std::cout << "conf.json written successfully." << std::endl;
+      std::ofstream confOutput("conf.json");
+      if (confOutput.is_open())
+      {
+        confOutput << std::setw(4) << "{\n\t\"cCompilerPath\" : \""
+                   << cCompilerPath << "\",\n\t"
+                   << "\"cppCompilerPath\" : \"" << cppCompilerPath << "\",\n\t"
+                   << "\"vcpkgDirectory\" : \""
+                   << static_cast<std::string>(fs::canonical(vcbldPath))
+                   << "\",\n\t"
+                   << "\"architecture\" : \"" << PLATFORM_NAME << "\",\n\t"
+                   << "\"cmakePath\" : \"" << cmakePath << "\",\n\t"
+                   << "\"makePath\" : \"" << makePath << "\",\n\t"
+                   << "\"archiverPath\" : \"" << archiverPath << "\"\n}";
+        confOutput.flush();
+        confOutput.close();
+        std::cout << "conf.json written successfully." << std::endl;
+      }
+      else
+      {
+        std::cout << "Error opening conf.json." << std::endl;
+      }
     }
-    else
+    catch (const std::exception &e)
     {
-      
+      std::cerr << e.what() << " " << errno << std::endl;
     }
   }
   else
@@ -123,14 +130,20 @@ void setup(const fs::path &vcbldPath)
 
   if (!fs::exists("package.json"))
   {
-
-    std::ofstream pkgsOutput("package.json");
-    if (pkgsOutput.is_open())
+    try
     {
-      pkgsOutput << std::setw(4) << "{\n\t\"packages\" : []\n}";
-      pkgsOutput.flush();
-      pkgsOutput.close();
-      std::cout << "package.json written successfully." << std::endl;
+      std::ofstream pkgsOutput("package.json");
+      if (pkgsOutput.is_open())
+      {
+        pkgsOutput << std::setw(4) << "{\n\t\"packages\" : []\n}";
+        pkgsOutput.flush();
+        pkgsOutput.close();
+        std::cout << "package.json written successfully." << std::endl;
+      }
+    }
+    catch (const std::exception &e)
+    {
+      std::cerr << e.what() << " " << errno << std::endl;
     }
   }
 
@@ -189,61 +202,73 @@ void init(const std::string &binType)
 
   if (!fs::exists("vcbld.json"))
   {
-
-    std::ofstream vcbldOutput("vcbld.json");
-    if (vcbldOutput.is_open())
+    try
     {
-      vcbldOutput << std::setw(4) << "{\n\t\"projectName\" : "
-                  << "\"" << fs::current_path().filename().string() << "\",\n\t"
-                  << "\"version\" : "
-                  << "\"0.1.0\",\n\t"
-                  << "\"language\" : "
-                  << "\"c++\",\n\t"
-                  << "\"standard\" : "
-                  << "\"11\",\n\t"
-                  << "\"binaryName\" : "
-                  << "\"" << fs::current_path().filename().string() << "\",\n\t"
-                  << "\"binaryType\" : "
-                  << "\"" << binaryType << "\",\n\t"
-                  << "\"sourceDirectory\" : "
-                  << "\"src\",\n\t"
-                  << "\"outputDirectory\" : "
-                  << "\"bin\",\n\t"
-                  << "\"includeDirectory\" : "
-                  << "\"include\",\n\t"
-                  << "\"libDirectory\" : "
-                  << "\"lib\",\n\t"
-                  << "\"compilerDefines\" : "
-                  << "[],\n\t"
-                  << "\"compilerFlags\" : "
-                  << "[],\n\t"
-                  << "\"linkerFlags\" : "
-                  << "[]\n"
-                  << "}";
-      vcbldOutput.flush();
-      vcbldOutput.close();
-      std::cout << "vcbld.json written successfully." << std::endl;
+      std::ofstream vcbldOutput("vcbld.json");
+      if (vcbldOutput.is_open())
+      {
+        vcbldOutput << std::setw(4) << "{\n\t\"projectName\" : "
+                    << "\"" << fs::current_path().filename().string() << "\",\n\t"
+                    << "\"version\" : "
+                    << "\"0.1.0\",\n\t"
+                    << "\"language\" : "
+                    << "\"c++\",\n\t"
+                    << "\"standard\" : "
+                    << "\"11\",\n\t"
+                    << "\"binaryName\" : "
+                    << "\"" << fs::current_path().filename().string() << "\",\n\t"
+                    << "\"binaryType\" : "
+                    << "\"" << binaryType << "\",\n\t"
+                    << "\"sourceDirectory\" : "
+                    << "\"src\",\n\t"
+                    << "\"outputDirectory\" : "
+                    << "\"bin\",\n\t"
+                    << "\"includeDirectory\" : "
+                    << "\"include\",\n\t"
+                    << "\"libDirectory\" : "
+                    << "\"lib\",\n\t"
+                    << "\"compilerDefines\" : "
+                    << "[],\n\t"
+                    << "\"compilerFlags\" : "
+                    << "[],\n\t"
+                    << "\"linkerFlags\" : "
+                    << "[]\n"
+                    << "}";
+        vcbldOutput.flush();
+        vcbldOutput.close();
+        std::cout << "vcbld.json written successfully." << std::endl;
+      }
+      else
+      {
+        std::cout << "vcbld.json exists." << std::endl;
+      }
     }
-    else
+    catch (const std::exception &e)
     {
-      std::cout << "vcbld.json exists." << std::endl;
+      std::cerr << e.what() << " " << errno << std::endl;
     }
   }
 
   if (!fs::exists("package.json"))
   {
-
-    std::ofstream pkgsOutput("package.json");
-    if (pkgsOutput.is_open())
+    try
     {
-      pkgsOutput << std::setw(4) << "{\n\t\"packages\" : []\n}";
-      pkgsOutput.flush();
-      pkgsOutput.close();
-      std::cout << "package.json written successfully." << std::endl;
+      std::ofstream pkgsOutput("package.json");
+      if (pkgsOutput.is_open())
+      {
+        pkgsOutput << std::setw(4) << "{\n\t\"packages\" : []\n}";
+        pkgsOutput.flush();
+        pkgsOutput.close();
+        std::cout << "package.json written successfully." << std::endl;
+      }
+      else
+      {
+        std::cout << "package.json exists." << std::endl;
+      }
     }
-    else
+    catch (const std::exception &e)
     {
-      std::cout << "package.json exists." << std::endl;
+      std::cerr << e.what() << " " << errno << std::endl;
     }
   }
 }

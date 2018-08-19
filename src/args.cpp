@@ -293,8 +293,10 @@ void generate() { gen::cmakeGen(); }
 void commands() 
 {
   Builder dbgBuilder("debug");
+  dbgBuilder.build();
   std::cout << dbgBuilder.getBldCommands() << std::endl;
   Builder rlsBuilder("release");
+  rlsBuilder.build();
   std::cout << rlsBuilder.getBldCommands() << std::endl;
 }
 

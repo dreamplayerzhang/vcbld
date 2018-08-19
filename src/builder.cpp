@@ -230,7 +230,6 @@ void Builder::archive()
 
 std::string Builder::getBldCommands()
 {
-
   if (this->confClass->binaryType() == "app")
   {
     return this->_compileCommand.str() + "\n" + this->_appLinkCmnd.str();

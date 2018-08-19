@@ -7,7 +7,7 @@
 	"binaryName" : "vcbld",
 	"sourceDirectory" : "src",
 	"includeDirectory" : "include",
-	"libDirectory" : "",
+	"libDirectory" : "lib",
 	"outputDirectory" : "bin",
 	"compilerDefines" : [],
 	"compilerFlags" : ["-lstdc++fs"],

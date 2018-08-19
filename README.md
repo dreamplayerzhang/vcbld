@@ -69,16 +69,16 @@ This will generate a project with the following structure:
 |__include
 |
 |__lib
-|	|
-|	|__debug
-|	|
-|	|__release
+|    |
+|    |__debug
+|    |
+|    |__release
 |
-|__bin
-	|
-	|__debug
-	|
-	|__release
+|__bin	
+     |
+     |__debug
+     |
+     |__release
 ```
 The conf.json file contains several default variables depending on the operating system. Thus it is not supposed to be pushed to a version control repository like github and should be added to your gitignore (if you were using git). The default variables can also be changed if need be. A conf.json file will look like the following:
 ```json

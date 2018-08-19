@@ -227,6 +227,7 @@ $ vcbld vcpkg integrate install
 ## Tutorials:
 Some video tutorials will be added to my youtube channel. This is the link to the first video:
 https://www.youtube.com/watch?v=gE72ehRLQzE
+
 Second video on building vcbld from source using cmake:
 https://www.youtube.com/watch?v=hMTEm4Fzcgk
 

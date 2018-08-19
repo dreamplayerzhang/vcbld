@@ -15,6 +15,8 @@ class ConfClass
 {
 public:
   ConfClass(); // reads all configuration files
+  ConfClass(const ConfClass &) = delete;
+  ConfClass &operator=(const ConfClass &) = delete;
 
   std::string compilerPath() const;
   std::string vcpkgDirPath() const;

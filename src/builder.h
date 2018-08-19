@@ -11,6 +11,9 @@ class Builder
 {
 public:
   explicit Builder(const std::string &buildType);
+  Builder(const Builder &) = delete;
+  Builder &operator=(const Builder &) = delete;
+  ~Builder();
 
   void compile();
   void appLink();
@@ -19,8 +22,6 @@ public:
   std::string getBldCommands();
   void build();
   void copy();
-
-  ~Builder();
 
 private:
   ConfClass *confClass;

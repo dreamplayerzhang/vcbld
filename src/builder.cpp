@@ -12,10 +12,9 @@ namespace fs = std::experimental::filesystem;
 namespace vcbld
 {
 
-Builder::Builder(const std::string &buildType)
+Builder::Builder(const std::string &buildType) : _buildType(buildType)
 {
   this->confClass = new ConfClass();
-  this->_buildType = buildType;
   if (!fs::exists("vcbld.json"))
   {
     std::cout << "Build configuration not found!" << std::endl;

@@ -6,7 +6,6 @@ namespace vcbld
 namespace help
 {
 void mainHelp();
-
 } // namespace help
 } // namespace vcbld
 #endif // !HELP_H

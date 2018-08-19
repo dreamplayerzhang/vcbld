@@ -225,7 +225,8 @@ $ vcbld vcpkg integrate install
 ```
 
 ## Tutorials:
-Some video tutorials will be added to my youtube channel [here.](https://www.youtube.com/user/Xevorim)
+Some video tutorials will be added to my youtube channel. This is the link to the first video:
+https://www.youtube.com/watch?v=gE72ehRLQzE
 
 ## Contributing:
 All contributions are welcome!

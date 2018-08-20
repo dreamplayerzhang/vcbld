@@ -362,6 +362,45 @@ void Builder::copy()
   std::string dbgLibPath = this->vcpkgDirPath() + "/" + "installed" + "/" + this->architecture() + "/" + "debug/lib";
   std::string rlsLibPath = this->vcpkgDirPath() + "/" + "installed" + "/" + this->architecture() + "/" + "lib";
   std::string fullName;
+  if (this->libDirectory() != "")
+  {
+    std::string localDbgPath = fs::canonical(this->libDirectory()).string() + "/" + "debug";
+    std::string localRlsPath = fs::canonical(this->libDirectory()).string() + "/" + "release";
+    if (this->_buildType == "debug")
+    {
+      for (std::vector<std::string>::iterator it = this->dbgLocalLibNames().begin(); it != this->dbgLocalLibNames().end(); ++it)
+      {
+        fullName = localDbgPath + "/" + (*it);
+        if (fs::exists(fullName))
+        {
+          if ((*it).find(".a") == std::string::npos || (*it).find(".lib") == std::string::npos)
+          {
+            if (!fs::exists(this->_dbgDir + "/" + (*it)))
+            {
+              fs::copy(fullName, this->_dbgDir);
+            }
+          }
+        }
+      }
+    }
+    else
+    {
+      for (std::vector<std::string>::iterator it = this->rlsLocalLibNames().begin(); it != this->rlsLocalLibNames().end(); ++it)
+      {
+        fullName = localRlsPath + "/" + (*it);
+        if (fs::exists(fullName))
+        {
+          if ((*it).find(".a") == std::string::npos || (*it).find(".lib") == std::string::npos)
+          {
+            if (!fs::exists(this->_rlsDir + "/" + (*it)))
+            {
+              fs::copy(fullName, this->_rlsDir);
+            }
+          }
+        }
+      }
+    }
+  }
   for (std::vector<std::string>::iterator it = this->fullLibNames().begin(); it != this->fullLibNames().end(); ++it)
   {
     if (this->_buildType == "debug")
@@ -376,7 +415,7 @@ void Builder::copy()
     {
       if (this->_buildType == "debug")
       {
-        if ((*it).find(".a") == std::string::npos || (*it).find(".a") == std::string::npos) 
+        if ((*it).find(".a") == std::string::npos || (*it).find(".lib") == std::string::npos)
         {
           if (!fs::exists(this->_dbgDir + "/" + (*it)))
           {
@@ -386,7 +425,7 @@ void Builder::copy()
       }
       else
       {
-        if ((*it).find(".a") == std::string::npos || (*it).find(".a") == std::string::npos) 
+        if ((*it).find(".a") == std::string::npos || (*it).find(".lib") == std::string::npos)
         {
           if (!fs::exists(this->_rlsDir + "/" + (*it)))
           {

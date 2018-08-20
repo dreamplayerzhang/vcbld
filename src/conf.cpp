@@ -38,16 +38,67 @@ ConfClass::ConfClass()
     {
       std::cerr << "Failed to open vcbld.json file : " << errno << std::endl;
     }
+
     this->_projectName = vcbldJson["projectName"];
-    this->_version = vcbldJson["version"];
-    this->_language = vcbldJson["language"];
-    this->_standard = vcbldJson["standard"];
+
+    try
+    {
+      this->_version = vcbldJson["version"];
+    }
+    catch (...)
+    {
+      this->_version = "0.1.0";
+    }
+
+    try
+    {
+      this->_language = vcbldJson["language"];
+    }
+    catch (...)
+    {
+      this->_language = "c++";
+    }
+
+    try
+    {
+      this->_standard = vcbldJson["standard"];
+    }
+    catch (...)
+    {
+      this->_standard = "11";
+    }
+
     this->_binaryName = vcbldJson["binaryName"];
     this->_binaryType = vcbldJson["binaryType"];
-    this->_outputDirectory = vcbldJson["outputDirectory"];
+
+    try
+    {
+      this->_outputDirectory = vcbldJson["outputDirectory"];
+    }
+    catch (...)
+    {
+      this->_outputDirectory = "bin";
+    }
+
     this->_sourceDirectory = vcbldJson["sourceDirectory"];
-    this->_includeDirectory = vcbldJson["includeDirectory"];
-    this->_libDirectory = vcbldJson["libDirectory"];
+
+    try
+    {
+      this->_includeDirectory = vcbldJson["includeDirectory"];
+    }
+    catch (...)
+    {
+      this->_includeDirectory = "";
+    }
+
+    try
+    {
+      this->_libDirectory = vcbldJson["libDirectory"];
+    }
+    catch (...)
+    {
+      this->_libDirectory = "";
+    }
 
     for (json::iterator it = vcbldJson["compilerDefines"].begin();
          it != vcbldJson["compilerDefines"].end(); ++it)
@@ -67,9 +118,9 @@ ConfClass::ConfClass()
       this->_linkerFlags << " " << *it << " ";
     }
   }
-  catch (const json::parse_error &e)
+  catch (...)
   {
-    std::cerr << "Error reading vcbld.json. " << e.what() << std::endl;
+    std::cerr << "Error reading vcbld.json. " << std::endl;
   }
 
   try
@@ -85,9 +136,9 @@ ConfClass::ConfClass()
       std::cerr << "Failed to open conf.json file : " << errno << std::endl;
     }
   }
-  catch (const json::parse_error &e)
+  catch (...)
   {
-    std::cerr << "Error reading conf.json." << e.what() << std::endl;
+    std::cerr << "Error reading conf.json." << std::endl;
   }
 
   fs::path vcpkgPath;
@@ -102,7 +153,7 @@ ConfClass::ConfClass()
   this->_vcpkgDirPath = vcpkgPath.string();
 }
 
-fs::path ConfClass::projPath() const { return this->_projPath;}
+fs::path ConfClass::projPath() const { return this->_projPath; }
 
 std::string ConfClass::compilerPath() const
 {

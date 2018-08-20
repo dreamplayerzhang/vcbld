@@ -37,9 +37,9 @@ PkgClass::PkgClass() : ConfClass()
             this->_packageNames.push_back(*it);
         }
     }
-    catch (const json::parse_error &e)
+    catch (...)
     {
-        std::cerr << "Error reading package.json: " << e.what() << std::endl;
+        std::cerr << "Error reading package.json." << std::endl;
     }
 }
 

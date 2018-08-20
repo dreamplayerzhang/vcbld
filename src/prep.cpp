@@ -207,7 +207,7 @@ std::string PrepClass::dbgLibPaths()
             {
                 if (stripLibName((*jt).path().filename().string()).at(0) != '.')
                 {
-                    temp << " -L" << (*jt).path().parent_path().string() << " "
+                    temp << " -L" << "../../" << (*jt).path().parent_path().string() << " "
                          << " -l" << stripLibName((*jt).path().filename().string());
                 }
             }
@@ -245,7 +245,7 @@ std::string PrepClass::rlsLibPaths()
             {
                 if (stripLibName((*jt).path().filename().string()).at(0) != '.')
                 {
-                    temp << " -L" << (*jt).path().parent_path().string() << " "
+                    temp << " -L" << "../../" << (*jt).path().parent_path().string() << " "
                          << " -l" << stripLibName((*jt).path().filename().string());
                 }
             }

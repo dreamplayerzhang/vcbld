@@ -125,7 +125,7 @@ std::string ConfClass::compilerFlags() const
 }
 std::string ConfClass::linkerFlags() const
 {
-  return this->_compilerFlags.str();
+  return this->_linkerFlags.str();
 }
 
 std::string ConfClass::cmakePath() const { return _cmakePath; }

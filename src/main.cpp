@@ -45,7 +45,9 @@ int main(int argc, char *argv[])
 
   if (!fs::exists(vcbldPath.string() + "/vcpkg"))
   {
-    std::cout << "The vcpkg executable was not found!\nPlease add vcbld to the same directory as your vcpkg executable!" << std::endl;
+    std::cout << "The vcpkg executable was not found!\nPlease add vcbld to the "
+                 "same directory as your vcpkg executable!"
+              << std::endl;
     std::exit(1);
   }
 

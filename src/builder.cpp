@@ -262,7 +262,9 @@ void Builder::build()
   {
     try
     {
+      std::cout << "Compiling...\n";
       this->compile();
+      std::cout << "Done!" << std::endl;
     }
     catch (const std::exception &e)
     {
@@ -271,7 +273,9 @@ void Builder::build()
     }
     try
     {
+      std::cout << "Linking...\n";
       this->appLink();
+      std::cout << "Done!" << std::endl;
     }
     catch (const std::exception &e)
     {
@@ -292,7 +296,9 @@ void Builder::build()
   {
     try
     {
+      std::cout << "Compiling...\n";
       this->compile();
+      std::cout << "Done!" << std::endl;
     }
     catch (const std::exception &e)
     {
@@ -301,7 +307,9 @@ void Builder::build()
     }
     try
     {
+      std::cout << "Archiving...\n";
       this->archive();
+      std::cout << "Done!" << std::endl;
     }
     catch (const std::exception &e)
     {
@@ -313,7 +321,9 @@ void Builder::build()
   {
     try
     {
+      std::cout << "Compiling...\n";
       this->compile();
+      std::cout << "Done!" << std::endl;
     }
     catch (const std::exception &e)
     {
@@ -322,7 +332,9 @@ void Builder::build()
     }
     try
     {
+      std::cout << "Linking...\n";
       this->dylibLink();
+      std::cout << "Done!" << std::endl;
     }
     catch (const std::exception &e)
     {

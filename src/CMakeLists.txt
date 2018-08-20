@@ -32,7 +32,7 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 	message(FATAL_ERROR "Prevented in-tree build. Please create a build directory outside of the source directory and call cmake from there.")
 endif()
 
-set(SOURCE_FILES "main.cpp" "args.cpp" "builder.cpp" "help.cpp" "conf.cpp" "init.cpp" "gen.cpp")
+set(SOURCE_FILES "main.cpp" "args.cpp" "builder.cpp" "help.cpp" "conf.cpp" "init.cpp" "gen.cpp" "pkg.cpp" "prep.cpp")
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 

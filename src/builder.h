@@ -3,11 +3,11 @@
 
 #include <string>
 
-#include "conf.h"
+#include "prep.h"
 
 namespace vcbld
 {
-class Builder : public ConfClass
+class Builder : public PrepClass
 {
 public:
   explicit Builder(const std::string &buildType);

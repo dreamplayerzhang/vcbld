@@ -2,7 +2,7 @@
 #define CONF_H
 
 #include <experimental/filesystem>
-#include <nlohmann/json.hpp>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -18,6 +18,7 @@ public:
   ConfClass(const ConfClass &) = delete;
   ConfClass &operator=(const ConfClass &) = delete;
 
+  fs::path projPath() const;
   std::string compilerPath() const;
   std::string vcpkgDirPath() const;
   std::string architecture() const;
@@ -35,27 +36,9 @@ public:
   fs::path sourceDirectory() const;
   fs::path includeDirectory() const;
   fs::path libDirectory() const;
-  std::string sourceFiles() const;
-  std::string sourceFilesSinPath() const;
   std::string compilerDefines() const;
   std::string compilerFlags() const;
   std::string linkerFlags() const;
-
-  void write();
-  void include(const std::string &pkg);
-  void remove(const std::string &pkg);
-  std::string getVersion(const std::string &pkgName);
-  std::string headerPaths();
-  std::string findLib(const std::string &line);
-  std::string stripLibName(const std::string &lib);
-  std::string dbgLibPaths();
-  std::string rlsLibPaths();
-
-  bool hasComponents(const std::string &libName);
-  std::string cmakeOutput();
-
-  std::vector<std::string> &packageNames();
-  std::vector<std::string> &fullLibNames();
 
 private:
   fs::path _projPath;
@@ -80,12 +63,6 @@ private:
   std::ostringstream _compilerDefines;
   std::ostringstream _compilerFlags;
   std::ostringstream _linkerFlags;
-
-  std::ostringstream _cmakeOutput;
-  std::vector<std::string> _boostComponents;
-  std::vector<std::string> _QtComponents;
-  std::vector<std::string> _packageNames;
-  std::vector<std::string> _fullLibNames;
 };
 } // namespace vcbld
 #endif // !CONF_H

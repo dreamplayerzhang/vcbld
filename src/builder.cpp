@@ -12,7 +12,7 @@ namespace fs = std::experimental::filesystem;
 namespace vcbld
 {
 
-Builder::Builder(const std::string &buildType) : _buildType(buildType), ConfClass()
+Builder::Builder(const std::string &buildType) : _buildType(buildType), PrepClass()
 {
   if (!fs::exists("vcbld.json"))
   {

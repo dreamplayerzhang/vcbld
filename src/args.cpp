@@ -11,9 +11,9 @@
 #include <vector>
 
 #include "builder.h"
-#include "conf.h"
 #include "gen.h"
 #include "init.h"
+#include "pkg.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -141,15 +141,15 @@ void clean()
 {
   try
   {
-    ConfClass confClass;
-    std::string command = "rm -rf " + confClass.outputDirectory().string() +
+    PkgClass pkgClass;
+    std::string command = "rm -rf " + pkgClass.outputDirectory().string() +
                           "/" + "debug" + "/" + "**";
     int systemRet = system(command.c_str());
     if (systemRet == -1)
     {
       std::cout << "An error occured while deleting output." << std::endl;
     }
-    command = "rm -rf " + confClass.outputDirectory().string() + "/" +
+    command = "rm -rf " + pkgClass.outputDirectory().string() + "/" +
               "release" + "/" + "**";
     int systemRet2 = system(command.c_str());
     if (systemRet2 == -1)
@@ -170,9 +170,9 @@ void run(const std::string &buildType)
   {
     try
     {
-      ConfClass confClass;
-      command << "./" << confClass.outputDirectory() << "/debug/"
-              << confClass.binaryName();
+      PkgClass pkgClass;
+      command << "./" << pkgClass.outputDirectory() << "/debug/"
+              << pkgClass.binaryName();
       int systemRet = system(command.str().c_str());
       if (systemRet == -1)
       {
@@ -188,9 +188,9 @@ void run(const std::string &buildType)
   {
     try
     {
-      ConfClass confClass;
-      command << "./" << confClass.outputDirectory() << "/release/"
-              << confClass.binaryName();
+      PkgClass pkgClass;
+      command << "./" << pkgClass.outputDirectory() << "/release/"
+              << pkgClass.binaryName();
       int systemRet = system(command.str().c_str());
       if (systemRet == -1)
       {
@@ -208,14 +208,14 @@ void available()
 {
   try
   {
-    ConfClass confClass;
+    PkgClass pkgClass;
     std::vector<fs::directory_entry> dirEntry;
 
-    std::string vcpkgDirPath = confClass.vcpkgDirPath();
+    std::string vcpkgDirPath = pkgClass.vcpkgDirPath();
     vcpkgDirPath += "/";
     vcpkgDirPath += "installed";
     vcpkgDirPath += "/";
-    vcpkgDirPath += confClass.architecture();
+    vcpkgDirPath += pkgClass.architecture();
     vcpkgDirPath += "/";
     vcpkgDirPath += "share";
 
@@ -250,14 +250,14 @@ void search(const std::string &pkg)
 {
   try
   {
-    ConfClass confClass;
+    PkgClass pkgClass;
     std::vector<fs::directory_entry> dirEntry;
 
-    std::string vcpkgDirPath = confClass.vcpkgDirPath();
+    std::string vcpkgDirPath = pkgClass.vcpkgDirPath();
     vcpkgDirPath += "/";
     vcpkgDirPath += "installed";
     vcpkgDirPath += "/";
-    vcpkgDirPath += confClass.architecture();
+    vcpkgDirPath += pkgClass.architecture();
     vcpkgDirPath += "/";
     vcpkgDirPath += "share";
 
@@ -305,12 +305,12 @@ void list()
 {
   try
   {
-    ConfClass confClass;
-    for (std::vector<std::string>::iterator it = confClass.packageNames().begin();
-         it != confClass.packageNames().end(); ++it)
+    PkgClass pkgClass;
+    for (std::vector<std::string>::iterator it = pkgClass.packageNames().begin();
+         it != pkgClass.packageNames().end(); ++it)
     {
       std::cout << std::setw(4) << "Package name: " << *it
-                << "\t\tPackage version: " << confClass.getVersion(*it)
+                << "\t\tPackage version: " << pkgClass.getVersion(*it)
                 << std::endl;
     }
   }
@@ -323,19 +323,19 @@ void list()
 
 void add(const std::vector<std::string> &pkg)
 {
-  ConfClass confClass;
+  PkgClass pkgClass;
   for (std::vector<std::string>::const_iterator it = pkg.begin();
        it != pkg.end(); ++it)
   {
-    std::string addDep = confClass.vcpkgDirPath() + "/" + "installed" + "/" +
-                         confClass.architecture() + "/" + "share" + "/" + *it;
+    std::string addDep = pkgClass.vcpkgDirPath() + "/" + "installed" + "/" +
+                         pkgClass.architecture() + "/" + "share" + "/" + *it;
 
     if (fs::is_directory(static_cast<fs::path>(addDep)))
     {
       bool isExist = false;
       for (std::vector<std::string>::iterator jt =
-               confClass.packageNames().begin();
-           jt != confClass.packageNames().end(); ++jt)
+               pkgClass.packageNames().begin();
+           jt != pkgClass.packageNames().end(); ++jt)
       {
         if (*jt == *it)
         {
@@ -350,8 +350,8 @@ void add(const std::vector<std::string> &pkg)
       }
       if (isExist != true)
       {
-        confClass.include(*it);
-        confClass.write();
+        pkgClass.include(*it);
+        pkgClass.write();
       }
     }
     else
@@ -364,17 +364,17 @@ void add(const std::vector<std::string> &pkg)
 
 void remove(const std::vector<std::string> &pkg)
 {
-  ConfClass confClass;
+  PkgClass pkgClass;
   for (std::vector<std::string>::const_iterator it = pkg.begin();
        it != pkg.end(); ++it)
   {
-    for (std::vector<std::string>::iterator jt = confClass.packageNames().begin();
-         jt != confClass.packageNames().end(); ++jt)
+    for (std::vector<std::string>::iterator jt = pkgClass.packageNames().begin();
+         jt != pkgClass.packageNames().end(); ++jt)
     {
       if (*jt == *it)
       {
-        confClass.remove(*it);
-        confClass.write();
+        pkgClass.remove(*it);
+        pkgClass.write();
         break;
       }
       else
@@ -386,9 +386,9 @@ void remove(const std::vector<std::string> &pkg)
 
 void vcpkg(const std::string &vcpkgCmnds)
 {
-  ConfClass confClass;
+  PkgClass pkgClass;
   std::string temp =
-      confClass.vcpkgDirPath() + "/" + "vcpkg" + " " + vcpkgCmnds;
+      pkgClass.vcpkgDirPath() + "/" + "vcpkg" + " " + vcpkgCmnds;
   int systemRet = system(temp.c_str());
   if (systemRet == -1)
   {
@@ -398,9 +398,9 @@ void vcpkg(const std::string &vcpkgCmnds)
 
 void install(const std::string &packages) 
 {
-  ConfClass confClass;
+  PkgClass pkgClass;
   std::string temp =
-      confClass.vcpkgDirPath() + "/" + "vcpkg" + " install " + packages;
+      pkgClass.vcpkgDirPath() + "/" + "vcpkg" + " install " + packages;
   int systemRet = system(temp.c_str());
   if (systemRet == -1)
   {
@@ -410,9 +410,9 @@ void install(const std::string &packages)
 
 void uninstall(const std::string &packages) 
 {
-  ConfClass confClass;
+  PkgClass pkgClass;
   std::string temp =
-      confClass.vcpkgDirPath() + "/" + "vcpkg" + " remove " + packages;
+      pkgClass.vcpkgDirPath() + "/" + "vcpkg" + " remove " + packages;
   int systemRet = system(temp.c_str());
   if (systemRet == -1)
   {
@@ -422,16 +422,16 @@ void uninstall(const std::string &packages)
 
 void restore()
 {
-  ConfClass confClass;
-  if (confClass.packageNames().size() != 0)
+  PkgClass pkgClass;
+  if (pkgClass.packageNames().size() != 0)
   {
     std::ostringstream pkg;
-    for (std::vector<std::string>::iterator it = confClass.packageNames().begin();
-         it != confClass.packageNames().end(); ++it)
+    for (std::vector<std::string>::iterator it = pkgClass.packageNames().begin();
+         it != pkgClass.packageNames().end(); ++it)
     {
       pkg << *it << " ";
     }
-    std::string instlCmnd = confClass.vcpkgDirPath() + "/" + "vcpkg" + " " +
+    std::string instlCmnd = pkgClass.vcpkgDirPath() + "/" + "vcpkg" + " " +
                             "install" + " " + pkg.str();
     int systemRet = system(instlCmnd.c_str());
     if (systemRet == -1)
@@ -450,11 +450,11 @@ void restore()
 
 void cmake(const std::string &cmakeArgs)
 {
-  ConfClass confClass;
+  PkgClass pkgClass;
   std::ostringstream cmakeCmnd;
-  cmakeCmnd << "cd " << confClass.outputDirectory() << " && "
-            << confClass.cmakePath()
-            << " -DCMAKE_TOOLCHAIN_FILE=" << confClass.vcpkgDirPath()
+  cmakeCmnd << "cd " << pkgClass.outputDirectory() << " && "
+            << pkgClass.cmakePath()
+            << " -DCMAKE_TOOLCHAIN_FILE=" << pkgClass.vcpkgDirPath()
             << "/scripts/buildsystems/vcpkg.cmake " << cmakeArgs << " .. ";
   int systemRet = system(cmakeCmnd.str().c_str());
   if (systemRet == -1)
@@ -465,10 +465,10 @@ void cmake(const std::string &cmakeArgs)
 
 void make(const std::string &makeArgs)
 {
-  ConfClass confClass;
+  PkgClass pkgClass;
   std::ostringstream makeCmnd;
-  makeCmnd << "cd " << confClass.outputDirectory() << " && "
-           << " " << confClass.makePath();
+  makeCmnd << "cd " << pkgClass.outputDirectory() << " && "
+           << " " << pkgClass.makePath();
   int systemRet = system(makeCmnd.str().c_str());
   if (systemRet == -1)
   {

@@ -10,7 +10,8 @@
 #include <string>
 #include <vector>
 
-#include "conf.h"
+#include "pkg.h"
+#include "prep.h"
 
 namespace fs = std::experimental::filesystem;
 using json = nlohmann::json;
@@ -22,12 +23,16 @@ namespace gen
 void includePathGen()
 {
   json incJson;
-  ConfClass confClass;
-  incJson.push_back(confClass.sourceDirectory().relative_path().string());
-  incJson.push_back(confClass.includeDirectory().relative_path().string());
-  incJson.push_back(confClass.vcpkgDirPath() + "/" + "installed" + "/" +
+  PkgClass pkgClass;
+  incJson.push_back(pkgClass.sourceDirectory().relative_path().string());
+  if (pkgClass.includeDirectory() != "")
+  {
+    incJson.push_back(pkgClass.includeDirectory().relative_path().string());
+  }
+  incJson.push_back(pkgClass.outputDirectory().relative_path().string());
+  incJson.push_back(pkgClass.vcpkgDirPath() + "/" + "installed" + "/" +
                     "include");
-  std::string temp = confClass.sourceDirectory().string();
+  std::string temp = pkgClass.sourceDirectory().string();
 
   if (!fs::exists("includePath.json"))
   {
@@ -55,7 +60,7 @@ void includePathGen()
 
 void cmakeGen()
 {
-  ConfClass confClass;
+  PrepClass prepClass;
 
   if (!fs::exists("CMakeLists.txt"))
   {
@@ -65,10 +70,10 @@ void cmakeGen()
       if (ofs.is_open())
       {
         ofs << "cmake_minimum_required(VERSION 3.10.0)\n"
-            << "set(CMAKE_CXX_STANDARD " << confClass.standard() << ")\n\n"
-            << "project(" << confClass.projectName() << " VERSION "
-            << confClass.version() << ")\n\n"
-            << "add_subdirectory(" << confClass.sourceDirectory() << ")\n\n";
+            << "set(CMAKE_CXX_STANDARD " << prepClass.standard() << ")\n\n"
+            << "project(" << prepClass.projectName() << " VERSION "
+            << prepClass.version() << ")\n\n"
+            << "add_subdirectory(" << prepClass.sourceDirectory() << ")\n\n";
         ofs.flush();
         ofs.close();
       }
@@ -88,33 +93,33 @@ void cmakeGen()
         << std::endl;
   }
 
-  if (!fs::exists(confClass.sourceDirectory().string() + "/CMakeLists.txt"))
+  if (!fs::exists(prepClass.sourceDirectory().string() + "/CMakeLists.txt"))
   {
     try
     {
-      std::ofstream ofs(confClass.sourceDirectory().string() + "/CMakeLists.txt");
+      std::ofstream ofs(prepClass.sourceDirectory().string() + "/CMakeLists.txt");
       if (ofs.is_open())
       {
-        if (confClass.language() == "c++")
+        if (prepClass.language() == "c++")
         {
-          ofs << "set(CMAKE_CXX_STANDARD " << confClass.standard() << ")\n"
+          ofs << "set(CMAKE_CXX_STANDARD " << prepClass.standard() << ")\n"
               << "set(CMAKE_CXX_STANDARD_REQUIRED ON)\n";
         }
         else
         {
-          ofs << "set(CMAKE_C_STANDARD " << confClass.standard() << ")\n"
+          ofs << "set(CMAKE_C_STANDARD " << prepClass.standard() << ")\n"
               << "set(CMAKE_C_STANDARD_REQUIRED ON)\n";
         }
         ofs << "set(CMAKE_INCLUDE_CURRENT_DIR ON)"
             << "\n";
-        if (confClass.binaryType() == "app")
+        if (prepClass.binaryType() == "app")
         {
           ofs << "set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "
                  "${PROJECT_BINARY_DIR}/debug)\n"
               << "set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "
                  "${PROJECT_BINARY_DIR}/release)\n";
         }
-        else if (confClass.binaryType() == "statLib")
+        else if (prepClass.binaryType() == "statLib")
         {
           ofs << "set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG "
                  "${PROJECT_BINARY_DIR}/debug)\n"
@@ -130,9 +135,9 @@ void cmakeGen()
         }
         ofs << "set(CMAKE_EXPORT_COMPILE_COMMANDS ON)"
             << "\n"
-            << "set(CMAKE_CXX_FLAGS " << confClass.compilerFlags() << ")\n"
-            << "add_definitions(" << confClass.compilerDefines() << ")\n"
-            << "set(CMAKE_EXE_LINKER_FLAGS " << confClass.linkerFlags() << ")\n\n"
+            << "set(CMAKE_CXX_FLAGS " << prepClass.compilerFlags() << ")\n"
+            << "add_definitions(" << prepClass.compilerDefines() << ")\n"
+            << "set(CMAKE_EXE_LINKER_FLAGS " << prepClass.linkerFlags() << ")\n\n"
             << "if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)\n\t"
             << "set(CMAKE_BUILD_TYPE Debug)\n"
             << "endif()\n\n"
@@ -144,18 +149,18 @@ void cmakeGen()
                "${CMAKE_BINARY_DIR})\n\tmessage(FATAL_ERROR \"Prevented in-tree "
                "build. Please create a build directory outside of the source "
                "code and call cmake from there. Thank you.\")\nendif()\n\n"
-            << "set(SOURCE_FILES " << confClass.sourceFilesSinPath() << ")\n\n"
+            << "set(SOURCE_FILES " << prepClass.sourceFilesSinPath() << ")\n\n"
             << "set(DBG_LIB_PATH "
                "${_VCPKG_ROOT_DIR}/installed/${VCPKG_TARGET_TRIPLET}/debug/lib)\n"
             << "set(RLS_LIB_PATH "
                "${_VCPKG_ROOT_DIR}/installed/${VCPKG_TARGET_TRIPLET}/lib)\n\n"
-            << confClass.cmakeOutput() << "\n";
+            << prepClass.cmakeOutput() << "\n";
 
-        if (confClass.binaryType() == "app")
+        if (prepClass.binaryType() == "app")
         {
           ofs << "add_executable(${PROJECT_NAME} ${SOURCE_FILES})\n\n";
         }
-        else if (confClass.binaryType() == "statLib")
+        else if (prepClass.binaryType() == "statLib")
         {
           ofs << "add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})\n\n";
         }
@@ -169,7 +174,7 @@ void cmakeGen()
             << "/include)\n"
             << "target_include_directories(${PROJECT_NAME} PUBLIC "
                "${CMAKE_CURRENT_SOURCE_DIR}/../include)\n";
-        if (confClass.fullLibNames().size() != 0)
+        if (prepClass.fullLibNames().size() != 0)
         {
           ofs << "target_link_libraries(${PROJECT_NAME} debug ${dbgLIBS})\n"
               << "target_link_libraries(${PROJECT_NAME} optimized ${rlsLIBS})\n";

@@ -262,7 +262,7 @@ void Builder::build()
   {
     try
     {
-      std::cout << "Compiling...\n";
+      std::cout << "Compiling in " << this->_buildType << "...\n";
       this->compile();
       std::cout << "Done!" << std::endl;
     }
@@ -296,7 +296,7 @@ void Builder::build()
   {
     try
     {
-      std::cout << "Compiling...\n";
+      std::cout << "Compiling in " << this->_buildType << "...\n";
       this->compile();
       std::cout << "Done!" << std::endl;
     }
@@ -321,7 +321,7 @@ void Builder::build()
   {
     try
     {
-      std::cout << "Compiling...\n";
+      std::cout << "Compiling in " << this->_buildType << "...\n";
       this->compile();
       std::cout << "Done!" << std::endl;
     }

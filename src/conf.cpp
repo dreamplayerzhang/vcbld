@@ -159,7 +159,6 @@ ConfClass::ConfClass()
                 if (findLib(line) != "")
                 {
                   std::string libFound = findLib(line);
-                  this->_libs.push_back(stripLibName(libFound));
                   this->_fullLibNames.push_back(libFound);
                 }
               }
@@ -170,8 +169,6 @@ ConfClass::ConfClass()
             // fail quietly!
           }
         }
-        std::sort(this->_libs.begin(), this->_libs.end());
-        this->_libs.erase(std::unique(this->_libs.begin(), this->_libs.end()), this->_libs.end());
         std::sort(this->_fullLibNames.begin(), this->_fullLibNames.end());
         this->_fullLibNames.erase(std::unique(this->_fullLibNames.begin(), this->_fullLibNames.end()), this->_fullLibNames.end());
       }
@@ -429,11 +426,11 @@ std::string ConfClass::dbgLibPaths()
   }
   std::string dbgLibPath = this->vcpkgDirPath() + "/" + "installed" + "/" +
                            this->architecture() + "/" + "debug" + "/" + "lib";
-  for (std::vector<std::string>::iterator it = this->_libs.begin();
-       it != this->_libs.end(); ++it)
+  for (std::vector<std::string>::iterator it = this->_fullLibNames.begin();
+       it != this->_fullLibNames.end(); ++it)
   {
     temp << " -L" << dbgLibPath << " "
-         << "-l" << *it;
+         << "-l" << stripLibName(*it);
   }
   return temp.str();
 }
@@ -470,11 +467,11 @@ std::string ConfClass::rlsLibPaths()
   {
     std::string dbgLibPath = this->vcpkgDirPath() + "/" + "installed" + "/" +
                              this->architecture() + "/" + "lib";
-    for (std::vector<std::string>::iterator it = this->_libs.begin();
-         it != this->_libs.end(); ++it)
+    for (std::vector<std::string>::iterator it = this->_fullLibNames.begin();
+         it != this->_fullLibNames.end(); ++it)
     {
       temp << " -L" << dbgLibPath << " "
-           << "-l" << *it;
+           << "-l" << stripLibName(*it);
     }
   }
   return temp.str();
@@ -527,10 +524,10 @@ bool ConfClass::hasComponents(const std::string &libName)
 }
 std::string ConfClass::cmakeOutput()
 {
-  for (std::vector<std::string>::iterator it = this->_libs.begin();
-       it != this->_libs.end(); ++it)
+  for (std::vector<std::string>::iterator it = this->_fullLibNames.begin();
+       it != this->_fullLibNames.end(); ++it)
   {
-    std::string libName = *it;
+    std::string libName = stripLibName(*it);
     std::string module = libName;
     module[0] = toupper(module[0]);
     if (!hasComponents(libName))
@@ -608,10 +605,7 @@ std::vector<std::string> &ConfClass::packageNames()
 {
   return this->_packageNames;
 }
-std::vector<std::string> &ConfClass::libs()
-{
-  return this->_libs;
-}
+
 std::vector<std::string> &ConfClass::fullLibNames()
 {
   return this->_fullLibNames;

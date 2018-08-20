@@ -55,7 +55,6 @@ public:
   std::string cmakeOutput();
 
   std::vector<std::string> &packageNames();
-  std::vector<std::string> &libs();
   std::vector<std::string> &fullLibNames();
 
 private:
@@ -86,7 +85,6 @@ private:
   std::vector<std::string> _boostComponents;
   std::vector<std::string> _QtComponents;
   std::vector<std::string> _packageNames;
-  std::vector<std::string> _libs;
   std::vector<std::string> _fullLibNames;
 };
 } // namespace vcbld

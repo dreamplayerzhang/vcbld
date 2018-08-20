@@ -373,7 +373,7 @@ void Builder::copy()
         fullName = localDbgPath + "/" + (*it);
         if (fs::exists(fullName))
         {
-          if ((*it).find(".a") == std::string::npos || (*it).find(".lib") == std::string::npos)
+          if ((*it).find(".a") == std::string::npos && (*it).find(".lib") == std::string::npos)
           {
             if (!fs::exists(this->_dbgDir + "/" + (*it)))
             {
@@ -390,7 +390,7 @@ void Builder::copy()
         fullName = localRlsPath + "/" + (*it);
         if (fs::exists(fullName))
         {
-          if ((*it).find(".a") == std::string::npos || (*it).find(".lib") == std::string::npos)
+          if ((*it).find(".a") == std::string::npos && (*it).find(".lib") == std::string::npos)
           {
             if (!fs::exists(this->_rlsDir + "/" + (*it)))
             {
@@ -415,7 +415,7 @@ void Builder::copy()
     {
       if (this->_buildType == "debug")
       {
-        if ((*it).find(".a") == std::string::npos || (*it).find(".lib") == std::string::npos)
+        if ((*it).find(".a") == std::string::npos && (*it).find(".lib") == std::string::npos)
         {
           if (!fs::exists(this->_dbgDir + "/" + (*it)))
           {
@@ -425,7 +425,7 @@ void Builder::copy()
       }
       else
       {
-        if ((*it).find(".a") == std::string::npos || (*it).find(".lib") == std::string::npos)
+        if ((*it).find(".a") == std::string::npos && (*it).find(".lib") == std::string::npos)
         {
           if (!fs::exists(this->_rlsDir + "/" + (*it)))
           {

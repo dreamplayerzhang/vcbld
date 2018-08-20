@@ -90,7 +90,7 @@ std::string PrepClass::sourceFiles() const
                 fs::path((*it).path().filename().string()).extension() == ".c" ||
                 fs::path((*it).path().filename().string()).extension() == ".cxx" ||
                 fs::path((*it).path().filename().string()).extension() == ".qrc" ||
-                fs::path((*it).path().filename().string()).extension() == ".ui")
+                fs::path((*it).path().filename().string()).extension() == ".uic")
             {
                 temp << this->projPath().c_str() << "/" << tempPath + "/"
                      << (*it).path().filename().string() << " ";
@@ -120,7 +120,9 @@ std::string PrepClass::sourceFilesSinPath() const
             if (fs::path((*it).path().filename().string()).extension() == ".cpp" ||
                 fs::path((*it).path().filename().string()).extension() == ".rc" ||
                 fs::path((*it).path().filename().string()).extension() == ".c" ||
-                fs::path((*it).path().filename().string()).extension() == ".cxx")
+                fs::path((*it).path().filename().string()).extension() == ".cxx" ||               
+                fs::path((*it).path().filename().string()).extension() == ".qrc" ||
+                fs::path((*it).path().filename().string()).extension() == ".uic")
             {
                 temp << "\"" << (*it).path().filename().string() << "\" ";
             }

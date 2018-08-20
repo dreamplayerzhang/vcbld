@@ -169,7 +169,7 @@ void cmakeGen()
             << "/include)\n"
             << "target_include_directories(${PROJECT_NAME} PUBLIC "
                "${CMAKE_CURRENT_SOURCE_DIR}/../include)\n";
-        if (confClass.libs.size() != 0)
+        if (confClass.libs().size() != 0)
         {
           ofs << "target_link_libraries(${PROJECT_NAME} debug ${dbgLIBS})\n"
               << "target_link_libraries(${PROJECT_NAME} optimized ${rlsLIBS})\n";

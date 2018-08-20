@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
   {
     if (strcmp(argv[1], "new") == 0)
     {
-      if (!argv[2])
+      if (argc < 3)
       {
         args::New("app");
         init::setup(vcbldPath);
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
     }
     else if (strcmp(argv[1], "build") == 0)
     {
-      if (!argv[2])
+      if (argc < 3)
       {
         args::build("debug");
       }
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
     }
     else if (strcmp(argv[1], "run") == 0)
     {
-      if (!argv[2])
+      if (argc < 3)
       {
         try
         {
@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
     }
     else if (strcmp(argv[1], "search") == 0)
     {
-      if (!argv[2])
+      if (argc < 3)
       {
         std::cout << "Please enter a package name to search for." << std::endl;
       }
@@ -165,7 +165,7 @@ int main(int argc, char *argv[])
     }
     else if (strcmp(argv[1], "add") == 0)
     {
-      if (!argv[2])
+      if (argc < 3)
       {
         std::cout << "Please enter a package name to add it." << std::endl;
       }
@@ -181,7 +181,7 @@ int main(int argc, char *argv[])
     }
     else if (strcmp(argv[1], "remove") == 0)
     {
-      if (!argv[2])
+      if (argc < 3)
       {
         std::cout << "Please enter a package name to remove it." << std::endl;
       }
@@ -205,12 +205,51 @@ int main(int argc, char *argv[])
                 << "." << MINOR_VERSION << "." << PATCH_VERSION << std::endl;
       help::mainHelp();
     }
+    else if (strcmp(argv[1], "install") == 0)
+    {
+      if (argc < 3)
+      {
+        std::cout << "Please enter package names to install." << std::endl;
+      }
+      else
+      {
+        std::string package;
+        std::vector<std::string> packages;
+        for (int i = 2; i < argc; i++)
+        {
+          package += " ";
+          package += argv[i];
+          packages.push_back(static_cast<std::string>(argv[i]));
+        }
+        args::install(package);
+        args::add(packages);
+      }
+    }
+    else if (strcmp(argv[1], "uninstall") == 0)
+    {
+      if (argc < 3)
+      {
+        std::cout << "Please enter package names to uninstall." << std::endl;
+      }
+      else
+      {
+        std::string package;
+        std::vector<std::string> packages;
+        for (int i = 2; i < argc; i++)
+        {
+          package += " ";
+          package += argv[i];
+          packages.push_back(static_cast<std::string>(argv[i]));
+        }
+        args::remove(packages);
+        args::uninstall(package);
+      }
+    }
     else if (strcmp(argv[1], "vcpkg") == 0)
     {
-      if (!argv[2])
+      if (argc < 3)
       {
-        std::string help = "help";
-        args::vcpkg(help);
+        args::vcpkg("help");
       }
       else
       {
@@ -243,7 +282,7 @@ int main(int argc, char *argv[])
     }
     else if (strcmp(argv[1], "make") == 0)
     {
-      if (!argv[2])
+      if (argc < 3)
       {
         std::string empty = " ";
         args::make(empty);

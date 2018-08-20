@@ -284,13 +284,14 @@ void search(const std::string &pkg)
   }
   catch (const std::exception &)
   {
+    // fail quietly!
   }
 }
 
 void includes() { gen::includePathGen(); }
 void generate() { gen::cmakeGen(); }
 
-void commands() 
+void commands()
 {
   Builder dbgBuilder("debug");
   dbgBuilder.build();
@@ -305,8 +306,8 @@ void list()
   try
   {
     ConfClass confClass;
-    for (std::vector<std::string>::iterator it = confClass.packageNames.begin();
-         it != confClass.packageNames.end(); ++it)
+    for (std::vector<std::string>::iterator it = confClass.packageNames().begin();
+         it != confClass.packageNames().end(); ++it)
     {
       std::cout << std::setw(4) << "Package name: " << *it
                 << "\t\tPackage version: " << confClass.getVersion(*it)
@@ -333,8 +334,8 @@ void add(const std::vector<std::string> &pkg)
     {
       bool isExist = false;
       for (std::vector<std::string>::iterator jt =
-               confClass.packageNames.begin();
-           jt != confClass.packageNames.end(); ++jt)
+               confClass.packageNames().begin();
+           jt != confClass.packageNames().end(); ++jt)
       {
         if (*jt == *it)
         {
@@ -367,8 +368,8 @@ void remove(const std::vector<std::string> &pkg)
   for (std::vector<std::string>::const_iterator it = pkg.begin();
        it != pkg.end(); ++it)
   {
-    for (std::vector<std::string>::iterator jt = confClass.packageNames.begin();
-         jt != confClass.packageNames.end(); ++jt)
+    for (std::vector<std::string>::iterator jt = confClass.packageNames().begin();
+         jt != confClass.packageNames().end(); ++jt)
     {
       if (*jt == *it)
       {
@@ -395,25 +396,57 @@ void vcpkg(const std::string &vcpkgCmnds)
   }
 }
 
+void install(const std::string &packages) 
+{
+  ConfClass confClass;
+  std::string temp =
+      confClass.vcpkgDirPath() + "/" + "vcpkg" + " install " + packages;
+  int systemRet = system(temp.c_str());
+  if (systemRet == -1)
+  {
+    std::cout << "An error occured while installing." << std::endl;
+  }
+}
+
+void uninstall(const std::string &packages) 
+{
+  ConfClass confClass;
+  std::string temp =
+      confClass.vcpkgDirPath() + "/" + "vcpkg" + " remove " + packages;
+  int systemRet = system(temp.c_str());
+  if (systemRet == -1)
+  {
+    std::cout << "An error occured while uninstalling." << std::endl;
+  }
+}
+
 void restore()
 {
   ConfClass confClass;
-  std::ostringstream pkg;
-
-  for (std::vector<std::string>::iterator it = confClass.packageNames.begin();
-       it != confClass.packageNames.end(); ++it)
+  if (confClass.packageNames().size() != 0)
   {
-    pkg << *it << " ";
+    std::ostringstream pkg;
+    for (std::vector<std::string>::iterator it = confClass.packageNames().begin();
+         it != confClass.packageNames().end(); ++it)
+    {
+      pkg << *it << " ";
+    }
+    std::string instlCmnd = confClass.vcpkgDirPath() + "/" + "vcpkg" + " " +
+                            "install" + " " + pkg.str();
+    int systemRet = system(instlCmnd.c_str());
+    if (systemRet == -1)
+    {
+      std::cout << "An error occured while getting missing dependencies."
+                << std::endl;
+    }
   }
-  std::string instlCmnd = confClass.vcpkgDirPath() + "/" + "vcpkg" + " " +
-                          "install" + " " + pkg.str();
-  int systemRet = system(instlCmnd.c_str());
-  if (systemRet == -1)
+  else
   {
-    std::cout << "An error occured while getting missing dependencies."
-              << std::endl;
+    std::cout << "No packages were found in package.json" << std::endl;
   }
 }
+
+
 
 void cmake(const std::string &cmakeArgs)
 {

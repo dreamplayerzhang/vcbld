@@ -14,6 +14,8 @@ void build(const std::string &buildType);
 void clean();
 void run(const std::string &buildType);
 void available();
+void install(const std::string &packages);
+void uninstall(const std::string &packages);
 void add(const std::vector<std::string> &pkg);
 void remove(const std::vector<std::string> &pkg);
 void list();

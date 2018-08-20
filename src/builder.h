@@ -7,13 +7,12 @@
 
 namespace vcbld
 {
-class Builder
+class Builder : public ConfClass
 {
 public:
   explicit Builder(const std::string &buildType);
   Builder(const Builder &) = delete;
   Builder &operator=(const Builder &) = delete;
-  ~Builder();
 
   void compile();
   void appLink();
@@ -24,7 +23,6 @@ public:
   void copy();
 
 private:
-  ConfClass *confClass;
   std::string _buildType;
   std::string _dbgDir;
   std::string _rlsDir;

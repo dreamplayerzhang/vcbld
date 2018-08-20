@@ -54,9 +54,9 @@ public:
   bool hasComponents(const std::string &libName);
   std::string cmakeOutput();
 
-  std::vector<std::string> packageNames;
-  std::vector<std::string> libs;
-  std::vector<std::string> fullLibNames;
+  std::vector<std::string> &packageNames();
+  std::vector<std::string> &libs();
+  std::vector<std::string> &fullLibNames();
 
 private:
   fs::path _projPath;
@@ -83,8 +83,11 @@ private:
   std::ostringstream _linkerFlags;
 
   std::ostringstream _cmakeOutput;
-  std::vector<std::string> boostComponents;
-  std::vector<std::string> QtComponents;
+  std::vector<std::string> _boostComponents;
+  std::vector<std::string> _QtComponents;
+  std::vector<std::string> _packageNames;
+  std::vector<std::string> _libs;
+  std::vector<std::string> _fullLibNames;
 };
 } // namespace vcbld
 #endif // !CONF_H

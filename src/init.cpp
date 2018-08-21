@@ -428,8 +428,7 @@ std::string cCompiler(const std::vector<std::string> &cCompilers) {
         return cCompilers[entry - 1];
       } else {
         std::cout << "Error!" << std::endl;
-        cCompiler(cCompilers);
-        return "";
+        return cCompilers[0];
       }
     } catch (...) {
       return cCompilers[0];
@@ -464,8 +463,7 @@ std::string cppCompiler(const std::vector<std::string> &cppCompilers) {
         return cppCompilers[entry - 1];
       } else {
         std::cout << "Error!" << std::endl;
-        cppCompiler(cppCompilers);
-        return "";
+        return cppCompilers[0];
       }
     } catch (...) {
       return cppCompilers[0];
@@ -499,8 +497,7 @@ std::string cmake(const std::vector<std::string> &cmakes) {
         return cmakes[entry - 1];
       } else {
         std::cout << "Error!" << std::endl;
-        cmake(cmakes);
-        return "";
+        return cmakes[0];
     }
     } catch (...) {
       return cmakes[0];
@@ -534,8 +531,7 @@ std::string make(const std::vector<std::string> &makes) {
         return makes[entry - 1];
       } else {
         std::cout << "Error!" << std::endl;
-        make(makes);
-        return "";
+        return makes[0];
       }
     } catch (...) {
       return makes[0];
@@ -569,8 +565,7 @@ std::string archiver(const std::vector<std::string> &archivers) {
         return archivers[entry - 1];
       } else {
         std::cout << "Error!" << std::endl;
-        archiver(archivers);
-        return "";
+        return archivers[0];
       }
     } catch (...) {
       return archivers[0];

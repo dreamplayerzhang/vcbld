@@ -2,7 +2,11 @@
 
 #include <algorithm>
 #include <errno.h>
+#if defined(_WIN32)
+#include <filesystem>
+#else
 #include <experimental/filesystem>
+#endif
 #include <iostream>
 #include <iterator>
 #include <vector>
@@ -206,7 +210,6 @@ void Builder::build() {
     try {
       std::cout << "Compiling in " << this->_buildType << "...\n";
       this->compile();
-      std::cout << "Done!" << std::endl;
     } catch (const std::exception &e) {
       std::cout << "Compilation failed!" << std::endl;
       std::cerr << e.what() << " " << errno << std::endl;
@@ -214,7 +217,6 @@ void Builder::build() {
     try {
       std::cout << "Linking...\n";
       this->appLink();
-      std::cout << "Done!" << std::endl;
     } catch (const std::exception &e) {
       std::cout << "Linking failed!" << std::endl;
       std::cerr << e.what() << " " << errno << std::endl;
@@ -229,7 +231,6 @@ void Builder::build() {
     try {
       std::cout << "Compiling in " << this->_buildType << "...\n";
       this->compile();
-      std::cout << "Done!" << std::endl;
     } catch (const std::exception &e) {
       std::cout << "Compilation failed!" << std::endl;
       std::cerr << e.what() << " " << errno << std::endl;
@@ -237,7 +238,6 @@ void Builder::build() {
     try {
       std::cout << "Archiving...\n";
       this->archive();
-      std::cout << "Done!" << std::endl;
     } catch (const std::exception &e) {
       std::cout << "Archiving failed!" << std::endl;
       std::cerr << e.what() << errno << std::endl;
@@ -246,7 +246,6 @@ void Builder::build() {
     try {
       std::cout << "Compiling in " << this->_buildType << "...\n";
       this->compile();
-      std::cout << "Done!" << std::endl;
     } catch (const std::exception &e) {
       std::cout << "Compilation failed!" << std::endl;
       std::cerr << e.what() << " " << errno << std::endl;
@@ -254,7 +253,6 @@ void Builder::build() {
     try {
       std::cout << "Linking...\n";
       this->dylibLink();
-      std::cout << "Done!" << std::endl;
     } catch (const std::exception &e) {
       std::cout << "Linking failed!" << std::endl;
       std::cerr << e.what() << errno << std::endl;

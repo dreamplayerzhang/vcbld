@@ -1,7 +1,11 @@
 #include <cstdlib>
 #include <cstring>
 #include <errno.h>
+#if defined(_WIN32)
+#include <filesystem>
+#else
 #include <experimental/filesystem>
+#endif
 #include <iostream>
 #include <vector>
 
@@ -98,6 +102,7 @@ int main(int argc, char *argv[]) {
           } catch (const std::exception &e) {
             std::cout << "Build configuration or entry not available!"
                       << std::endl;
+            std::cerr << e.what() << std::endl;
           }
         }
       }

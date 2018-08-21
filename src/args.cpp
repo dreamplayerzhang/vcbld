@@ -3,7 +3,11 @@
 #include <cstdlib>
 #include <cstring>
 #include <errno.h>
+#if defined(_WIN32)
+#include <filesystem>
+#else
 #include <experimental/filesystem>
+#endif
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -120,7 +124,8 @@ void clean() {
       std::cout << "An error occured while deleting output." << std::endl;
     }
   } catch (const std::exception &e) {
-    std::cout << "vcbld.json not found!" << std::endl;
+    std::cout << "An error occured while deleting output." << std::endl;
+    std::cerr << e.what() << std::endl;
   }
 }
 
@@ -136,7 +141,8 @@ void run(const std::string &buildType) {
         std::cout << "An error occured while running the binary." << std::endl;
       }
     } catch (const std::exception &e) {
-      std::cout << "vcbld.json not found!" << std::endl;
+      std::cout << "An error occured while running the binary." << std::endl;
+      std::cerr << e.what() << std::endl;
     }
   } else {
     try {
@@ -148,7 +154,8 @@ void run(const std::string &buildType) {
         std::cout << "An error occured while running the binary." << std::endl;
       }
     } catch (const std::exception &e) {
-      std::cout << "vcbld.json not found!" << std::endl;
+      std::cout << "An error occured while running the binary." << std::endl;
+      std::cerr << e.what() << std::endl;
     }
   }
 }
@@ -183,6 +190,7 @@ void available() {
     }
   } catch (const std::exception &e) {
     std::cout << "package.json not found!" << std::endl;
+    std::cerr << e.what() << std::endl;
   }
 }
 
@@ -244,6 +252,7 @@ void list() {
   } catch (const std::exception &e) {
     std::cout << "vcpkg packages not found!" << std::endl;
     std::cout << "Please verify your vcpkg path." << std::endl;
+    std::cerr << e.what() << std::endl;
   }
 }
 

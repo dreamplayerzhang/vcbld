@@ -1,7 +1,11 @@
 #ifndef INIT_H
 #define INIT_H
 
+#if defined(_WIN32)
+#include <filesystem>
+#else
 #include <experimental/filesystem>
+#endif
 #include <string>
 #include <vector>
 

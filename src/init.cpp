@@ -2,7 +2,11 @@
 
 #include <algorithm>
 #include <errno.h>
+#if defined(_WIN32)
+#include <filesystem>
+#else
 #include <experimental/filesystem>
+#endif
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -493,12 +497,13 @@ std::string cmake(const std::vector<std::string> &cmakes) {
     try {
       int entry;
       std::cin >> entry;
-      if (entry <= cmakes.size() && entry != 0 && typeid(entry) == typeid(int)) {
+      if (entry <= cmakes.size() && entry != 0 &&
+          typeid(entry) == typeid(int)) {
         return cmakes[entry - 1];
       } else {
         std::cout << "Error!" << std::endl;
         return cmakes[0];
-    }
+      }
     } catch (...) {
       return cmakes[0];
     }

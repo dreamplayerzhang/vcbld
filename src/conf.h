@@ -1,7 +1,11 @@
 #ifndef CONF_H
 #define CONF_H
 
+#if defined(_WIN32)
+#include <filesystem>
+#else
 #include <experimental/filesystem>
+#endif
 #include <sstream>
 #include <string>
 #include <vector>

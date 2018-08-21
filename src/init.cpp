@@ -419,17 +419,20 @@ std::string cCompiler(const std::vector<std::string> &cCompilers) {
       std::cout << i << ") " << *it << std::endl;
       i++;
     }
-
     std::cout << "Please choose your project's c compiler." << std::endl;
-    int entry;
-    std::cin >> entry;
-    if (entry <= cCompilers.size() && entry != 0 &&
-        typeid(entry) == typeid(int)) {
-      return cCompilers[entry - 1];
-    } else {
-      std::cout << "Error!" << std::endl;
-      cCompiler(cCompilers);
-      return "";
+    try {
+      int entry;
+      std::cin >> entry;
+      if (entry <= cCompilers.size() && entry != 0 &&
+          typeid(entry) == typeid(int)) {
+        return cCompilers[entry - 1];
+      } else {
+        std::cout << "Error!" << std::endl;
+        cCompiler(cCompilers);
+        return "";
+      }
+    } catch (...) {
+      return cCompilers[0];
     }
   }
 }
@@ -452,15 +455,20 @@ std::string cppCompiler(const std::vector<std::string> &cppCompilers) {
       std::cout << j << ") " << *it << std::endl;
       j++;
     }
-    int entry;
-    std::cin >> entry;
-    if (entry <= cppCompilers.size() && entry != 0 &&
-        typeid(entry) == typeid(int)) {
-      return cppCompilers[entry - 1];
-    } else {
-      std::cout << "Error!" << std::endl;
-      cppCompiler(cppCompilers);
-      return "";
+    std::cout << "Please choose your project's c++ compiler." << std::endl;
+    try {
+      int entry;
+      std::cin >> entry;
+      if (entry <= cppCompilers.size() && entry != 0 &&
+          typeid(entry) == typeid(int)) {
+        return cppCompilers[entry - 1];
+      } else {
+        std::cout << "Error!" << std::endl;
+        cppCompiler(cppCompilers);
+        return "";
+      }
+    } catch (...) {
+      return cppCompilers[0];
     }
   }
 }
@@ -483,14 +491,19 @@ std::string cmake(const std::vector<std::string> &cmakes) {
       std::cout << cmake_it << ") " << *it << std::endl;
       cmake_it++;
     }
-    int entry;
-    std::cin >> entry;
-    if (entry <= cmakes.size() && entry != 0 && typeid(entry) == typeid(int)) {
-      return cmakes[entry - 1];
-    } else {
-      std::cout << "Error!" << std::endl;
-      cmake(cmakes);
-      return "";
+    std::cout << "Please choose your project's cmake executable." << std::endl;
+    try {
+      int entry;
+      std::cin >> entry;
+      if (entry <= cmakes.size() && entry != 0 && typeid(entry) == typeid(int)) {
+        return cmakes[entry - 1];
+      } else {
+        std::cout << "Error!" << std::endl;
+        cmake(cmakes);
+        return "";
+    }
+    } catch (...) {
+      return cmakes[0];
     }
   }
 }
@@ -507,20 +520,25 @@ std::string make(const std::vector<std::string> &makes) {
       std::cout << "An error occured while deleting output." << std::endl;
     }
     std::cout << "list of available make executables:" << std::endl;
-    int cmake_it = 1;
+    int make_it = 1;
     for (std::vector<std::string>::const_iterator it = makes.begin();
          it != makes.end(); ++it) {
-      std::cout << cmake_it << ") " << *it << std::endl;
-      cmake_it++;
+      std::cout << make_it << ") " << *it << std::endl;
+      make_it++;
     }
-    int entry;
-    std::cin >> entry;
-    if (entry <= makes.size() && entry != 0 && typeid(entry) == typeid(int)) {
-      return makes[entry - 1];
-    } else {
-      std::cout << "Error!" << std::endl;
-      make(makes);
-      return "";
+    std::cout << "Please choose your project's make executable." << std::endl;
+    try {
+      int entry;
+      std::cin >> entry;
+      if (entry <= makes.size() && entry != 0 && typeid(entry) == typeid(int)) {
+        return makes[entry - 1];
+      } else {
+        std::cout << "Error!" << std::endl;
+        make(makes);
+        return "";
+      }
+    } catch (...) {
+      return makes[0];
     }
   }
 }
@@ -536,21 +554,26 @@ std::string archiver(const std::vector<std::string> &archivers) {
       std::cout << "An error occured while deleting output." << std::endl;
     }
     std::cout << "list of available archivers:" << std::endl;
-    int cmake_it = 1;
+    int ar_it = 1;
     for (std::vector<std::string>::const_iterator it = archivers.begin();
          it != archivers.end(); ++it) {
-      std::cout << cmake_it << ") " << *it << std::endl;
-      cmake_it++;
+      std::cout << ar_it << ") " << *it << std::endl;
+      ar_it++;
     }
-    int entry;
-    std::cin >> entry;
-    if (entry <= archivers.size() && entry != 0 &&
-        typeid(entry) == typeid(int)) {
-      return archivers[entry - 1];
-    } else {
-      std::cout << "Error!" << std::endl;
-      archiver(archivers);
-      return "";
+    std::cout << "Please choose your project's archiver." << std::endl;
+    try {
+      int entry;
+      std::cin >> entry;
+      if (entry <= archivers.size() && entry != 0 &&
+          typeid(entry) == typeid(int)) {
+        return archivers[entry - 1];
+      } else {
+        std::cout << "Error!" << std::endl;
+        archiver(archivers);
+        return "";
+      }
+    } catch (...) {
+      return archivers[0];
     }
   }
 }

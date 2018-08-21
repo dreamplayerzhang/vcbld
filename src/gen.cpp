@@ -16,17 +16,13 @@
 namespace fs = std::experimental::filesystem;
 using json = nlohmann::json;
 
-namespace vcbld
-{
-namespace gen
-{
-void includePathGen()
-{
+namespace vcbld {
+namespace gen {
+void includePathGen() {
   json incJson;
   PkgClass pkgClass;
   incJson.push_back(pkgClass.sourceDirectory().relative_path().string());
-  if (pkgClass.includeDirectory() != "")
-  {
+  if (pkgClass.includeDirectory() != "") {
     incJson.push_back(pkgClass.includeDirectory().relative_path().string());
   }
   incJson.push_back(pkgClass.outputDirectory().relative_path().string());
@@ -34,41 +30,30 @@ void includePathGen()
                     "include");
   std::string temp = pkgClass.sourceDirectory().string();
 
-  if (!fs::exists("includePath.json"))
-  {
-    try
-    {
+  if (!fs::exists("includePath.json")) {
+    try {
       std::ofstream ofs("includePath.json");
-      if (ofs.is_open())
-      {
+      if (ofs.is_open()) {
         ofs << std::setw(4) << incJson;
         ofs.flush();
         ofs.close();
       }
       std::cout << "includePath.json file written successfully." << std::endl;
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception &e) {
       std::cerr << e.what() << " " << errno << std::endl;
     }
-  }
-  else
-  {
+  } else {
     std::cout << "includePath.json file found." << std::endl;
   }
 }
 
-void cmakeGen()
-{
+void cmakeGen() {
   PrepClass prepClass;
 
-  if (!fs::exists("CMakeLists.txt"))
-  {
-    try
-    {
+  if (!fs::exists("CMakeLists.txt")) {
+    try {
       std::ofstream ofs("CMakeLists.txt");
-      if (ofs.is_open())
-      {
+      if (ofs.is_open()) {
         ofs << "cmake_minimum_required(VERSION 3.10.0)\n"
             << "set(CMAKE_CXX_STANDARD " << prepClass.standard() << ")\n\n"
             << "project(" << prepClass.projectName() << " VERSION "
@@ -77,57 +62,44 @@ void cmakeGen()
         ofs.flush();
         ofs.close();
       }
-      std::cout << "CMakeLists.txt file written successfully in parent directory."
-                << std::endl;
-    }
-    catch (const std::exception &e)
-    {
+      std::cout
+          << "CMakeLists.txt file written successfully in parent directory."
+          << std::endl;
+    } catch (const std::exception &e) {
       std::cerr << e.what() << " " << errno << std::endl;
     }
-  }
-  else
-  {
+  } else {
     std::cout
         << "\nA CMakeLists.txt file was found in the parent directory. You can "
            "modify it directly or delete/rename it to regenerate a new file.\n"
         << std::endl;
   }
 
-  if (!fs::exists(prepClass.sourceDirectory().string() + "/CMakeLists.txt"))
-  {
-    try
-    {
-      std::ofstream ofs(prepClass.sourceDirectory().string() + "/CMakeLists.txt");
-      if (ofs.is_open())
-      {
-        if (prepClass.language() == "c++")
-        {
+  if (!fs::exists(prepClass.sourceDirectory().string() + "/CMakeLists.txt")) {
+    try {
+      std::ofstream ofs(prepClass.sourceDirectory().string() +
+                        "/CMakeLists.txt");
+      if (ofs.is_open()) {
+        if (prepClass.language() == "c++") {
           ofs << "set(CMAKE_CXX_STANDARD " << prepClass.standard() << ")\n"
               << "set(CMAKE_CXX_STANDARD_REQUIRED ON)\n";
-        }
-        else
-        {
+        } else {
           ofs << "set(CMAKE_C_STANDARD " << prepClass.standard() << ")\n"
               << "set(CMAKE_C_STANDARD_REQUIRED ON)\n";
         }
         ofs << "set(CMAKE_INCLUDE_CURRENT_DIR ON)"
             << "\n";
-        if (prepClass.binaryType() == "app")
-        {
+        if (prepClass.binaryType() == "app") {
           ofs << "set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "
                  "${PROJECT_BINARY_DIR}/debug)\n"
               << "set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "
                  "${PROJECT_BINARY_DIR}/release)\n";
-        }
-        else if (prepClass.binaryType() == "statLib")
-        {
+        } else if (prepClass.binaryType() == "statLib") {
           ofs << "set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG "
                  "${PROJECT_BINARY_DIR}/debug)\n"
               << "set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "
                  "${PROJECT_BINARY_DIR}/release)\n";
-        }
-        else
-        {
+        } else {
           ofs << "set(CMAKE_LIBRARY_OUTPUT_DIRECTORY _DEBUG "
                  "${PROJECT_BINARY_DIR}/debug)\n"
               << "set(CMAKE_LIBRARY_OUTPUT_DIRECTORY _RELEASE "
@@ -137,35 +109,34 @@ void cmakeGen()
             << "\n"
             << "set(CMAKE_CXX_FLAGS " << prepClass.compilerFlags() << ")\n"
             << "add_definitions(" << prepClass.compilerDefines() << ")\n"
-            << "set(CMAKE_EXE_LINKER_FLAGS " << prepClass.linkerFlags() << ")\n\n"
+            << "set(CMAKE_EXE_LINKER_FLAGS " << prepClass.linkerFlags()
+            << ")\n\n"
             << "if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)\n\t"
             << "set(CMAKE_BUILD_TYPE Debug)\n"
             << "endif()\n\n"
-            << "#Uncomment the following lines if you're using Qt QObject macro, "
+            << "#Uncomment the following lines if you're using Qt QObject "
+               "macro, "
                "Qt qrc or Qt widgets.\n"
             << "#set(CMAKE_AUTOMOC ON)\n#set(CMAKE_AUTOUIC "
                "ON)\n#set(CMAKE_AUTORCC ON)\n\n"
             << "if(${CMAKE_SOURCE_DIR} STREQUAL "
-               "${CMAKE_BINARY_DIR})\n\tmessage(FATAL_ERROR \"Prevented in-tree "
+               "${CMAKE_BINARY_DIR})\n\tmessage(FATAL_ERROR \"Prevented "
+               "in-tree "
                "build. Please create a build directory outside of the source "
                "code and call cmake from there. Thank you.\")\nendif()\n\n"
             << "set(SOURCE_FILES " << prepClass.sourceFilesSinPath() << ")\n\n"
             << "set(DBG_LIB_PATH "
-               "${_VCPKG_ROOT_DIR}/installed/${VCPKG_TARGET_TRIPLET}/debug/lib)\n"
+               "${_VCPKG_ROOT_DIR}/installed/${VCPKG_TARGET_TRIPLET}/debug/"
+               "lib)\n"
             << "set(RLS_LIB_PATH "
                "${_VCPKG_ROOT_DIR}/installed/${VCPKG_TARGET_TRIPLET}/lib)\n\n"
             << prepClass.cmakeOutput() << "\n";
 
-        if (prepClass.binaryType() == "app")
-        {
+        if (prepClass.binaryType() == "app") {
           ofs << "add_executable(${PROJECT_NAME} ${SOURCE_FILES})\n\n";
-        }
-        else if (prepClass.binaryType() == "statLib")
-        {
+        } else if (prepClass.binaryType() == "statLib") {
           ofs << "add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES})\n\n";
-        }
-        else
-        {
+        } else {
           ofs << "add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})\n\n";
         }
 
@@ -174,10 +145,10 @@ void cmakeGen()
             << "/include)\n"
             << "target_include_directories(${PROJECT_NAME} PUBLIC "
                "${CMAKE_CURRENT_SOURCE_DIR}/../include)\n";
-        if (prepClass.fullLibNames().size() != 0)
-        {
+        if (prepClass.fullLibNames().size() != 0) {
           ofs << "target_link_libraries(${PROJECT_NAME} debug ${dbgLIBS})\n"
-              << "target_link_libraries(${PROJECT_NAME} optimized ${rlsLIBS})\n";
+              << "target_link_libraries(${PROJECT_NAME} optimized "
+                 "${rlsLIBS})\n";
         }
         ofs.flush();
         ofs.close();
@@ -185,14 +156,10 @@ void cmakeGen()
       std::cout
           << "CMakeLists.text file written successfully in source directory."
           << std::endl;
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception &e) {
       std::cerr << e.what() << " " << errno << std::endl;
     }
-  }
-  else
-  {
+  } else {
     std::cout
         << "\nA CMakeLists.txt file was found in the source directory. You can "
            "modify it directly or delete/rename it to regenerate a new file.\n"

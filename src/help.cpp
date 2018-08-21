@@ -3,12 +3,9 @@
 #include <iomanip>
 #include <iostream>
 
-namespace vcbld
-{
-namespace help
-{
-void mainHelp()
-{
+namespace vcbld {
+namespace help {
+void mainHelp() {
   const char *lit = R"lit(
 Usage: vcbld [sdk-command]
 

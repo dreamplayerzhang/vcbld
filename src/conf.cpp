@@ -12,132 +12,96 @@
 using json = nlohmann::json;
 namespace fs = std::experimental::filesystem;
 
-namespace vcbld
-{
+namespace vcbld {
 
-ConfClass::ConfClass()
-{
+ConfClass::ConfClass() {
   json vcbldJson, confJson;
   this->_projPath = fs::current_path();
 
-  if (!fs::exists("vcbld.json"))
-  {
+  if (!fs::exists("vcbld.json")) {
     std::cout << "vcbld.json not found in the current directory" << std::endl;
     std::exit(1);
   }
 
-  try
-  {
+  try {
     std::ifstream vcbldInput("vcbld.json");
-    if (vcbldInput.is_open())
-    {
+    if (vcbldInput.is_open()) {
       vcbldJson = json::parse(vcbldInput);
       vcbldInput.close();
-    }
-    else
-    {
+    } else {
       std::cerr << "Failed to open vcbld.json file : " << errno << std::endl;
     }
 
     this->_projectName = vcbldJson["projectName"];
 
-    try
-    {
+    try {
       this->_version = vcbldJson["version"];
-    }
-    catch (...)
-    {
+    } catch (...) {
       this->_version = "0.1.0";
     }
 
-    try
-    {
+    try {
       this->_language = vcbldJson["language"];
-    }
-    catch (...)
-    {
+    } catch (...) {
       this->_language = "c++";
     }
 
-    try
-    {
+    try {
       this->_standard = vcbldJson["standard"];
-    }
-    catch (...)
-    {
+    } catch (...) {
       this->_standard = "11";
     }
 
     this->_binaryName = vcbldJson["binaryName"];
     this->_binaryType = vcbldJson["binaryType"];
 
-    try
-    {
+    try {
       this->_outputDirectory = vcbldJson["outputDirectory"];
-    }
-    catch (...)
-    {
+    } catch (...) {
       this->_outputDirectory = "bin";
     }
 
     this->_sourceDirectory = vcbldJson["sourceDirectory"];
 
-    try
-    {
+    try {
       this->_includeDirectory = vcbldJson["includeDirectory"];
-    }
-    catch (...)
-    {
+    } catch (...) {
       this->_includeDirectory = "";
     }
 
-    try
-    {
+    try {
       this->_libDirectory = vcbldJson["libDirectory"];
-    }
-    catch (...)
-    {
+    } catch (...) {
       this->_libDirectory = "";
     }
 
     for (json::iterator it = vcbldJson["compilerDefines"].begin();
-         it != vcbldJson["compilerDefines"].end(); ++it)
-    {
+         it != vcbldJson["compilerDefines"].end(); ++it) {
       this->_compilerDefines << " " << *it << " ";
     }
 
     for (json::iterator it = vcbldJson["compilerFlags"].begin();
-         it != vcbldJson["compilerFlags"].end(); ++it)
-    {
+         it != vcbldJson["compilerFlags"].end(); ++it) {
       this->_compilerFlags << " " << *it << " ";
     }
 
     for (json::iterator it = vcbldJson["linkerFlags"].begin();
-         it != vcbldJson["linkerFlags"].end(); ++it)
-    {
+         it != vcbldJson["linkerFlags"].end(); ++it) {
       this->_linkerFlags << " " << *it << " ";
     }
-  }
-  catch (...)
-  {
+  } catch (...) {
     std::cerr << "Error reading vcbld.json. " << std::endl;
   }
 
-  try
-  {
+  try {
     std::ifstream confInput("conf.json");
-    if (confInput.is_open())
-    {
+    if (confInput.is_open()) {
       confJson = json::parse(confInput);
       confInput.close();
-    }
-    else
-    {
+    } else {
       std::cerr << "Failed to open conf.json file : " << errno << std::endl;
     }
-  }
-  catch (...)
-  {
+  } catch (...) {
     std::cerr << "Error reading conf.json." << std::endl;
   }
 
@@ -155,29 +119,20 @@ ConfClass::ConfClass()
 
 fs::path ConfClass::projPath() const { return this->_projPath; }
 
-std::string ConfClass::compilerPath() const
-{
-  if (this->_language.find("++") != std::string::npos)
-  {
+std::string ConfClass::compilerPath() const {
+  if (this->_language.find("++") != std::string::npos) {
     return this->_cppCompilerPath;
-  }
-  else
-  {
+  } else {
     return this->_cCompilerPath;
   }
 }
-std::string ConfClass::compilerDefines() const
-{
+std::string ConfClass::compilerDefines() const {
   return this->_compilerDefines.str();
 }
-std::string ConfClass::compilerFlags() const
-{
+std::string ConfClass::compilerFlags() const {
   return this->_compilerFlags.str();
 }
-std::string ConfClass::linkerFlags() const
-{
-  return this->_linkerFlags.str();
-}
+std::string ConfClass::linkerFlags() const { return this->_linkerFlags.str(); }
 
 std::string ConfClass::cmakePath() const { return _cmakePath; }
 std::string ConfClass::makePath() const { return _makePath; }

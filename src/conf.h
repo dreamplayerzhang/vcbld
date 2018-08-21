@@ -8,11 +8,9 @@
 
 namespace fs = std::experimental::filesystem;
 
-namespace vcbld
-{
+namespace vcbld {
 
-class ConfClass
-{
+class ConfClass {
 public:
   ConfClass(); // reads all configuration files
   ConfClass(const ConfClass &) = delete;

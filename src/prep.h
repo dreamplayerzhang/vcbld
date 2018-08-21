@@ -7,10 +7,8 @@
 
 #include "pkg.h"
 
-namespace vcbld 
-{
-class PrepClass : public PkgClass 
-{
+namespace vcbld {
+class PrepClass : public PkgClass {
 public:
   PrepClass(); // reads all configuration files
   PrepClass(const ConfClass &) = delete;

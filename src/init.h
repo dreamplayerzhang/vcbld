@@ -7,10 +7,8 @@
 
 namespace fs = std::experimental::filesystem;
 
-namespace vcbld
-{
-namespace init
-{
+namespace vcbld {
+namespace init {
 void init(const std::string &binType);
 void setup(const fs::path &vcbldPath);
 void findPathDirs(std::string &PATH, std::vector<std::string> &dirs);

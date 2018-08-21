@@ -9,13 +9,11 @@
 
 namespace fs = std::experimental::filesystem;
 
-namespace vcbld
-{
+namespace vcbld {
 
-Builder::Builder(const std::string &buildType) : _buildType(buildType), PrepClass()
-{
-  if (!fs::exists("vcbld.json"))
-  {
+Builder::Builder(const std::string &buildType)
+    : _buildType(buildType), PrepClass() {
+  if (!fs::exists("vcbld.json")) {
     std::cout << "Build configuration not found!" << std::endl;
     std::exit(1);
   }
@@ -24,118 +22,91 @@ Builder::Builder(const std::string &buildType) : _buildType(buildType), PrepClas
   this->_rlsDir = this->outputDirectory().string() + "/" + "release";
 }
 
-void Builder::compile()
-{
+void Builder::compile() {
 
-  if (this->_buildType == "release")
-  {
+  if (this->_buildType == "release") {
     this->_compileCommand << "cd " << this->_rlsDir << " && "
-                          << this->compilerPath() << " "
-                          << this->headerPaths() << " "
-                          << this->compilerFlags() << " "
+                          << this->compilerPath() << " " << this->headerPaths()
+                          << " " << this->compilerFlags() << " "
                           << this->compilerDefines() << " "
-                          << "-std=" << this->language()
-                          << this->standard() << " -c "
-                          << this->sourceFiles();
-  }
-  else
-  {
+                          << "-std=" << this->language() << this->standard()
+                          << " -c " << this->sourceFiles();
+  } else {
     this->_compileCommand << "cd " << this->_dbgDir << " && "
-                          << this->compilerPath() << " "
-                          << this->headerPaths() << " "
-                          << this->compilerFlags() << " "
+                          << this->compilerPath() << " " << this->headerPaths()
+                          << " " << this->compilerFlags() << " "
                           << this->compilerDefines() << " -g "
-                          << "-std=" << this->language()
-                          << this->standard() << " -c "
-                          << this->sourceFiles();
+                          << "-std=" << this->language() << this->standard()
+                          << " -c " << this->sourceFiles();
   }
   int systemRet = system(this->_compileCommand.str().c_str());
-  if (systemRet == -1)
-  {
+  if (systemRet == -1) {
     std::cout << "An error occured while compiling." << std::endl;
   }
 }
 
-void Builder::appLink()
-{
+void Builder::appLink() {
   std::vector<fs::directory_entry> dirEntry;
   std::string temp, tempPath;
-  if (this->_buildType == "debug")
-  {
+  if (this->_buildType == "debug") {
     tempPath = this->_dbgDir;
-  }
-  else
-  {
+  } else {
     tempPath = this->_rlsDir;
   }
 
-  if (fs::is_directory(static_cast<fs::path>(tempPath)))
-  {
+  if (fs::is_directory(static_cast<fs::path>(tempPath))) {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
               back_inserter(dirEntry));
     std::sort(dirEntry.begin(), dirEntry.end());
-    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
+    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
+                   dirEntry.end());
 
     for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
-         it != dirEntry.end(); ++it)
-    {
+         it != dirEntry.end(); ++it) {
       if (fs::path((*it).path().filename().string()).extension() == ".o" ||
-          fs::path((*it).path().filename().string()).extension() == ".obj")
-      {
+          fs::path((*it).path().filename().string()).extension() == ".obj") {
         temp += " ";
         temp += (*it).path().filename().string();
       }
     }
   }
 
-  if (this->_buildType == "release")
-  {
+  if (this->_buildType == "release") {
     this->_appLinkCmnd << "cd " << this->_rlsDir << " && "
-                       << this->compilerPath() << " -o "
-                       << this->binaryName() << " " << temp << " "
-                       << this->rlsLibPaths() << " "
+                       << this->compilerPath() << " -o " << this->binaryName()
+                       << " " << temp << " " << this->rlsLibPaths() << " "
                        << this->linkerFlags();
-  }
-  else
-  {
+  } else {
     this->_appLinkCmnd << "cd " << this->_dbgDir << " && "
-                       << this->compilerPath() << " -o "
-                       << this->binaryName() << " " << temp << " "
-                       << this->dbgLibPaths() << " "
+                       << this->compilerPath() << " -o " << this->binaryName()
+                       << " " << temp << " " << this->dbgLibPaths() << " "
                        << this->linkerFlags();
   }
   int systemRet = system(this->_appLinkCmnd.str().c_str());
-  if (systemRet == -1)
-  {
+  if (systemRet == -1) {
     std::cout << "An error occured while linking." << std::endl;
   }
 }
 
-void Builder::dylibLink()
-{
+void Builder::dylibLink() {
   std::vector<fs::directory_entry> dirEntry;
   std::string temp, tempPath;
-  if (this->_buildType == "debug")
-  {
+  if (this->_buildType == "debug") {
     tempPath = this->_dbgDir;
-  }
-  else
-  {
+  } else {
     tempPath = this->_rlsDir;
   }
 
-  if (fs::is_directory(static_cast<fs::path>(tempPath)))
-  {
+  if (fs::is_directory(static_cast<fs::path>(tempPath))) {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
               back_inserter(dirEntry));
     std::sort(dirEntry.begin(), dirEntry.end());
-    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
+    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
+                   dirEntry.end());
 
     for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
-         it != dirEntry.end(); ++it)
-    {
-      if (fs::path((*it).path().filename().string()).extension() == ".o")
-      {
+         it != dirEntry.end(); ++it) {
+      if (fs::path((*it).path().filename().string()).extension() == ".o") {
         temp += " ";
         temp += (*it).path().string();
       }
@@ -143,257 +114,196 @@ void Builder::dylibLink()
   }
 
   std::string dylibArg, dylibExt;
-  if (this->compilerPath().find("clang") != std::string::npos)
-  {
+  if (this->compilerPath().find("clang") != std::string::npos) {
     dylibArg = " -dynamiclib ";
     dylibExt = ".dylib";
-  }
-  else
-  {
+  } else {
     dylibArg = " -shared ";
     dylibExt = ".so";
   }
 
-  if (this->_buildType == "release")
-  {
+  if (this->_buildType == "release") {
     this->_libLinkCmnd << "cd " << this->_rlsDir << " && "
                        << this->compilerPath() << dylibArg << " -o "
-                       << this->binaryName() << dylibExt << " "
-                       << temp << " " << this->rlsLibPaths() << " "
-                       << this->linkerFlags();
-  }
-  else
-  {
+                       << this->binaryName() << dylibExt << " " << temp << " "
+                       << this->rlsLibPaths() << " " << this->linkerFlags();
+  } else {
     this->_libLinkCmnd << "cd " << this->_dbgDir << " && "
                        << this->compilerPath() << dylibArg << " -o "
-                       << this->binaryName() << dylibExt << " "
-                       << temp << " " << this->dbgLibPaths() << " "
-                       << this->linkerFlags();
+                       << this->binaryName() << dylibExt << " " << temp << " "
+                       << this->dbgLibPaths() << " " << this->linkerFlags();
   }
   int systemRet = system(this->_libLinkCmnd.str().c_str());
-  if (systemRet == -1)
-  {
+  if (systemRet == -1) {
     std::cout << "An error occured while linking." << std::endl;
   }
 }
 
-void Builder::archive()
-{
+void Builder::archive() {
   std::vector<fs::directory_entry> dirEntry;
   std::string temp, tempPath;
-  if (this->_buildType == "debug")
-  {
+  if (this->_buildType == "debug") {
     tempPath = this->_dbgDir;
-  }
-  else
-  {
+  } else {
     tempPath = this->_rlsDir;
   }
 
-  if (fs::is_directory(static_cast<fs::path>(tempPath)))
-  {
+  if (fs::is_directory(static_cast<fs::path>(tempPath))) {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
               back_inserter(dirEntry));
     std::sort(dirEntry.begin(), dirEntry.end());
-    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
+    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
+                   dirEntry.end());
     for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
-         it != dirEntry.end(); ++it)
-    {
-      if (fs::path((*it).path().filename().string()).extension() == ".o")
-      {
+         it != dirEntry.end(); ++it) {
+      if (fs::path((*it).path().filename().string()).extension() == ".o") {
         temp += " ";
         temp += (*it).path().string();
       }
     }
   }
 
-  if (this->_buildType == "release")
-  {
+  if (this->_buildType == "release") {
     this->_archiveCmnd << "cd " << this->_rlsDir << " && "
-                       << this->archiverPath() << " rcs " << this->binaryName() << ".a"
+                       << this->archiverPath() << " rcs " << this->binaryName()
+                       << ".a"
                        << " " << temp;
-  }
-  else
-  {
+  } else {
     this->_archiveCmnd << "cd " << this->_dbgDir << " && "
-                       << this->archiverPath() << " rcs " << this->binaryName() << ".a"
+                       << this->archiverPath() << " rcs " << this->binaryName()
+                       << ".a"
                        << " " << temp;
   }
   int systemRet = system(this->_archiveCmnd.str().c_str());
-  if (systemRet == -1)
-  {
+  if (systemRet == -1) {
     std::cout << "An error occured while archiving." << std::endl;
   }
 }
 
-std::string Builder::getBldCommands()
-{
-  if (this->binaryType() == "app")
-  {
+std::string Builder::getBldCommands() {
+  if (this->binaryType() == "app") {
     return this->_compileCommand.str() + "\n" + this->_appLinkCmnd.str();
-  }
-  else if (this->binaryType() == "staticLibrary")
-  {
+  } else if (this->binaryType() == "staticLibrary") {
     return this->_compileCommand.str() + "\n" + this->_archiveCmnd.str();
-  }
-  else if (this->binaryType() == "sharedLibrary")
-  {
+  } else if (this->binaryType() == "sharedLibrary") {
     return this->_compileCommand.str() + "\n" + this->_libLinkCmnd.str();
-  }
-  else
-  {
+  } else {
     std::cout << "Unknown binary type defined in vcbld.json." << std::endl;
     return "";
   }
 }
 
-void Builder::build()
-{
+void Builder::build() {
 
   if (!fs::exists(this->outputDirectory()))
     fs::create_directory(this->outputDirectory());
-  if (!fs::exists(this->outputDirectory().string() + "/" +
-                  "release"))
+  if (!fs::exists(this->outputDirectory().string() + "/" + "release"))
     fs::create_directory(this->_rlsDir);
   if (!fs::exists(this->outputDirectory().string() + "/" + "debug"))
     fs::create_directory(this->_dbgDir);
 
-  if (this->binaryType() == "app")
-  {
-    try
-    {
+  if (this->binaryType() == "app") {
+    try {
       std::cout << "Compiling in " << this->_buildType << "...\n";
       this->compile();
       std::cout << "Done!" << std::endl;
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception &e) {
       std::cout << "Compilation failed!" << std::endl;
       std::cerr << e.what() << " " << errno << std::endl;
     }
-    try
-    {
+    try {
       std::cout << "Linking...\n";
       this->appLink();
       std::cout << "Done!" << std::endl;
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception &e) {
       std::cout << "Linking failed!" << std::endl;
       std::cerr << e.what() << " " << errno << std::endl;
     }
-    try
-    {
+    try {
       this->copy();
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception &e) {
       std::cout << "Libraries exist in output directory." << std::endl;
       std::cerr << e.what() << " " << errno << std::endl;
     }
-  }
-  else if (this->binaryType() == "staticLibrary")
-  {
-    try
-    {
+  } else if (this->binaryType() == "staticLibrary") {
+    try {
       std::cout << "Compiling in " << this->_buildType << "...\n";
       this->compile();
       std::cout << "Done!" << std::endl;
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception &e) {
       std::cout << "Compilation failed!" << std::endl;
       std::cerr << e.what() << " " << errno << std::endl;
     }
-    try
-    {
+    try {
       std::cout << "Archiving...\n";
       this->archive();
       std::cout << "Done!" << std::endl;
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception &e) {
       std::cout << "Archiving failed!" << std::endl;
       std::cerr << e.what() << errno << std::endl;
     }
-  }
-  else if (this->binaryType() == "sharedLibrary")
-  {
-    try
-    {
+  } else if (this->binaryType() == "sharedLibrary") {
+    try {
       std::cout << "Compiling in " << this->_buildType << "...\n";
       this->compile();
       std::cout << "Done!" << std::endl;
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception &e) {
       std::cout << "Compilation failed!" << std::endl;
       std::cerr << e.what() << " " << errno << std::endl;
     }
-    try
-    {
+    try {
       std::cout << "Linking...\n";
       this->dylibLink();
       std::cout << "Done!" << std::endl;
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception &e) {
       std::cout << "Linking failed!" << std::endl;
       std::cerr << e.what() << errno << std::endl;
     }
-    try
-    {
+    try {
       this->copy();
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception &e) {
       std::cout << "Libraries exist in output directory." << std::endl;
       std::cerr << e.what() << " " << errno << std::endl;
     }
-  }
-  else
-  {
+  } else {
     std::cout << "Unknown binary type defined in vcbld.json." << std::endl;
   }
 }
 
-void Builder::copy()
-{
-  std::string dbgLibPath = this->vcpkgDirPath() + "/" + "installed" + "/" + this->architecture() + "/" + "debug/lib";
-  std::string rlsLibPath = this->vcpkgDirPath() + "/" + "installed" + "/" + this->architecture() + "/" + "lib";
+void Builder::copy() {
+  std::string dbgLibPath = this->vcpkgDirPath() + "/" + "installed" + "/" +
+                           this->architecture() + "/" + "debug/lib";
+  std::string rlsLibPath = this->vcpkgDirPath() + "/" + "installed" + "/" +
+                           this->architecture() + "/" + "lib";
   std::string fullName;
-  if (this->libDirectory() != "")
-  {
-    std::string localDbgPath = fs::canonical(this->libDirectory()).string() + "/" + "debug";
-    std::string localRlsPath = fs::canonical(this->libDirectory()).string() + "/" + "release";
-    if (this->_buildType == "debug")
-    {
-      for (std::vector<std::string>::iterator it = this->dbgLocalLibNames().begin(); it != this->dbgLocalLibNames().end(); ++it)
-      {
+  if (this->libDirectory() != "") {
+    std::string localDbgPath =
+        fs::canonical(this->libDirectory()).string() + "/" + "debug";
+    std::string localRlsPath =
+        fs::canonical(this->libDirectory()).string() + "/" + "release";
+    if (this->_buildType == "debug") {
+      for (std::vector<std::string>::iterator it =
+               this->dbgLocalLibNames().begin();
+           it != this->dbgLocalLibNames().end(); ++it) {
         fullName = localDbgPath + "/" + (*it);
-        if (fs::exists(fullName))
-        {
-          if ((*it).find(".a") == std::string::npos && (*it).find(".lib") == std::string::npos)
-          {
-            if (!fs::exists(this->_dbgDir + "/" + (*it)))
-            {
+        if (fs::exists(fullName)) {
+          if ((*it).find(".a") == std::string::npos &&
+              (*it).find(".lib") == std::string::npos) {
+            if (!fs::exists(this->_dbgDir + "/" + (*it))) {
               fs::copy(fullName, this->_dbgDir);
             }
           }
         }
       }
-    }
-    else
-    {
-      for (std::vector<std::string>::iterator it = this->rlsLocalLibNames().begin(); it != this->rlsLocalLibNames().end(); ++it)
-      {
+    } else {
+      for (std::vector<std::string>::iterator it =
+               this->rlsLocalLibNames().begin();
+           it != this->rlsLocalLibNames().end(); ++it) {
         fullName = localRlsPath + "/" + (*it);
-        if (fs::exists(fullName))
-        {
-          if ((*it).find(".a") == std::string::npos && (*it).find(".lib") == std::string::npos)
-          {
-            if (!fs::exists(this->_rlsDir + "/" + (*it)))
-            {
+        if (fs::exists(fullName)) {
+          if ((*it).find(".a") == std::string::npos &&
+              (*it).find(".lib") == std::string::npos) {
+            if (!fs::exists(this->_rlsDir + "/" + (*it))) {
               fs::copy(fullName, this->_rlsDir);
             }
           }
@@ -401,34 +311,25 @@ void Builder::copy()
       }
     }
   }
-  for (std::vector<std::string>::iterator it = this->fullLibNames().begin(); it != this->fullLibNames().end(); ++it)
-  {
-    if (this->_buildType == "debug")
-    {
+  for (std::vector<std::string>::iterator it = this->fullLibNames().begin();
+       it != this->fullLibNames().end(); ++it) {
+    if (this->_buildType == "debug") {
       fullName = dbgLibPath + "/" + (*it);
-    }
-    else
-    {
+    } else {
       fullName = rlsLibPath + "/" + (*it);
     }
-    if (fs::exists(fullName))
-    {
-      if (this->_buildType == "debug")
-      {
-        if ((*it).find(".a") == std::string::npos && (*it).find(".lib") == std::string::npos)
-        {
-          if (!fs::exists(this->_dbgDir + "/" + (*it)))
-          {
+    if (fs::exists(fullName)) {
+      if (this->_buildType == "debug") {
+        if ((*it).find(".a") == std::string::npos &&
+            (*it).find(".lib") == std::string::npos) {
+          if (!fs::exists(this->_dbgDir + "/" + (*it))) {
             fs::copy(fullName, this->_dbgDir);
           }
         }
-      }
-      else
-      {
-        if ((*it).find(".a") == std::string::npos && (*it).find(".lib") == std::string::npos)
-        {
-          if (!fs::exists(this->_rlsDir + "/" + (*it)))
-          {
+      } else {
+        if ((*it).find(".a") == std::string::npos &&
+            (*it).find(".lib") == std::string::npos) {
+          if (!fs::exists(this->_rlsDir + "/" + (*it))) {
             fs::copy(fullName, this->_rlsDir);
           }
         }

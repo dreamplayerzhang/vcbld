@@ -6,10 +6,8 @@
 
 #include "prep.h"
 
-namespace vcbld
-{
-class Builder : public PrepClass
-{
+namespace vcbld {
+class Builder : public PrepClass {
 public:
   explicit Builder(const std::string &buildType);
   Builder(const Builder &) = delete;

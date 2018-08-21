@@ -4,10 +4,8 @@
 #include <string>
 #include <vector>
 
-namespace vcbld
-{
-namespace args
-{
+namespace vcbld {
+namespace args {
 void New(const std::string &binType);
 void restore();
 void build(const std::string &buildType);

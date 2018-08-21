@@ -75,9 +75,11 @@ void setup(const fs::path &vcbldPath) {
   //     std::string progFiles = getenv("PROGRAMFILES");
   //     if (fs::exists(progFiles)) {
   //       std::vector<fs::directory_entry> dirEntry2;
-  //       std::copy(fs::directory_iterator(progFiles), fs::directory_iterator(),
+  //       std::copy(fs::directory_iterator(progFiles),
+  //       fs::directory_iterator(),
   //                 back_inserter(dirEntry2));
-  //       for (std::vector<fs::directory_entry>::iterator it = dirEntry2.begin();
+  //       for (std::vector<fs::directory_entry>::iterator it =
+  //       dirEntry2.begin();
   //            it != dirEntry2.end(); ++it) {
   //         if ((*it).path().string().find("MinGW") != std::string::npos) {
   //           std::string binDir = (*it).path().string() + "/bin";
@@ -97,12 +99,14 @@ void setup(const fs::path &vcbldPath) {
   //     std::string progFiles = getenv("MINGW_HOME");
   //     if (fs::is_directory(progFiles)) {
   //       std::vector<fs::directory_entry> dirEntry;
-  //       std::copy(fs::directory_iterator(progFiles), fs::directory_iterator(),
+  //       std::copy(fs::directory_iterator(progFiles),
+  //       fs::directory_iterator(),
   //                 back_inserter(dirEntry));
   //       std::sort(dirEntry.begin(), dirEntry.end());
   //       dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
   //                      dirEntry.end());
-  //       for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
+  //       for (std::vector<fs::directory_entry>::iterator it =
+  //       dirEntry.begin();
   //            it != dirEntry.end(); ++it) {
   //         if ((*it).path().string().find("MinGW") != std::string::npos) {
   //           std::string binDir = (*it).path().string() + "/bin";
@@ -212,10 +216,6 @@ void setup(const fs::path &vcbldPath) {
   }
 
   if (!fs::exists("conf.json")) {
-    int systemRet = system("clear");
-    if (systemRet == -1) {
-      std::cout << "An error occured while deleting output." << std::endl;
-    }
     cCompilerPath = cCompiler(cCompilers);
     cppCompilerPath = cppCompiler(cppCompilers);
     cmakePath = cmake(cmakePaths);
@@ -225,18 +225,18 @@ void setup(const fs::path &vcbldPath) {
       std::ofstream confOutput("conf.json");
       if (confOutput.is_open()) {
         confOutput << std::setw(4) << "{\n\t\"cCompilerPath\" : \""
-                   << fs::canonical(cCompilerPath) << "\",\n\t"
+                   << fs::canonical(cCompilerPath).string() << "\",\n\t"
                    << "\"cppCompilerPath\" : \""
-                   << fs::canonical(cppCompilerPath) << "\",\n\t"
-                   << "\"vcpkgDirectory\" : \"" << fs::canonical(vcbldPath)
-                   << "\",\n\t"
+                   << fs::canonical(cppCompilerPath).string() << "\",\n\t"
+                   << "\"vcpkgDirectory\" : \""
+                   << fs::canonical(vcbldPath).string() << "\",\n\t"
                    << "\"architecture\" : \"" << PLATFORM_NAME << "\",\n\t"
-                   << "\"cmakePath\" : \"" << fs::canonical(cmakePath)
+                   << "\"cmakePath\" : \"" << fs::canonical(cmakePath).string()
                    << "\",\n\t"
-                   << "\"makePath\" : \"" << fs::canonical(makePath)
+                   << "\"makePath\" : \"" << fs::canonical(makePath).string()
                    << "\",\n\t"
-                   << "\"archiverPath\" : \"" << fs::canonical(archiverPath)
-                   << "\"\n}";
+                   << "\"archiverPath\" : \""
+                   << fs::canonical(archiverPath).string() << "\"\n}";
         confOutput.flush();
         confOutput.close();
         std::cout << "conf.json written successfully." << std::endl;
@@ -418,10 +418,6 @@ std::string cCompiler(const std::vector<std::string> &cCompilers) {
   } else if (cCompilers.size() == 1) {
     return cCompilers[0];
   } else {
-    int systemRet = system("clear");
-    if (systemRet == -1) {
-      std::cout << "An error occured while deleting output." << std::endl;
-    }
     std::cout << "list of available c compilers:" << std::endl;
     int i = 1;
     for (std::vector<std::string>::const_iterator it = cCompilers.begin();
@@ -453,10 +449,6 @@ std::string cppCompiler(const std::vector<std::string> &cppCompilers) {
   } else if (cppCompilers.size() == 1) {
     return cppCompilers[0];
   } else {
-    int systemRet = system("clear");
-    if (systemRet == -1) {
-      std::cout << "An error occured while deleting output." << std::endl;
-    }
     std::cout << "list of available c++ compilers:" << std::endl;
     int j = 1;
     for (std::vector<std::string>::const_iterator it = cppCompilers.begin();
@@ -488,10 +480,6 @@ std::string cmake(const std::vector<std::string> &cmakes) {
   } else if (cmakes.size() == 1) {
     return cmakes[0];
   } else {
-    int systemRet = system("clear");
-    if (systemRet == -1) {
-      std::cout << "An error occured while deleting output." << std::endl;
-    }
     std::cout << "list of available cmake executables:" << std::endl;
     int cmake_it = 1;
     for (std::vector<std::string>::const_iterator it = cmakes.begin();
@@ -523,10 +511,6 @@ std::string make(const std::vector<std::string> &makes) {
   } else if (makes.size() == 1) {
     return makes[0];
   } else {
-    int systemRet = system("clear");
-    if (systemRet == -1) {
-      std::cout << "An error occured while deleting output." << std::endl;
-    }
     std::cout << "list of available make executables:" << std::endl;
     int make_it = 1;
     for (std::vector<std::string>::const_iterator it = makes.begin();
@@ -556,10 +540,6 @@ std::string archiver(const std::vector<std::string> &archivers) {
   } else if (archivers.size() == 1) {
     return archivers[0];
   } else {
-    int systemRet = system("clear");
-    if (systemRet == -1) {
-      std::cout << "An error occured while deleting output." << std::endl;
-    }
     std::cout << "list of available archivers:" << std::endl;
     int ar_it = 1;
     for (std::vector<std::string>::const_iterator it = archivers.begin();

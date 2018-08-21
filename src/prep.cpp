@@ -106,7 +106,7 @@ std::string PrepClass::sourceFiles() const {
   std::vector<fs::directory_entry> dirEntry;
   std::string tempPath;
   std::ostringstream temp;
-  tempPath = this->sourceDirectory().string();
+  tempPath = fs::canonical(this->sourceDirectory()).string();
   if (fs::is_directory(static_cast<fs::path>(tempPath))) {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
               back_inserter(dirEntry));
@@ -134,7 +134,7 @@ std::string PrepClass::sourceFilesSinPath() const {
   std::vector<fs::directory_entry> dirEntry;
   std::string tempPath;
   std::ostringstream temp;
-  tempPath = this->sourceDirectory().string();
+  tempPath = fs::canonical(this->sourceDirectory()).string();
   if (fs::is_directory(static_cast<fs::path>(tempPath))) {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
               back_inserter(dirEntry));
@@ -159,10 +159,10 @@ std::string PrepClass::sourceFilesSinPath() const {
 
 std::string PrepClass::headerPaths() {
   std::ostringstream temp;
-  temp << " -I" << fs::canonical(this->sourceDirectory()) << " -I"
-       << fs::canonical(this->outputDirectory());
+  temp << " -I" << fs::canonical(this->sourceDirectory()).string() << " -I"
+       << fs::canonical(this->outputDirectory()).string();
   if (this->includeDirectory() != "") {
-    temp << " -I" << fs::canonical(this->includeDirectory());
+    temp << " -I" << fs::canonical(this->includeDirectory()).string();
   }
   temp << " -I" << this->vcpkgDirPath() << "/"
        << "installed"
@@ -208,7 +208,7 @@ std::string PrepClass::dbgLibPaths() {
   std::string localDbgLibs = this->libDirectory().string() + "/" + "debug";
   for (std::vector<std::string>::iterator jt = this->_dbgLocalLibNames.begin();
        jt != this->_dbgLocalLibNames.end(); ++jt) {
-    temp << " -L" << fs::canonical(localDbgLibs) << " "
+    temp << " -L" << fs::canonical(localDbgLibs).string() << " "
          << " -l" << stripLibName(*jt);
   }
 
@@ -227,7 +227,7 @@ std::string PrepClass::rlsLibPaths() {
   std::string localRlsLibs = this->libDirectory().string() + "/" + "release";
   for (std::vector<std::string>::iterator jt = this->_rlsLocalLibNames.begin();
        jt != this->_rlsLocalLibNames.end(); ++jt) {
-    temp << " -L" << fs::canonical(localRlsLibs) << " "
+    temp << " -L" << fs::canonical(localRlsLibs).string() << " "
          << " -l" << stripLibName(*jt);
   }
 

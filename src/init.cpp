@@ -247,7 +247,13 @@ void setup(const fs::path &vcbldPath)
 
   if (fs::exists("conf.json"))
   {
-    fs::remove("conf.json");
+    std::cout << "conf.json was found in the directory, would you like to reconfigure it?\ntype yes to reconfigure" std::endl;
+    std::string entry;
+    std::cin >> entry;
+    if (entry == "yes")
+    {
+      fs::remove("conf.json");
+    }
   }
   
   if (!fs::exists("conf.json"))

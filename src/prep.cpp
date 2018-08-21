@@ -106,7 +106,7 @@ std::string PrepClass::sourceFiles() const {
   std::vector<fs::directory_entry> dirEntry;
   std::string tempPath;
   std::ostringstream temp;
-  tempPath = this->sourceDirectory();
+  tempPath = this->sourceDirectory().string();
   if (fs::is_directory(static_cast<fs::path>(tempPath))) {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
               back_inserter(dirEntry));
@@ -134,7 +134,7 @@ std::string PrepClass::sourceFilesSinPath() const {
   std::vector<fs::directory_entry> dirEntry;
   std::string tempPath;
   std::ostringstream temp;
-  tempPath = this->sourceDirectory();
+  tempPath = this->sourceDirectory().string();
   if (fs::is_directory(static_cast<fs::path>(tempPath))) {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
               back_inserter(dirEntry));

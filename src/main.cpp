@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
   if (temp == "") {
     try {
       std::string vcbldExec = std::getenv("PATH");
-      vcbldPath = fs::canonical(static_cast<fs::path>(findVcbld(vcbldExec)));
+      vcbldPath = fs::canonical(findVcbld(vcbldExec));
     } catch (const std::exception &e) {
       std::cout << "Error starting vcbld." << std::endl;
       std::cerr << e.what() << " " << errno << std::endl;
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
     vcbldPath = fs::canonical(temp);
   }
 
-  if (!fs::exists(vcbldPath.string() + "/vcpkg")) {
+  if (!fs::exists(vcbldPath.string() + "/vcpkg") && !fs::exists(vcbldPath.string() + "/vcpkg.exe")) {
     std::cout << "The vcpkg executable was not found!\nPlease add vcbld to the "
                  "same directory as your vcpkg executable!"
               << std::endl;

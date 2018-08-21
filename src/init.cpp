@@ -58,66 +58,66 @@ void setup(const fs::path &vcbldPath) {
     paths.emplace_back(brewLLVM);
   }
 
-  if (PLATFORM_NAME == "x64-windows" || PLATFORM_NAME == "x86-windows") {
-    if (fs::is_directory("C:/")) {
-      std::vector<fs::directory_entry> dirEntry;
-      std::copy(fs::directory_iterator("C:/"), fs::directory_iterator(),
-                back_inserter(dirEntry));
-      for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
-           it != dirEntry.end(); ++it) {
-        if ((*it).path().string().find("MinGW") != std::string::npos) {
-          std::string binDir = (*it).path().string() + "/bin";
-          paths.emplace_back(binDir);
-        }
-      }
-    }
-    try {
-      std::string progFiles = getenv("PROGRAMFILES");
-      if (fs::exists(progFiles)) {
-        std::vector<fs::directory_entry> dirEntry2;
-        std::copy(fs::directory_iterator(progFiles), fs::directory_iterator(),
-                  back_inserter(dirEntry2));
-        for (std::vector<fs::directory_entry>::iterator it = dirEntry2.begin();
-             it != dirEntry2.end(); ++it) {
-          if ((*it).path().string().find("MinGW") != std::string::npos) {
-            std::string binDir = (*it).path().string() + "/bin";
-            paths.emplace_back(binDir);
-          }
-          if ((*it).path().string().find("cmake") != std::string::npos) {
-            std::string binDir = (*it).path().string() + "/bin";
-            paths.emplace_back(binDir);
-          }
-        }
-      }
-    } catch (...) {
-      // fail quietly
-    }
+  // if (PLATFORM_NAME == "x64-windows" || PLATFORM_NAME == "x86-windows") {
+  //   if (fs::is_directory("C:/")) {
+  //     std::vector<fs::directory_entry> dirEntry;
+  //     std::copy(fs::directory_iterator("C:/"), fs::directory_iterator(),
+  //               back_inserter(dirEntry));
+  //     for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
+  //          it != dirEntry.end(); ++it) {
+  //       if ((*it).path().string().find("MinGW") != std::string::npos) {
+  //         std::string binDir = (*it).path().string() + "/bin";
+  //         paths.emplace_back(binDir);
+  //       }
+  //     }
+  //   }
+  //   try {
+  //     std::string progFiles = getenv("PROGRAMFILES");
+  //     if (fs::exists(progFiles)) {
+  //       std::vector<fs::directory_entry> dirEntry2;
+  //       std::copy(fs::directory_iterator(progFiles), fs::directory_iterator(),
+  //                 back_inserter(dirEntry2));
+  //       for (std::vector<fs::directory_entry>::iterator it = dirEntry2.begin();
+  //            it != dirEntry2.end(); ++it) {
+  //         if ((*it).path().string().find("MinGW") != std::string::npos) {
+  //           std::string binDir = (*it).path().string() + "/bin";
+  //           paths.emplace_back(binDir);
+  //         }
+  //         if ((*it).path().string().find("cmake") != std::string::npos) {
+  //           std::string binDir = (*it).path().string() + "/bin";
+  //           paths.emplace_back(binDir);
+  //         }
+  //       }
+  //     }
+  //   } catch (...) {
+  //     // fail quietly
+  //   }
 
-    try {
-      std::string progFiles = getenv("MINGW_HOME");
-      if (fs::is_directory(progFiles)) {
-        std::vector<fs::directory_entry> dirEntry;
-        std::copy(fs::directory_iterator(progFiles), fs::directory_iterator(),
-                  back_inserter(dirEntry));
-        std::sort(dirEntry.begin(), dirEntry.end());
-        dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
-                       dirEntry.end());
-        for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
-             it != dirEntry.end(); ++it) {
-          if ((*it).path().string().find("MinGW") != std::string::npos) {
-            std::string binDir = (*it).path().string() + "/bin";
-            paths.emplace_back(binDir);
-          }
-          if ((*it).path().string().find("cmake") != std::string::npos) {
-            std::string binDir = (*it).path().string() + "/bin";
-            paths.emplace_back(binDir);
-          }
-        }
-      }
-    } catch (...) {
-      // fail quietly
-    }
-  }
+  //   try {
+  //     std::string progFiles = getenv("MINGW_HOME");
+  //     if (fs::is_directory(progFiles)) {
+  //       std::vector<fs::directory_entry> dirEntry;
+  //       std::copy(fs::directory_iterator(progFiles), fs::directory_iterator(),
+  //                 back_inserter(dirEntry));
+  //       std::sort(dirEntry.begin(), dirEntry.end());
+  //       dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
+  //                      dirEntry.end());
+  //       for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
+  //            it != dirEntry.end(); ++it) {
+  //         if ((*it).path().string().find("MinGW") != std::string::npos) {
+  //           std::string binDir = (*it).path().string() + "/bin";
+  //           paths.emplace_back(binDir);
+  //         }
+  //         if ((*it).path().string().find("cmake") != std::string::npos) {
+  //           std::string binDir = (*it).path().string() + "/bin";
+  //           paths.emplace_back(binDir);
+  //         }
+  //       }
+  //     }
+  //   } catch (...) {
+  //     // fail quietly
+  //   }
+  // }
 
   std::sort(paths.begin(), paths.end());
   paths.erase(std::unique(paths.begin(), paths.end()), paths.end());
@@ -130,7 +130,7 @@ void setup(const fs::path &vcbldPath) {
       cCompilers.emplace_back((*it) + "/gcc");
     }
     if (fs::exists((*it) + "/gcc.exe")) {
-      cCompilers.emplace_back((*it) + "/gcc.exe");
+      cCompilers.emplace_back((*it) + "\\gcc.exe");
     }
     if (fs::exists((*it) + "/gcc-8")) {
       cCompilers.emplace_back((*it) + "/gcc-8");
@@ -148,7 +148,7 @@ void setup(const fs::path &vcbldPath) {
       cCompilers.emplace_back((*it) + "/clang");
     }
     if (fs::exists((*it) + "/clang.exe")) {
-      cCompilers.emplace_back((*it) + "/clang.exe");
+      cCompilers.emplace_back((*it) + "\\clang.exe");
     }
     if (fs::exists((*it) + "/clang-6.0")) {
       cCompilers.emplace_back((*it) + "/clang-6.0");
@@ -179,6 +179,9 @@ void setup(const fs::path &vcbldPath) {
     }
     if (fs::exists((*it) + "/cmake")) {
       cmakePaths.emplace_back((*it) + "/cmake");
+    }
+    if (fs::exists((*it) + "/cmake.exe")) {
+      cmakePaths.emplace_back((*it) + "\\cmake.exe");
     }
     if (fs::exists((*it) + "/make")) {
       makePaths.emplace_back((*it) + "/make");
@@ -222,15 +225,18 @@ void setup(const fs::path &vcbldPath) {
       std::ofstream confOutput("conf.json");
       if (confOutput.is_open()) {
         confOutput << std::setw(4) << "{\n\t\"cCompilerPath\" : \""
-                   << cCompilerPath << "\",\n\t"
-                   << "\"cppCompilerPath\" : \"" << cppCompilerPath << "\",\n\t"
-                   << "\"vcpkgDirectory\" : \""
-                   << static_cast<std::string>(fs::canonical(vcbldPath))
+                   << fs::canonical(cCompilerPath) << "\",\n\t"
+                   << "\"cppCompilerPath\" : \""
+                   << fs::canonical(cppCompilerPath) << "\",\n\t"
+                   << "\"vcpkgDirectory\" : \"" << fs::canonical(vcbldPath)
                    << "\",\n\t"
                    << "\"architecture\" : \"" << PLATFORM_NAME << "\",\n\t"
-                   << "\"cmakePath\" : \"" << cmakePath << "\",\n\t"
-                   << "\"makePath\" : \"" << makePath << "\",\n\t"
-                   << "\"archiverPath\" : \"" << archiverPath << "\"\n}";
+                   << "\"cmakePath\" : \"" << fs::canonical(cmakePath)
+                   << "\",\n\t"
+                   << "\"makePath\" : \"" << fs::canonical(makePath)
+                   << "\",\n\t"
+                   << "\"archiverPath\" : \"" << fs::canonical(archiverPath)
+                   << "\"\n}";
         confOutput.flush();
         confOutput.close();
         std::cout << "conf.json written successfully." << std::endl;

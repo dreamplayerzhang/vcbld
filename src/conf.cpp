@@ -107,7 +107,7 @@ ConfClass::ConfClass() {
 
   fs::path vcpkgPath;
   this->_vcpkgDirectory = confJson["vcpkgDirectory"];
-  vcpkgPath = static_cast<std::string>(this->_vcpkgDirectory);
+  vcpkgPath = static_cast<fs::path>(this->_vcpkgDirectory);
   this->_cCompilerPath = confJson["cCompilerPath"];
   this->_cppCompilerPath = confJson["cppCompilerPath"];
   this->_architecture = confJson["architecture"];

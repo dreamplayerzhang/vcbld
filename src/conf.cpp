@@ -157,7 +157,7 @@ fs::path ConfClass::projPath() const { return this->_projPath; }
 
 std::string ConfClass::compilerPath() const
 {
-  if (this->_language.at(2) == '+')
+  if (this->_language.find("++") != std::string::npos)
   {
     return this->_cppCompilerPath;
   }

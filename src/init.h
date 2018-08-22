@@ -1,7 +1,7 @@
 #ifndef INIT_H
 #define INIT_H
 
-#if defined(_WIN32)
+#if defined(_WIN32) || defined(_WIN64)
 #include <filesystem>
 #else
 #include <experimental/filesystem>

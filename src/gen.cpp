@@ -1,7 +1,7 @@
 #include "gen.h"
 
 #include <errno.h>
-#if defined(_WIN32)
+#if defined(_WIN32) || defined(_WIN64)
 #include <filesystem>
 #else
 #include <experimental/filesystem>

@@ -124,7 +124,7 @@ std::string PrepClass::sourceFiles() {
           fs::path((*it).path().filename().string()).extension() == ".uic") {
         fullPath = std::move((*it).path().string());
         posixify(fullPath);
-        temp << fullPath;
+        temp << fullPath << " ";
       }
     }
   }

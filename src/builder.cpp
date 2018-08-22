@@ -22,8 +22,8 @@ Builder::Builder(const std::string &buildType)
     std::exit(1);
   }
 
-  this->_dbgDir = this->outputDirectory().string() + "/" + "debug";
-  this->_rlsDir = this->outputDirectory().string() + "/" + "release";
+  this->_dbgDir = this->outputDirectory() + "/" + "debug";
+  this->_rlsDir = this->outputDirectory() + "/" + "release";
 }
 
 void Builder::compile() {
@@ -201,9 +201,9 @@ void Builder::build() {
 
   if (!fs::exists(this->outputDirectory()))
     fs::create_directory(this->outputDirectory());
-  if (!fs::exists(this->outputDirectory().string() + "/" + "release"))
+  if (!fs::exists(this->outputDirectory() + "/" + "release"))
     fs::create_directory(this->_rlsDir);
-  if (!fs::exists(this->outputDirectory().string() + "/" + "debug"))
+  if (!fs::exists(this->outputDirectory() + "/" + "debug"))
     fs::create_directory(this->_dbgDir);
 
   if (this->binaryType() == "app") {
@@ -275,10 +275,8 @@ void Builder::copy() {
                            this->architecture() + "/" + "lib";
   std::string fullName;
   if (this->libDirectory() != "") {
-    std::string localDbgPath =
-        fs::canonical(this->libDirectory()).string() + "/" + "debug";
-    std::string localRlsPath =
-        fs::canonical(this->libDirectory()).string() + "/" + "release";
+    std::string localDbgPath = this->libDirectory() + "/" + "debug";
+    std::string localRlsPath = this->libDirectory() + "/" + "release";
     if (this->_buildType == "debug") {
       for (std::vector<std::string>::iterator it =
                this->dbgLocalLibNames().begin();

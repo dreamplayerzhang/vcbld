@@ -59,8 +59,8 @@ PrepClass::PrepClass() : PkgClass() {
     }
   }
 
-  if (this->libDirectory().string() != "") {
-    std::string localDbgLibs = this->libDirectory().string() + "/" + "debug";
+  if (this->libDirectory() != "") {
+    std::string localDbgLibs = this->libDirectory() + "/" + "debug";
     std::vector<fs::directory_entry> localDbgDirEntry;
 
     if (fs::is_directory(static_cast<fs::path>(localDbgLibs))) {
@@ -80,7 +80,7 @@ PrepClass::PrepClass() : PkgClass() {
       }
     }
 
-    std::string localRlsLibs = this->libDirectory().string() + "/" + "release";
+    std::string localRlsLibs = this->libDirectory() + "/" + "release";
     std::vector<fs::directory_entry> localRlsDirEntry;
 
     if (fs::is_directory(static_cast<fs::path>(localRlsLibs))) {
@@ -102,11 +102,11 @@ PrepClass::PrepClass() : PkgClass() {
   }
 }
 
-std::string PrepClass::sourceFiles() const {
+std::string PrepClass::sourceFiles() {
   std::vector<fs::directory_entry> dirEntry;
   std::string tempPath;
   std::ostringstream temp;
-  tempPath = fs::canonical(this->sourceDirectory()).string();
+  tempPath = this->sourceDirectory();
   if (fs::is_directory(static_cast<fs::path>(tempPath))) {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
               back_inserter(dirEntry));
@@ -122,19 +122,18 @@ std::string PrepClass::sourceFiles() const {
           fs::path((*it).path().filename().string()).extension() == ".cxx" ||
           fs::path((*it).path().filename().string()).extension() == ".qrc" ||
           fs::path((*it).path().filename().string()).extension() == ".uic") {
-        temp << this->projPath().c_str() << "/" << tempPath + "/"
-             << (*it).path().filename().string() << " ";
+        temp << (*it).path().string();
       }
     }
   }
   return temp.str();
 }
 
-std::string PrepClass::sourceFilesSinPath() const {
+std::string PrepClass::sourceFilesSinPath() {
   std::vector<fs::directory_entry> dirEntry;
   std::string tempPath;
   std::ostringstream temp;
-  tempPath = fs::canonical(this->sourceDirectory()).string();
+  tempPath = this->sourceDirectory();
   if (fs::is_directory(static_cast<fs::path>(tempPath))) {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
               back_inserter(dirEntry));
@@ -159,10 +158,9 @@ std::string PrepClass::sourceFilesSinPath() const {
 
 std::string PrepClass::headerPaths() {
   std::ostringstream temp;
-  temp << " -I" << fs::canonical(this->sourceDirectory()).string() << " -I"
-       << fs::canonical(this->outputDirectory()).string();
+  temp << " -I" << this->sourceDirectory() << " -I" << this->outputDirectory();
   if (this->includeDirectory() != "") {
-    temp << " -I" << fs::canonical(this->includeDirectory()).string();
+    temp << " -I" << this->includeDirectory();
   }
   temp << " -I" << this->vcpkgDirPath() << "/"
        << "installed"
@@ -205,10 +203,10 @@ std::string PrepClass::stripLibName(const std::string &lib) {
 
 std::string PrepClass::dbgLibPaths() {
   std::ostringstream temp;
-  std::string localDbgLibs = this->libDirectory().string() + "/" + "debug";
+  std::string localDbgLibs = this->libDirectory() + "/" + "debug";
   for (std::vector<std::string>::iterator jt = this->_dbgLocalLibNames.begin();
        jt != this->_dbgLocalLibNames.end(); ++jt) {
-    temp << " -L" << fs::canonical(localDbgLibs).string() << " "
+    temp << " -L" << localDbgLibs << " "
          << " -l" << stripLibName(*jt);
   }
 
@@ -224,10 +222,10 @@ std::string PrepClass::dbgLibPaths() {
 
 std::string PrepClass::rlsLibPaths() {
   std::ostringstream temp;
-  std::string localRlsLibs = this->libDirectory().string() + "/" + "release";
+  std::string localRlsLibs = this->libDirectory() + "/" + "release";
   for (std::vector<std::string>::iterator jt = this->_rlsLocalLibNames.begin();
        jt != this->_rlsLocalLibNames.end(); ++jt) {
-    temp << " -L" << fs::canonical(localRlsLibs).string() << " "
+    temp << " -L" << localRlsLibs << " "
          << " -l" << stripLibName(*jt);
   }
 

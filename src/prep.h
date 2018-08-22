@@ -14,8 +14,8 @@ public:
   PrepClass(const ConfClass &) = delete;
   PrepClass &operator=(const ConfClass &) = delete;
 
-  std::string sourceFiles() const;
-  std::string sourceFilesSinPath() const;
+  std::string sourceFiles();
+  std::string sourceFilesSinPath();
   std::vector<std::string> &fullLibNames();
   std::vector<std::string> &dbgLocalLibNames();
   std::vector<std::string> &rlsLocalLibNames();

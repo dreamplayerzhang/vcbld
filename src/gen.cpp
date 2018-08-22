@@ -1,6 +1,11 @@
 #include "gen.h"
 
 #include <errno.h>
+#if defined(_WIN32)
+#include <filesystem>
+#else
+#include <experimental/filesystem>
+#endif
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -21,14 +26,14 @@ namespace gen {
 void includePathGen() {
   json incJson;
   PkgClass pkgClass;
-  incJson.push_back(pkgClass.sourceDirectory().relative_path().string());
+  incJson.push_back(pkgClass.sourceDirectory());
   if (pkgClass.includeDirectory() != "") {
-    incJson.push_back(pkgClass.includeDirectory().relative_path().string());
+    incJson.push_back(pkgClass.includeDirectory());
   }
-  incJson.push_back(pkgClass.outputDirectory().relative_path().string());
+  incJson.push_back(pkgClass.outputDirectory());
   incJson.push_back(pkgClass.vcpkgDirPath() + "/" + "installed" + "/" +
                     "include");
-  std::string temp = pkgClass.sourceDirectory().string();
+  std::string temp = pkgClass.sourceDirectory();
 
   if (!fs::exists("includePath.json")) {
     try {
@@ -75,10 +80,9 @@ void cmakeGen() {
         << std::endl;
   }
 
-  if (!fs::exists(prepClass.sourceDirectory().string() + "/CMakeLists.txt")) {
+  if (!fs::exists(prepClass.sourceDirectory() + "/CMakeLists.txt")) {
     try {
-      std::ofstream ofs(prepClass.sourceDirectory().string() +
-                        "/CMakeLists.txt");
+      std::ofstream ofs(prepClass.sourceDirectory() + "/CMakeLists.txt");
       if (ofs.is_open()) {
         if (prepClass.language() == "c++") {
           ofs << "set(CMAKE_CXX_STANDARD " << prepClass.standard() << ")\n"

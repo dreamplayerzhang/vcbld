@@ -1,16 +1,9 @@
 #ifndef CONF_H
 #define CONF_H
 
-#if defined(_WIN32)
-#include <filesystem>
-#else
-#include <experimental/filesystem>
-#endif
 #include <sstream>
 #include <string>
 #include <vector>
-
-namespace fs = std::experimental::filesystem;
 
 namespace vcbld {
 
@@ -20,7 +13,7 @@ public:
   ConfClass(const ConfClass &) = delete;
   ConfClass &operator=(const ConfClass &) = delete;
 
-  fs::path projPath() const;
+  std::string projPath() const;
   std::string compilerPath() const;
   std::string vcpkgDirPath() const;
   std::string architecture() const;
@@ -34,20 +27,19 @@ public:
   std::string standard() const;
   std::string binaryName() const;
   std::string binaryType() const;
-  fs::path outputDirectory() const;
-  fs::path sourceDirectory() const;
-  fs::path includeDirectory() const;
-  fs::path libDirectory() const;
+  std::string outputDirectory() const;
+  std::string sourceDirectory() const;
+  std::string includeDirectory() const;
+  std::string libDirectory() const;
   std::string compilerDefines() const;
   std::string compilerFlags() const;
   std::string linkerFlags() const;
 
 private:
-  fs::path _projPath;
+  std::string _projPath;
   std::string _cCompilerPath;
   std::string _cppCompilerPath;
   std::string _vcpkgDirectory;
-  std::string _vcpkgDirPath;
   std::string _architecture;
   std::string _cmakePath;
   std::string _makePath;

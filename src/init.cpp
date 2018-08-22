@@ -216,27 +216,38 @@ void setup(const fs::path &vcbldPath) {
   }
 
   if (!fs::exists("conf.json")) {
-    cCompilerPath = cCompiler(cCompilers);
-    cppCompilerPath = cppCompiler(cppCompilers);
-    cmakePath = cmake(cmakePaths);
-    makePath = make(makePaths);
-    archiverPath = archiver(archiverPaths);
+    cCompilerPath = fs::canonical(cCompiler(cCompilers)).string();
+    if (cCompilerPath.find("\\") != std::string::npos)
+      cCompilerPath.replace(cCompilerPath.begin(), cCompilerPath.end(), "\\",
+                            "/");
+    cppCompilerPath = fs::canonical(cppCompiler(cppCompilers)).string();
+    if (cppCompilerPath.find("\\") != std::string::npos)
+      cppCompilerPath.replace(cppCompilerPath.begin(), cppCompilerPath.end(),
+                              "\\", "/");
+    cmakePath = fs::canonical(cmake(cmakePaths)).string();
+    if (cmakePath.find("\\") != std::string::npos)
+      cmakePath.replace(cmakePath.begin(), cmakePath.end(), "\\", "/");
+    makePath = fs::canonical(make(makePaths)).string();
+    if (makePath.find("\\") != std::string::npos)
+      makePath.replace(makePath.begin(), makePath.end(), "\\", "/");
+    archiverPath = fs::canonical(archiver(archiverPaths)).string();
+    if (archiverPath.find("\\") != std::string::npos)
+      archiverPath.replace(archiverPath.begin(), archiverPath.end(), "\\", "/");
+    std::string vcpkgDir = fs::canonical(vcbldPath).string();
+    if (vcpkgDir.find("\\") != std::string::npos)
+      vcpkgDir.replace(vcpkgDir.begin(), vcpkgDir.end(), "\\", "/");
+
     try {
       std::ofstream confOutput("conf.json");
       if (confOutput.is_open()) {
         confOutput << std::setw(4) << "{\n\t\"cCompilerPath\" : \""
-                   << fs::canonical(cCompilerPath).string() << "\",\n\t"
-                   << "\"cppCompilerPath\" : \""
-                   << fs::canonical(cppCompilerPath).string() << "\",\n\t"
-                   << "\"vcpkgDirectory\" : \""
-                   << fs::canonical(vcbldPath).string() << "\",\n\t"
+                   << cCompilerPath << "\",\n\t"
+                   << "\"cppCompilerPath\" : \"" << cppCompilerPath << "\",\n\t"
+                   << "\"vcpkgDirectory\" : \"" << vcpkgDir << "\",\n\t"
                    << "\"architecture\" : \"" << PLATFORM_NAME << "\",\n\t"
-                   << "\"cmakePath\" : \"" << fs::canonical(cmakePath).string()
-                   << "\",\n\t"
-                   << "\"makePath\" : \"" << fs::canonical(makePath).string()
-                   << "\",\n\t"
-                   << "\"archiverPath\" : \""
-                   << fs::canonical(archiverPath).string() << "\"\n}";
+                   << "\"cmakePath\" : \"" << cmakePath << "\",\n\t"
+                   << "\"makePath\" : \"" << makePath << "\",\n\t"
+                   << "\"archiverPath\" : \"" << archiverPath << "\"\n}";
         confOutput.flush();
         confOutput.close();
         std::cout << "conf.json written successfully." << std::endl;
@@ -266,8 +277,8 @@ void setup(const fs::path &vcbldPath) {
     ConfClass confClass;
     if (!fs::exists(confClass.outputDirectory())) {
       fs::create_directory(confClass.outputDirectory());
-      fs::create_directory(confClass.outputDirectory().string() + "/debug");
-      fs::create_directory(confClass.outputDirectory().string() + "/release");
+      fs::create_directory(confClass.outputDirectory() + "/debug");
+      fs::create_directory(confClass.outputDirectory() + "/release");
       std::cout << "output directory created successfully." << std::endl;
     }
 
@@ -282,8 +293,8 @@ void setup(const fs::path &vcbldPath) {
       if (!fs::exists(confClass.libDirectory()) &&
           confClass.libDirectory() != "") {
         fs::create_directory(confClass.libDirectory());
-        fs::create_directory(confClass.libDirectory().string() + "/debug");
-        fs::create_directory(confClass.libDirectory().string() + "/release");
+        fs::create_directory(confClass.libDirectory() + "/debug");
+        fs::create_directory(confClass.libDirectory() + "/release");
         std::cout << "lib directory created successfully." << std::endl;
       }
     }

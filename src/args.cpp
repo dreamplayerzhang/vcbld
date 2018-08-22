@@ -111,14 +111,14 @@ void build(const std::string &buildType) {
 void clean() {
   try {
     PkgClass pkgClass;
-    std::string command = "rm -rf " + pkgClass.outputDirectory().string() +
-                          "/" + "debug" + "/" + "**";
+    std::string command =
+        "rm -rf " + pkgClass.outputDirectory() + "/" + "debug" + "/" + "**";
     int systemRet = system(command.c_str());
     if (systemRet == -1) {
       std::cout << "An error occured while deleting output." << std::endl;
     }
-    command = "rm -rf " + pkgClass.outputDirectory().string() + "/" +
-              "release" + "/" + "**";
+    command =
+        "rm -rf " + pkgClass.outputDirectory() + "/" + "release" + "/" + "**";
     int systemRet2 = system(command.c_str());
     if (systemRet2 == -1) {
       std::cout << "An error occured while deleting output." << std::endl;

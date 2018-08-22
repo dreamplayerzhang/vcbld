@@ -5,10 +5,10 @@
 	"standard" : "17",
 	"binaryType" : "app",
 	"binaryName" : "vcbld",
-	"sourceDirectory" : "src",
-	"includeDirectory" : "include",
+	"sourceDirectory" : "./src",
+	"includeDirectory" : "./include",
 	"libDirectory" : "",
-	"outputDirectory" : "bin",
+	"outputDirectory" : "./bin",
 	"compilerDefines" : [],
 	"compilerFlags" : [],
 	"linkerFlags" : ["-lstdc++fs"]

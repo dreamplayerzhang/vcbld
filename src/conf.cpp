@@ -2,10 +2,16 @@
 
 #include <algorithm>
 #include <errno.h>
+#if defined(_WIN32)
+#include <filesystem>
+#else
+#include <experimental/filesystem>
+#endif
 #include <fstream>
 #include <iostream>
 #include <iterator>
 #include <nlohmann/json.hpp>
+#include <string>
 
 #include "init.h"
 
@@ -16,7 +22,10 @@ namespace vcbld {
 
 ConfClass::ConfClass() {
   json vcbldJson, confJson;
-  this->_projPath = fs::current_path();
+  this->_projPath = fs::current_path().string();
+  if (this->_projPath.find("\\") != std::string::npos)
+    this->_projPath.replace(this->_projPath.begin(), this->_projPath.end(),
+                            "\\", "/");
 
   if (!fs::exists("vcbld.json")) {
     std::cout << "vcbld.json not found in the current directory" << std::endl;
@@ -56,21 +65,41 @@ ConfClass::ConfClass() {
     this->_binaryType = vcbldJson["binaryType"];
 
     try {
-      this->_outputDirectory = vcbldJson["outputDirectory"];
+      std::string temp =
+          fs::canonical(vcbldJson["outputDirectory"].get<std::string>());
+      if (temp.find("\\") != std::string::npos)
+        temp.replace(temp.begin(), temp.end(), "\\", "/");
+      this->_outputDirectory = temp;
     } catch (...) {
-      this->_outputDirectory = "bin";
+      this->_outputDirectory = "./bin";
     }
 
-    this->_sourceDirectory = vcbldJson["sourceDirectory"];
+    try {
+      std::string temp =
+          fs::canonical(vcbldJson["sourceDirectory"].get<std::string>());
+      if (temp.find("\\") != std::string::npos)
+        temp.replace(temp.begin(), temp.end(), "\\", "/");
+      this->_sourceDirectory = temp;
+    } catch (...) {
+      this->_sourceDirectory = "./src";
+    }
 
     try {
-      this->_includeDirectory = vcbldJson["includeDirectory"];
+      std::string temp =
+          fs::canonical(vcbldJson["includeDirectory"].get<std::string>());
+      if (temp.find("\\") != std::string::npos)
+        temp.replace(temp.begin(), temp.end(), "\\", "/");
+      this->_includeDirectory = temp;
     } catch (...) {
       this->_includeDirectory = "";
     }
 
     try {
-      this->_libDirectory = vcbldJson["libDirectory"];
+      std::string temp =
+          fs::canonical(vcbldJson["libDirectory"].get<std::string>());
+      if (temp.find("\\") != std::string::npos)
+        temp.replace(temp.begin(), temp.end(), "\\", "/");
+      this->_libDirectory = temp;
     } catch (...) {
       this->_libDirectory = "";
     }
@@ -105,19 +134,40 @@ ConfClass::ConfClass() {
     std::cerr << "Error reading conf.json." << std::endl;
   }
 
-  fs::path vcpkgPath;
-  this->_vcpkgDirectory = confJson["vcpkgDirectory"];
-  vcpkgPath = static_cast<fs::path>(this->_vcpkgDirectory);
-  this->_cCompilerPath = confJson["cCompilerPath"];
-  this->_cppCompilerPath = confJson["cppCompilerPath"];
-  this->_architecture = confJson["architecture"];
-  this->_cmakePath = confJson["cmakePath"];
-  this->_makePath = confJson["makePath"];
-  this->_archiverPath = confJson["archiverPath"];
-  this->_vcpkgDirPath = vcpkgPath.string();
+  this->_vcpkgDirectory =
+      fs::canonical(confJson["vcpkgDirectory"].get<std::string>()).string();
+  if (this->_vcpkgDirectory.find("\\") != std::string::npos)
+    this->_vcpkgDirectory.replace(this->_vcpkgDirectory.begin(),
+                                  this->_vcpkgDirectory.end(), "\\", "/");
+  this->_cCompilerPath =
+      fs::canonical(confJson["cCompilerPath"].get<std::string>()).string();
+  if (this->_cCompilerPath.find("\\") != std::string::npos)
+    this->_cCompilerPath.replace(this->_cCompilerPath.begin(),
+                                 this->_cCompilerPath.end(), "\\", "/");
+  this->_cppCompilerPath =
+      fs::canonical(confJson["cppCompilerPath"].get<std::string>()).string();
+  if (this->_cppCompilerPath.find("\\") != std::string::npos)
+    this->_cppCompilerPath.replace(this->_cppCompilerPath.begin(),
+                                   this->_cppCompilerPath.end(), "\\", "/");
+  this->_architecture = confJson["architecture"].get<std::string>();
+  this->_cmakePath =
+      fs::canonical(confJson["cmakePath"].get<std::string>()).string();
+  if (this->_cmakePath.find("\\") != std::string::npos)
+    this->_cmakePath.replace(this->_cmakePath.begin(), this->_cmakePath.end(),
+                             "\\", "/");
+  this->_makePath =
+      fs::canonical(confJson["makePath"].get<std::string>()).string();
+  if (this->_makePath.find("\\") != std::string::npos)
+    this->_makePath.replace(this->_makePath.begin(), this->_makePath.end(),
+                            "\\", "/");
+  this->_archiverPath =
+      fs::canonical(confJson["archiverPath"].get<std::string>()).string();
+  if (this->_archiverPath.find("\\") != std::string::npos)
+    this->_archiverPath.replace(this->_archiverPath.begin(),
+                                this->_archiverPath.end(), "\\", "/");
 }
 
-fs::path ConfClass::projPath() const { return this->_projPath; }
+std::string ConfClass::projPath() const { return this->_projPath; }
 
 std::string ConfClass::compilerPath() const {
   if (this->_language.find("++") != std::string::npos) {
@@ -143,10 +193,10 @@ std::string ConfClass::language() const { return _language; }
 std::string ConfClass::standard() const { return _standard; }
 std::string ConfClass::binaryType() const { return _binaryType; }
 std::string ConfClass::binaryName() const { return _binaryName; }
-std::string ConfClass::vcpkgDirPath() const { return _vcpkgDirPath; }
-fs::path ConfClass::outputDirectory() const { return _outputDirectory; }
-fs::path ConfClass::sourceDirectory() const { return _sourceDirectory; }
-fs::path ConfClass::includeDirectory() const { return _includeDirectory; }
-fs::path ConfClass::libDirectory() const { return _libDirectory; }
+std::string ConfClass::vcpkgDirPath() const { return _vcpkgDirectory; }
+std::string ConfClass::outputDirectory() const { return _outputDirectory; }
+std::string ConfClass::sourceDirectory() const { return _sourceDirectory; }
+std::string ConfClass::includeDirectory() const { return _includeDirectory; }
+std::string ConfClass::libDirectory() const { return _libDirectory; }
 std::string ConfClass::architecture() const { return _architecture; }
 } // namespace vcbld

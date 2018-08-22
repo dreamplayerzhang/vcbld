@@ -115,10 +115,10 @@ A vcbld.json would look like the following (without the comments):
 	"standard" : "17",
 	"binaryType" : "app", // or "staticLibrary" or "sharedLibrary"
 	"binaryName" : "vcbld", // Name of the resulting binary, use a "lib" prefix if it were a library.
-    	"sourceDirectory" : "src", // Name of your source directory
-    	"includeDirectory" : "include", // Name of your include directory, can be left blank.
+    	"sourceDirectory" : "./src", // Name of your source directory
+    	"includeDirectory" : "./include", // Name of your include directory, can be left blank.
 	"libDirectory" : "", // Name of your lib directory, can be left blank.
-    	"outputDirectory" : "bin", // Name of your output directory, and it should be provided!
+    	"outputDirectory" : "./bin", // Name of your output directory, and it should be provided!
     	"compilerDefines" : [], // an array of any -D arguments you want to pass to the compiler
 	"compilerFlags" : ["-Weverything"], // an array of any compiler flags 
     	"linkerFlags" : ["-lstdc++fs"] // an array of any linker flags 

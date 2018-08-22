@@ -217,13 +217,23 @@ int main(int argc, char *argv[]) {
 }
 
 std::string findVcbld(const std::string &PATH) {
-  std::string temp;
+  std::string temp, sep;
   size_t foundVcpkg = PATH.find("/vcpkg/");
+  size_t foundSep;
+
+  if (PATH.find(";") != std::string::npos) {
+    sep = ";";
+    foundSep = PATH.find_first_of(sep);
+  } else {
+    sep = ":";
+    foundSep = PATH.find_first_of(sep);
+  }
+  
   if (PATH.find("/vcpkg/") != std::string::npos) {
     temp = PATH.substr(0, foundVcpkg + 6);
   }
-  size_t foundSep = temp.find_last_of(":");
-  temp = temp.substr(foundSep + 1, temp.length());
+  size_t foundPath = temp.find_last_of(sep);
+  temp = temp.substr(foundPath + 1, temp.length());
   if (temp[0] == '~') {
     std::string home = std::getenv("HOME");
     temp.replace(0, 1, home);

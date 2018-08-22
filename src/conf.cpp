@@ -23,9 +23,6 @@ namespace vcbld {
 ConfClass::ConfClass() {
   json vcbldJson, confJson;
   this->_projPath = fs::current_path().string();
-  if (this->_projPath.find("\\") != std::string::npos)
-    this->_projPath.replace(this->_projPath.begin(), this->_projPath.end(),
-                            "\\", "/");
 
   if (!fs::exists("vcbld.json")) {
     std::cout << "vcbld.json not found in the current directory" << std::endl;
@@ -65,41 +62,25 @@ ConfClass::ConfClass() {
     this->_binaryType = vcbldJson["binaryType"];
 
     try {
-      std::string temp =
-          fs::canonical(vcbldJson["outputDirectory"].get<std::string>());
-      if (temp.find("\\") != std::string::npos)
-        temp.replace(temp.begin(), temp.end(), "\\", "/");
-      this->_outputDirectory = temp;
+      this->_outputDirectory = fs::canonical(vcbldJson["outputDirectory"].get<std::string>()).string();
     } catch (...) {
       this->_outputDirectory = "./bin";
     }
 
     try {
-      std::string temp =
-          fs::canonical(vcbldJson["sourceDirectory"].get<std::string>());
-      if (temp.find("\\") != std::string::npos)
-        temp.replace(temp.begin(), temp.end(), "\\", "/");
-      this->_sourceDirectory = temp;
+      this->_sourceDirectory = fs::canonical(vcbldJson["sourceDirectory"].get<std::string>()).string();
     } catch (...) {
       this->_sourceDirectory = "./src";
     }
 
     try {
-      std::string temp =
-          fs::canonical(vcbldJson["includeDirectory"].get<std::string>());
-      if (temp.find("\\") != std::string::npos)
-        temp.replace(temp.begin(), temp.end(), "\\", "/");
-      this->_includeDirectory = temp;
+      this->_includeDirectory = fs::canonical(vcbldJson["includeDirectory"].get<std::string>()).string();
     } catch (...) {
       this->_includeDirectory = "";
     }
 
     try {
-      std::string temp =
-          fs::canonical(vcbldJson["libDirectory"].get<std::string>());
-      if (temp.find("\\") != std::string::npos)
-        temp.replace(temp.begin(), temp.end(), "\\", "/");
-      this->_libDirectory = temp;
+      this->_libDirectory = fs::canonical(vcbldJson["libDirectory"].get<std::string>()).string();
     } catch (...) {
       this->_libDirectory = "";
     }
@@ -136,35 +117,17 @@ ConfClass::ConfClass() {
 
   this->_vcpkgDirectory =
       fs::canonical(confJson["vcpkgDirectory"].get<std::string>()).string();
-  if (this->_vcpkgDirectory.find("\\") != std::string::npos)
-    this->_vcpkgDirectory.replace(this->_vcpkgDirectory.begin(),
-                                  this->_vcpkgDirectory.end(), "\\", "/");
   this->_cCompilerPath =
       fs::canonical(confJson["cCompilerPath"].get<std::string>()).string();
-  if (this->_cCompilerPath.find("\\") != std::string::npos)
-    this->_cCompilerPath.replace(this->_cCompilerPath.begin(),
-                                 this->_cCompilerPath.end(), "\\", "/");
   this->_cppCompilerPath =
       fs::canonical(confJson["cppCompilerPath"].get<std::string>()).string();
-  if (this->_cppCompilerPath.find("\\") != std::string::npos)
-    this->_cppCompilerPath.replace(this->_cppCompilerPath.begin(),
-                                   this->_cppCompilerPath.end(), "\\", "/");
   this->_architecture = confJson["architecture"].get<std::string>();
   this->_cmakePath =
       fs::canonical(confJson["cmakePath"].get<std::string>()).string();
-  if (this->_cmakePath.find("\\") != std::string::npos)
-    this->_cmakePath.replace(this->_cmakePath.begin(), this->_cmakePath.end(),
-                             "\\", "/");
   this->_makePath =
       fs::canonical(confJson["makePath"].get<std::string>()).string();
-  if (this->_makePath.find("\\") != std::string::npos)
-    this->_makePath.replace(this->_makePath.begin(), this->_makePath.end(),
-                            "\\", "/");
   this->_archiverPath =
       fs::canonical(confJson["archiverPath"].get<std::string>()).string();
-  if (this->_archiverPath.find("\\") != std::string::npos)
-    this->_archiverPath.replace(this->_archiverPath.begin(),
-                                this->_archiverPath.end(), "\\", "/");
 }
 
 std::string ConfClass::projPath() const { return this->_projPath; }

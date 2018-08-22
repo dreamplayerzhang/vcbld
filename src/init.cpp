@@ -167,7 +167,7 @@ void setup(const fs::path &vcbldPath) {
       cppCompilers.emplace_back((*it) + "/g++");
     }
     if (fs::exists((*it) + "/g++.exe")) {
-      cppCompilers.emplace_back((*it) + "/g++.exe");
+      cppCompilers.emplace_back((*it) + "\\g++.exe");
     }
     if (fs::exists((*it) + "/g++-8")) {
       cppCompilers.emplace_back((*it) + "/g++-8");
@@ -181,6 +181,9 @@ void setup(const fs::path &vcbldPath) {
     if (fs::exists((*it) + "/clang++")) {
       cppCompilers.emplace_back((*it) + "/clang++");
     }
+    if (fs::exists((*it) + "/clang++.exe")) {
+      cppCompilers.emplace_back((*it) + "\\clang++.exe");
+    }
     if (fs::exists((*it) + "/cmake")) {
       cmakePaths.emplace_back((*it) + "/cmake");
     }
@@ -191,16 +194,16 @@ void setup(const fs::path &vcbldPath) {
       makePaths.emplace_back((*it) + "/make");
     }
     if (fs::exists((*it) + "/make.exe")) {
-      makePaths.emplace_back((*it) + "/make.exe");
+      makePaths.emplace_back((*it) + "\\make.exe");
     }
     if (fs::exists((*it) + "/mingw32-make.exe")) {
-      makePaths.emplace_back((*it) + "/mingw32-make.exe");
+      makePaths.emplace_back((*it) + "\\mingw32-make.exe");
     }
     if (fs::exists((*it) + "/ar")) {
       archiverPaths.emplace_back((*it) + "/ar");
     }
     if (fs::exists((*it) + "/ar.exe")) {
-      archiverPaths.emplace_back((*it) + "/ar.exe");
+      archiverPaths.emplace_back((*it) + "\\ar.exe");
     }
   }
 
@@ -217,25 +220,11 @@ void setup(const fs::path &vcbldPath) {
 
   if (!fs::exists("conf.json")) {
     cCompilerPath = fs::canonical(cCompiler(cCompilers)).string();
-    if (cCompilerPath.find("\\") != std::string::npos)
-      cCompilerPath.replace(cCompilerPath.begin(), cCompilerPath.end(), "\\",
-                            "/");
     cppCompilerPath = fs::canonical(cppCompiler(cppCompilers)).string();
-    if (cppCompilerPath.find("\\") != std::string::npos)
-      cppCompilerPath.replace(cppCompilerPath.begin(), cppCompilerPath.end(),
-                              "\\", "/");
     cmakePath = fs::canonical(cmake(cmakePaths)).string();
-    if (cmakePath.find("\\") != std::string::npos)
-      cmakePath.replace(cmakePath.begin(), cmakePath.end(), "\\", "/");
     makePath = fs::canonical(make(makePaths)).string();
-    if (makePath.find("\\") != std::string::npos)
-      makePath.replace(makePath.begin(), makePath.end(), "\\", "/");
     archiverPath = fs::canonical(archiver(archiverPaths)).string();
-    if (archiverPath.find("\\") != std::string::npos)
-      archiverPath.replace(archiverPath.begin(), archiverPath.end(), "\\", "/");
     std::string vcpkgDir = fs::canonical(vcbldPath).string();
-    if (vcpkgDir.find("\\") != std::string::npos)
-      vcpkgDir.replace(vcpkgDir.begin(), vcpkgDir.end(), "\\", "/");
 
     try {
       std::ofstream confOutput("conf.json");
@@ -393,10 +382,11 @@ void findPathDirs(std::string &PATH, std::vector<std::string> &dirs) {
 }
 
 void replaceHome(std::string &path) {
-  std::string home = std::getenv("HOME");
-
-  if (path[0] == '~') {
-    path.replace(0, 1, home);
+  if (PLATFORM_NAME != "x64-windows" && PLATFORM_NAME != "x86-windows") {
+    std::string home = std::getenv("HOME");
+    if (path[0] == '~') {
+      path.replace(0, 1, home);
+    }
   }
 }
 
@@ -423,11 +413,12 @@ std::string findCmake(const std::string &dir) {
 }
 
 std::string cCompiler(const std::vector<std::string> &cCompilers) {
+  std::string temp;
   if (cCompilers.size() == 0) {
     std::cout << "vcbld couldn't locate a c compiler." << std::endl;
-    return "";
+    temp = "";
   } else if (cCompilers.size() == 1) {
-    return cCompilers[0];
+    temp = cCompilers[0];
   } else {
     std::cout << "list of available c compilers:" << std::endl;
     int i = 1;
@@ -442,23 +433,31 @@ std::string cCompiler(const std::vector<std::string> &cCompilers) {
       std::cin >> entry;
       if (entry <= cCompilers.size() && entry != 0 &&
           typeid(entry) == typeid(int)) {
-        return cCompilers[entry - 1];
+            temp = cCompilers[entry - 1];
       } else {
         std::cout << "Error!" << std::endl;
-        return cCompilers[0];
+        temp = cCompilers[0];
       }
     } catch (...) {
-      return cCompilers[0];
+      temp = cCompilers[0];
     }
   }
+  if (temp != "") {
+    temp = fs::canonical(temp).string();
+    if (temp.find("\\") != std::string::npos) {
+      temp.replace(temp.begin(), temp.end(), "\\", "/");
+    }
+  }
+  return temp;
 }
 
 std::string cppCompiler(const std::vector<std::string> &cppCompilers) {
+  std::string temp;
   if (cppCompilers.size() == 0) {
     std::cout << "vcbld couldn't locate a c++ compiler." << std::endl;
-    return "";
+    temp = "";
   } else if (cppCompilers.size() == 1) {
-    return cppCompilers[0];
+    temp = cppCompilers[0];
   } else {
     std::cout << "list of available c++ compilers:" << std::endl;
     int j = 1;
@@ -473,23 +472,31 @@ std::string cppCompiler(const std::vector<std::string> &cppCompilers) {
       std::cin >> entry;
       if (entry <= cppCompilers.size() && entry != 0 &&
           typeid(entry) == typeid(int)) {
-        return cppCompilers[entry - 1];
+        temp = cppCompilers[entry - 1];
       } else {
         std::cout << "Error!" << std::endl;
-        return cppCompilers[0];
+        temp = cppCompilers[0];
       }
     } catch (...) {
-      return cppCompilers[0];
+      temp = cppCompilers[0];
     }
   }
+  if (temp != "") {
+    temp = fs::canonical(temp).string();
+    if (temp.find("\\") != std::string::npos) {
+      temp.replace(temp.begin(), temp.end(), "\\", "/");
+    }
+  }
+  return temp;
 }
 
 std::string cmake(const std::vector<std::string> &cmakes) {
+  std::string temp;
   if (cmakes.size() == 0) {
     std::cout << "vcbld couldn't locate a cmake executable." << std::endl;
-    return "";
+    temp = "";
   } else if (cmakes.size() == 1) {
-    return cmakes[0];
+    temp = cmakes[0];
   } else {
     std::cout << "list of available cmake executables:" << std::endl;
     int cmake_it = 1;
@@ -504,23 +511,31 @@ std::string cmake(const std::vector<std::string> &cmakes) {
       std::cin >> entry;
       if (entry <= cmakes.size() && entry != 0 &&
           typeid(entry) == typeid(int)) {
-        return cmakes[entry - 1];
+        temp = cmakes[entry - 1];
       } else {
         std::cout << "Error!" << std::endl;
-        return cmakes[0];
+        temp = cmakes[0];
       }
     } catch (...) {
-      return cmakes[0];
+      temp = cmakes[0];
     }
   }
+  if (temp != "") {
+    temp = fs::canonical(temp).string();
+    if (temp.find("\\") != std::string::npos) {
+      temp.replace(temp.begin(), temp.end(), "\\", "/");
+    }
+  }
+  return temp;
 }
 
 std::string make(const std::vector<std::string> &makes) {
+  std::string temp;
   if (makes.size() == 0) {
     std::cout << "vcbld couldn't locate a make executable." << std::endl;
-    return "";
+    temp = "";
   } else if (makes.size() == 1) {
-    return makes[0];
+    temp = makes[0];
   } else {
     std::cout << "list of available make executables:" << std::endl;
     int make_it = 1;
@@ -534,22 +549,30 @@ std::string make(const std::vector<std::string> &makes) {
       int entry;
       std::cin >> entry;
       if (entry <= makes.size() && entry != 0 && typeid(entry) == typeid(int)) {
-        return makes[entry - 1];
+        temp = makes[entry - 1];
       } else {
         std::cout << "Error!" << std::endl;
-        return makes[0];
+        temp = makes[0];
       }
     } catch (...) {
-      return makes[0];
+      temp = makes[0];
     }
   }
+  if (temp != "") {
+    temp = fs::canonical(temp).string();
+    if (temp.find("\\") != std::string::npos) {
+      temp.replace(temp.begin(), temp.end(), "\\", "/");
+    }
+  }
+  return temp;
 }
 std::string archiver(const std::vector<std::string> &archivers) {
+  std::string temp;
   if (archivers.size() == 0) {
     std::cout << "vcbld couldn't locate an archiver." << std::endl;
-    return "";
+    temp = "";
   } else if (archivers.size() == 1) {
-    return archivers[0];
+    temp = archivers[0];
   } else {
     std::cout << "list of available archivers:" << std::endl;
     int ar_it = 1;
@@ -564,15 +587,22 @@ std::string archiver(const std::vector<std::string> &archivers) {
       std::cin >> entry;
       if (entry <= archivers.size() && entry != 0 &&
           typeid(entry) == typeid(int)) {
-        return archivers[entry - 1];
+        temp = archivers[entry - 1];
       } else {
         std::cout << "Error!" << std::endl;
-        return archivers[0];
+        temp = archivers[0];
       }
     } catch (...) {
-      return archivers[0];
+      temp = archivers[0];
     }
   }
+  if (temp != "") {
+    temp = fs::canonical(temp).string();
+    if (temp.find("\\") != std::string::npos) {
+      temp.replace(temp.begin(), temp.end(), "\\", "/");
+    }
+  }
+  return temp;
 }
 
 } // namespace init

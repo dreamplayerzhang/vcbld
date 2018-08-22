@@ -44,7 +44,7 @@ namespace fs = std::experimental::filesystem;
 namespace vcbld {
 namespace init {
 void setup(const fs::path &vcbldPath) {
-  std::string PATH = getenv("PATH");
+  std::string PATH = std::getenv("PATH");
   std::string cmakeDir = vcbldPath.string() + "/downloads/tools";
   std::string brewLLVM = "/usr/local/opt/llvm/bin";
   std::vector<std::string> paths, cCompilers, cppCompilers, cmakePaths,
@@ -78,7 +78,7 @@ void setup(const fs::path &vcbldPath) {
     }
 
     try {
-      const char *progFiles = getenv("PROGRAMFILES");
+      const char *progFiles = std::getenv("PROGRAMFILES");
       if (progFiles != NULL) {
         if (fs::is_directory(progFiles)) {
           std::vector<fs::directory_entry> dirEntry3;
@@ -101,7 +101,7 @@ void setup(const fs::path &vcbldPath) {
     }
 
     try {
-      const char *progFiles = getenv("MINGW_HOME");
+      const char *progFiles = std::getenv("MINGW_HOME");
       if (progFiles != NULL) {
         if (fs::is_directory(progFiles)) {
           std::vector<fs::directory_entry> dirEntry3;

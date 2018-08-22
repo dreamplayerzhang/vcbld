@@ -23,6 +23,7 @@ std::string cppCompiler(const std::vector<std::string> &cppCompilers);
 std::string cmake(const std::vector<std::string> &cmakes);
 std::string make(const std::vector<std::string> &makes);
 std::string archiver(const std::vector<std::string> &archivers);
+void posixify(std::string &path);
 } // namespace init
 } // namespace vcbld
 #endif // !INIT_H

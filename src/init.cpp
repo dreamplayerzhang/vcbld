@@ -219,12 +219,13 @@ void setup(const fs::path &vcbldPath) {
   }
 
   if (!fs::exists("conf.json")) {
-    cCompilerPath = fs::canonical(cCompiler(cCompilers)).string();
-    cppCompilerPath = fs::canonical(cppCompiler(cppCompilers)).string();
-    cmakePath = fs::canonical(cmake(cmakePaths)).string();
-    makePath = fs::canonical(make(makePaths)).string();
-    archiverPath = fs::canonical(archiver(archiverPaths)).string();
+    cCompilerPath = cCompiler(cCompilers);
+    cppCompilerPath = cppCompiler(cppCompilers);
+    cmakePath = cmake(cmakePaths);
+    makePath = make(makePaths);
+    archiverPath = archiver(archiverPaths);
     std::string vcpkgDir = fs::canonical(vcbldPath).string();
+    posixify(vcpkgDir);
 
     try {
       std::ofstream confOutput("conf.json");
@@ -404,6 +405,7 @@ std::string findCmake(const std::string &dir) {
       return temp;
     } else {
       temp = fs::canonical(it->path()).string();
+      posixify(temp);
     }
   } catch (const std::exception &exception) {
     std::cout << "Couldn't find a cmake executable in the current directory."
@@ -444,9 +446,7 @@ std::string cCompiler(const std::vector<std::string> &cCompilers) {
   }
   if (temp != "") {
     temp = fs::canonical(temp).string();
-    if (temp.find("\\") != std::string::npos) {
-      temp.replace(temp.begin(), temp.end(), "\\", "/");
-    }
+    posixify(temp);
   }
   return temp;
 }
@@ -483,9 +483,7 @@ std::string cppCompiler(const std::vector<std::string> &cppCompilers) {
   }
   if (temp != "") {
     temp = fs::canonical(temp).string();
-    if (temp.find("\\") != std::string::npos) {
-      temp.replace(temp.begin(), temp.end(), "\\", "/");
-    }
+    posixify(temp);
   }
   return temp;
 }
@@ -522,9 +520,7 @@ std::string cmake(const std::vector<std::string> &cmakes) {
   }
   if (temp != "") {
     temp = fs::canonical(temp).string();
-    if (temp.find("\\") != std::string::npos) {
-      temp.replace(temp.begin(), temp.end(), "\\", "/");
-    }
+    posixify(temp);
   }
   return temp;
 }
@@ -560,9 +556,7 @@ std::string make(const std::vector<std::string> &makes) {
   }
   if (temp != "") {
     temp = fs::canonical(temp).string();
-    if (temp.find("\\") != std::string::npos) {
-      temp.replace(temp.begin(), temp.end(), "\\", "/");
-    }
+    posixify(temp);
   }
   return temp;
 }
@@ -598,11 +592,16 @@ std::string archiver(const std::vector<std::string> &archivers) {
   }
   if (temp != "") {
     temp = fs::canonical(temp).string();
-    if (temp.find("\\") != std::string::npos) {
-      temp.replace(temp.begin(), temp.end(), "\\", "/");
-    }
+    posixify(temp);
   }
   return temp;
+}
+
+void posixify(std::string &path) {
+  if (path.find("\\") != std::string::npos) {
+    path.replace(path.find("\\"), 1, "/");
+    posixify(path);
+  }
 }
 
 } // namespace init

@@ -27,6 +27,7 @@ public:
 
   bool hasComponents(const std::string &libName);
   std::string cmakeOutput();
+  void posixify(std::string &path);
 
 private:
   std::ostringstream _cmakeOutput;

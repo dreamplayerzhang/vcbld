@@ -104,7 +104,7 @@ PrepClass::PrepClass() : PkgClass() {
 
 std::string PrepClass::sourceFiles() {
   std::vector<fs::directory_entry> dirEntry;
-  std::string tempPath;
+  std::string tempPath, fullPath;
   std::ostringstream temp;
   tempPath = this->sourceDirectory();
   if (fs::is_directory(static_cast<fs::path>(tempPath))) {
@@ -122,7 +122,9 @@ std::string PrepClass::sourceFiles() {
           fs::path((*it).path().filename().string()).extension() == ".cxx" ||
           fs::path((*it).path().filename().string()).extension() == ".qrc" ||
           fs::path((*it).path().filename().string()).extension() == ".uic") {
-        temp << (*it).path().string();
+        fullPath = std::move((*it).path().string());
+        posixify(fullPath);
+        temp << fullPath;
       }
     }
   }
@@ -325,5 +327,12 @@ std::string PrepClass::findLib(const std::string &line) {
     libName = line.substr(found + 10, line.length());
   }
   return libName;
+}
+
+void PrepClass::posixify(std::string &path) {
+  if (path.find("\\") != std::string::npos) {
+    path.replace(path.find("\\"), 1, "/");
+    posixify(path);
+  }
 }
 } // namespace vcbld

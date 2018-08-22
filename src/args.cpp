@@ -110,15 +110,15 @@ void build(const std::string &buildType) {
 
 void clean() {
   try {
-    PkgClass pkgClass;
+    ConfClass confClass;
     std::string command =
-        "rm -rf " + pkgClass.outputDirectory() + "/" + "debug" + "/" + "**";
+        "rm -rf " + confClass.outputDirectory() + "/" + "debug" + "/" + "**";
     int systemRet = system(command.c_str());
     if (systemRet == -1) {
       std::cout << "An error occured while deleting output." << std::endl;
     }
     command =
-        "rm -rf " + pkgClass.outputDirectory() + "/" + "release" + "/" + "**";
+        "rm -rf " + confClass.outputDirectory() + "/" + "release" + "/" + "**";
     int systemRet2 = system(command.c_str());
     if (systemRet2 == -1) {
       std::cout << "An error occured while deleting output." << std::endl;
@@ -131,11 +131,17 @@ void clean() {
 
 void run(const std::string &buildType) {
   std::ostringstream command;
+  ConfClass confClass;
+  std::string ext;
+  if (confClass.architecture() == "x64-windows" || confClass.architecture() == "x86-windows") {
+    ext = ".exe";
+  } else {
+    ext = "";
+  }
   if (buildType == "debug") {
     try {
-      PkgClass pkgClass;
-      command << "./" << pkgClass.outputDirectory() << "/debug/"
-              << pkgClass.binaryName();
+      command << "./" << confClass.outputDirectory() << "/debug/"
+              << confClass.binaryName() << ext;
       int systemRet = system(command.str().c_str());
       if (systemRet == -1) {
         std::cout << "An error occured while running the binary." << std::endl;
@@ -146,9 +152,8 @@ void run(const std::string &buildType) {
     }
   } else {
     try {
-      PkgClass pkgClass;
-      command << "./" << pkgClass.outputDirectory() << "/release/"
-              << pkgClass.binaryName();
+      command << "./" << confClass.outputDirectory() << "/release/"
+              << confClass.binaryName() << ext;
       int systemRet = system(command.str().c_str());
       if (systemRet == -1) {
         std::cout << "An error occured while running the binary." << std::endl;
@@ -305,8 +310,8 @@ void remove(const std::vector<std::string> &pkg) {
 }
 
 void vcpkg(const std::string &vcpkgCmnds) {
-  PkgClass pkgClass;
-  std::string temp = pkgClass.vcpkgDirPath() + "/" + "vcpkg" + " " + vcpkgCmnds;
+  ConfClass confClass;
+  std::string temp = confClass.vcpkgDirPath() + "/" + "vcpkg" + " " + vcpkgCmnds;
   int systemRet = system(temp.c_str());
   if (systemRet == -1) {
     std::cout << "An error occured while running vcpkg." << std::endl;
@@ -314,9 +319,9 @@ void vcpkg(const std::string &vcpkgCmnds) {
 }
 
 void install(const std::string &packages) {
-  PkgClass pkgClass;
+  ConfClass confClass;
   std::string temp =
-      pkgClass.vcpkgDirPath() + "/" + "vcpkg" + " install " + packages;
+      confClass.vcpkgDirPath() + "/" + "vcpkg" + " install " + packages;
   int systemRet = system(temp.c_str());
   if (systemRet == -1) {
     std::cout << "An error occured while installing." << std::endl;
@@ -324,9 +329,9 @@ void install(const std::string &packages) {
 }
 
 void uninstall(const std::string &packages) {
-  PkgClass pkgClass;
+  ConfClass confClass;
   std::string temp =
-      pkgClass.vcpkgDirPath() + "/" + "vcpkg" + " remove " + packages;
+      confClass.vcpkgDirPath() + "/" + "vcpkg" + " remove " + packages;
   int systemRet = system(temp.c_str());
   if (systemRet == -1) {
     std::cout << "An error occured while uninstalling." << std::endl;
@@ -355,11 +360,11 @@ void restore() {
 }
 
 void cmake(const std::string &cmakeArgs) {
-  PkgClass pkgClass;
+  ConfClass confClass;
   std::ostringstream cmakeCmnd;
-  cmakeCmnd << "cd " << pkgClass.outputDirectory() << " && "
-            << pkgClass.cmakePath()
-            << " -DCMAKE_TOOLCHAIN_FILE=" << pkgClass.vcpkgDirPath()
+  cmakeCmnd << "cd " << confClass.outputDirectory() << " && "
+            << confClass.cmakePath()
+            << " -DCMAKE_TOOLCHAIN_FILE=" << confClass.vcpkgDirPath()
             << "/scripts/buildsystems/vcpkg.cmake " << cmakeArgs << " .. ";
   int systemRet = system(cmakeCmnd.str().c_str());
   if (systemRet == -1) {
@@ -368,10 +373,10 @@ void cmake(const std::string &cmakeArgs) {
 }
 
 void make(const std::string &makeArgs) {
-  PkgClass pkgClass;
+  ConfClass confClass;
   std::ostringstream makeCmnd;
-  makeCmnd << "cd " << pkgClass.outputDirectory() << " && "
-           << " " << pkgClass.makePath();
+  makeCmnd << "cd " << confClass.outputDirectory() << " && "
+           << " " << confClass.makePath();
   int systemRet = system(makeCmnd.str().c_str());
   if (systemRet == -1) {
     std::cout << "An error occured while running make." << std::endl;

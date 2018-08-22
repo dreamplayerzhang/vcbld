@@ -22,7 +22,8 @@ namespace vcbld {
 
 ConfClass::ConfClass() {
   json vcbldJson, confJson;
-  this->_projPath = fs::current_path().string();
+  this->_projPath = fs::canonical(fs::current_path()).string();
+  posixify(this->_projPath);
 
   if (!fs::exists("vcbld.json")) {
     std::cout << "vcbld.json not found in the current directory" << std::endl;
@@ -63,26 +64,38 @@ ConfClass::ConfClass() {
 
     try {
       this->_outputDirectory = fs::canonical(vcbldJson["outputDirectory"].get<std::string>()).string();
+      posixify(this->_outputDirectory);
     } catch (...) {
-      this->_outputDirectory = "./bin";
+      this->_outputDirectory = this->_projPath + "/bin";
     }
 
     try {
       this->_sourceDirectory = fs::canonical(vcbldJson["sourceDirectory"].get<std::string>()).string();
+      posixify(this->_sourceDirectory);
     } catch (...) {
-      this->_sourceDirectory = "./src";
+      this->_sourceDirectory = this->_projPath + "/src";
     }
 
     try {
+      if (vcbldJson["includeDirectory"].get<std::string>() != "") {
       this->_includeDirectory = fs::canonical(vcbldJson["includeDirectory"].get<std::string>()).string();
+      posixify(this->_includeDirectory);
+      } else {
+        this->_includeDirectory = "";
+      }
     } catch (...) {
       this->_includeDirectory = "";
     }
 
     try {
+      if (vcbldJson["libDirectory"].get<std::string>() != "") {
       this->_libDirectory = fs::canonical(vcbldJson["libDirectory"].get<std::string>()).string();
+      posixify(this->_libDirectory);
+      } else {
+        this->_libDirectory = this->_projPath + "";
+      }
     } catch (...) {
-      this->_libDirectory = "";
+      this->_libDirectory = this->_projPath + "";
     }
 
     for (json::iterator it = vcbldJson["compilerDefines"].begin();
@@ -115,19 +128,43 @@ ConfClass::ConfClass() {
     std::cerr << "Error reading conf.json." << std::endl;
   }
 
-  this->_vcpkgDirectory =
+  this->_architecture = confJson["architecture"].get<std::string>();
+
+  if (confJson["vcpkgDirectory"].get<std::string>() != "") {
+    this->_vcpkgDirectory =
       fs::canonical(confJson["vcpkgDirectory"].get<std::string>()).string();
+    posixify(this->_vcpkgDirectory);
+  }
+
+  if (confJson["cCompilerPath"].get<std::string>() != "") {
   this->_cCompilerPath =
       fs::canonical(confJson["cCompilerPath"].get<std::string>()).string();
+  posixify(this->_cCompilerPath);
+  }
+
+  if (confJson["cppCompilerPath"].get<std::string>() != "") {
   this->_cppCompilerPath =
       fs::canonical(confJson["cppCompilerPath"].get<std::string>()).string();
-  this->_architecture = confJson["architecture"].get<std::string>();
+  posixify(this->_cppCompilerPath);
+  }
+  
+  if (confJson["cmakePath"].get<std::string>() != "") {
   this->_cmakePath =
       fs::canonical(confJson["cmakePath"].get<std::string>()).string();
+  posixify(this->_cmakePath);
+  }
+
+  if (confJson["makePath"].get<std::string>() != "") {
   this->_makePath =
       fs::canonical(confJson["makePath"].get<std::string>()).string();
+  posixify(this->_cmakePath);
+  }
+
+  if (confJson["archiverPath"].get<std::string>() != "") {
   this->_archiverPath =
       fs::canonical(confJson["archiverPath"].get<std::string>()).string();
+  posixify(this->_archiverPath);
+  }
 }
 
 std::string ConfClass::projPath() const { return this->_projPath; }
@@ -162,4 +199,11 @@ std::string ConfClass::sourceDirectory() const { return _sourceDirectory; }
 std::string ConfClass::includeDirectory() const { return _includeDirectory; }
 std::string ConfClass::libDirectory() const { return _libDirectory; }
 std::string ConfClass::architecture() const { return _architecture; }
+
+void ConfClass::posixify(std::string &path) {
+  if (path.find("\\") != std::string::npos) {
+    path.replace(path.find("\\"), 1, "/");
+    posixify(path);
+  }
+}
 } // namespace vcbld

@@ -67,9 +67,7 @@ void setup(const fs::path &vcbldPath) {
         for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
              it != dirEntry.end(); ++it) {
           if ((*it).path().string().find("MinGW") != std::string::npos) {
-            std::string path = (*it).path().string() + "/bin";
-            posixify(path);
-            paths.emplace_back(path);
+            paths.emplace_back((*it).path().string() + "\\bin");
           }
         }
       }
@@ -89,9 +87,7 @@ void setup(const fs::path &vcbldPath) {
                it != dirEntry3.end(); ++it) {
             if ((*it).path().string().find("MinGW") != std::string::npos ||
                 (*it).path().string().find("cmake") != std::string::npos) {
-              std::string path = (*it).path().string() + "/bin";
-              posixify(path);
-              paths.emplace_back(path);
+              paths.emplace_back((*it).path().string() + "\\bin");
             }
           }
         }
@@ -112,9 +108,7 @@ void setup(const fs::path &vcbldPath) {
                it != dirEntry3.end(); ++it) {
             if ((*it).path().string().find("MinGW") != std::string::npos ||
                 (*it).path().string().find("cmake") != std::string::npos) {
-              std::string path = (*it).path().string() + "/bin";
-              posixify(path);
-              paths.emplace_back(path);
+              paths.emplace_back((*it).path().string() + "\\bin");
             }
           }
         }

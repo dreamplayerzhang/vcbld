@@ -140,7 +140,7 @@ void run(const std::string &buildType) {
   }
   if (buildType == "debug") {
     try {
-      command << "./" << confClass.outputDirectory() << "/debug/"
+      command << confClass.outputDirectory() << "/debug/"
               << confClass.binaryName() << ext;
       int systemRet = system(command.str().c_str());
       if (systemRet == -1) {
@@ -152,7 +152,7 @@ void run(const std::string &buildType) {
     }
   } else {
     try {
-      command << "./" << confClass.outputDirectory() << "/release/"
+      command << confClass.outputDirectory() << "/release/"
               << confClass.binaryName() << ext;
       int systemRet = system(command.str().c_str());
       if (systemRet == -1) {

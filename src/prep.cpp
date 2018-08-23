@@ -122,9 +122,9 @@ std::string PrepClass::sourceFiles() {
           fs::path((*it).path().filename().string()).extension() == ".cxx" ||
           fs::path((*it).path().filename().string()).extension() == ".qrc" ||
           fs::path((*it).path().filename().string()).extension() == ".uic") {
-        fullPath = std::move((*it).path().string());
-        posixify(fullPath);
-        temp << fullPath << " ";
+        // fullPath = std::move((*it).path().string());
+        // posixify(fullPath);
+        temp << (*it).path().filename().string() << " ";
       }
     }
   }

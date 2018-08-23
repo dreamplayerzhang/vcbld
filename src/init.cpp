@@ -76,6 +76,27 @@ void setup(const fs::path &vcbldPath) {
     }
 
     try {
+      const char *progFiles = std::getenv("HOME");
+      if (progFiles != NULL) {
+        if (fs::is_directory(progFiles)) {
+          std::vector<fs::directory_entry> dirEntry3;
+          std::copy(fs::directory_iterator(progFiles), fs::directory_iterator(),
+                    back_inserter(dirEntry3));
+          for (std::vector<fs::directory_entry>::iterator it =
+                   dirEntry3.begin();
+               it != dirEntry3.end(); ++it) {
+            if ((*it).path().string().find("MinGW") != std::string::npos ||
+                (*it).path().string().find("cmake") != std::string::npos) {
+              paths.emplace_back((*it).path().string() + "\\bin");
+            }
+          }
+        }
+      }
+    } catch (...) {
+      // fail quietly
+    }
+
+    try {
       const char *progFiles = std::getenv("PROGRAMFILES");
       if (progFiles != NULL) {
         if (fs::is_directory(progFiles)) {

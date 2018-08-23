@@ -130,7 +130,7 @@ std::string PrepClass::sourceFiles() {
   }
   return temp.str();
 }
-
+/*
 std::string PrepClass::sourceFilesSinPath() {
   std::vector<fs::directory_entry> dirEntry;
   std::string tempPath;
@@ -157,7 +157,7 @@ std::string PrepClass::sourceFilesSinPath() {
   }
   return temp.str();
 }
-
+*/
 std::string PrepClass::headerPaths() {
   std::ostringstream temp;
   temp << " -I" << this->sourceDirectory() << " -I" << this->outputDirectory();

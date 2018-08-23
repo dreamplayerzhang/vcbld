@@ -128,8 +128,7 @@ void cmakeGen() {
                "in-tree "
                "build. Please create a build directory outside of the source "
                "code and call cmake from there. Thank you.\")\nendif()\n\n"
-            << "set(SOURCE_FILES "
-            << prepClass.sourceFilesSinPath() << ")\n\n"
+            << "set(SOURCE_FILES " << prepClass.sourceFilesSinPath() << ")\n\n"
             << "set(DBG_LIB_PATH "
                "${CMAKE_PREFIX_PATH}/debug/"
                "lib)\n"
@@ -147,9 +146,14 @@ void cmakeGen() {
 
         ofs << "target_include_directories(${PROJECT_NAME} PUBLIC "
                "${CMAKE_PREFIX_PATH}"
-            << "/include)\n"
-            << "target_include_directories(${PROJECT_NAME} PUBLIC "
-               "${CMAKE_CURRENT_SOURCE_DIR}/../include)\n";
+            << "/include)\n";
+        if (prepClass.includeDirectory() != "" &&
+            fs::exists(prepClass.includeDirectory())) {
+          ofs << "target_include_directories(${PROJECT_NAME} PUBLIC "
+                 "${CMAKE_CURRENT_SOURCE_DIR}/../"
+              << fs::path(prepClass.includeDirectory()).filename().string()
+              << ")\n";
+        }
         if (prepClass.fullLibNames().size() != 0) {
           ofs << "target_link_libraries(${PROJECT_NAME} debug ${dbgLIBS})\n"
               << "target_link_libraries(${PROJECT_NAME} optimized "

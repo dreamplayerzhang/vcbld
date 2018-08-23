@@ -128,11 +128,23 @@ void cmakeGen() {
                "in-tree "
                "build. Please create a build directory outside of the source "
                "code and call cmake from there. Thank you.\")\nendif()\n\n"
-            << "set(SOURCE_FILES " << prepClass.sourceFilesSinPath() << ")\n\n"
-            << "set(DBG_LIB_PATH "
+            << "set(SOURCE_FILES " << prepClass.sourceFilesSinPath() << ")\n\n";
+
+        if (prepClass.libDirectory() != "" &&
+            fs::exists(prepClass.libDirectory())) {
+          ofs << "set(LOCAL_DBG_LIB_PATH "
+                 "${CMAKE_CURRENT_SOURCE_DIR}/../"
+              << fs::path(prepClass.libDirectory()).filename().string()
+              << "/debug)\n"
+              << "set(LOCAL_RLS_LIB_PATH "
+                 "${CMAKE_CURRENT_SOURCE_DIR}/../"
+              << fs::path(prepClass.libDirectory()).filename().string()
+              << "/release)\n";
+        }
+        ofs << "set(VCPKG_DBG_LIB_PATH "
                "${CMAKE_PREFIX_PATH}/debug/"
                "lib)\n"
-            << "set(RLS_LIB_PATH "
+            << "set(VCPKG_RLS_LIB_PATH "
                "${CMAKE_PREFIX_PATH}/lib)\n\n"
             << prepClass.cmakeOutput() << "\n";
 

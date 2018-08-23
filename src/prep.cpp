@@ -286,6 +286,26 @@ bool PrepClass::hasComponents(const std::string &libName) {
   }
 }
 std::string PrepClass::cmakeOutput() {
+
+  for (std::vector<std::string>::iterator it = this->_dbgLocalLibNames.begin();
+       it != this->_dbgLocalLibNames.end(); ++it) {
+    std::string libName = stripLibName(*it);
+    this->_cmakeOutput   << "find_library(" << libName << "_DBG NAMES "
+                         << libName << " HINTS "
+                         << "${LOCAL_DBG_LIB_PATH})\n"
+                         << "set(dbgLIBS ${dbgLIBS} ${" << libName << "_DBG})\n\n";
+  }
+
+    for (std::vector<std::string>::iterator it = this->_rlsLocalLibNames.begin();
+       it != this->_rlsLocalLibNames.end(); ++it) {
+    std::string libName = stripLibName(*it);
+    this->_cmakeOutput   << "find_library(" << libName << "_RLS NAMES "
+                         << libName << " HINTS "
+                         << "${LOCAL_RLS_LIB_PATH})\n"
+                         << "set(rlsLIBS ${rlsLIBS} ${" << libName
+                         << "_RLS})\n\n";
+  }
+
   for (std::vector<std::string>::iterator it = this->_fullLibNames.begin();
        it != this->_fullLibNames.end(); ++it) {
     std::string libName = stripLibName(*it);
@@ -295,10 +315,10 @@ std::string PrepClass::cmakeOutput() {
       this->_cmakeOutput << "#Find " << libName << "\n"
                          << "find_library(" << libName << "_DBG NAMES "
                          << libName << " HINTS "
-                         << "${DBG_LIB_PATH})\n"
+                         << "${VCPKG_DBG_LIB_PATH})\n"
                          << "find_library(" << libName << "_RLS NAMES "
                          << libName << " HINTS "
-                         << "${RLS_LIB_PATH})\n"
+                         << "${VCPKG_RLS_LIB_PATH})\n"
                          << "set(dbgLIBS ${dbgLIBS} ${" << libName << "_DBG})\n"
                          << "set(rlsLIBS ${rlsLIBS} ${" << libName
                          << "_RLS})\n\n";

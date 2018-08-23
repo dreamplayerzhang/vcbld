@@ -160,14 +160,14 @@ std::string PrepClass::sourceFilesSinPath() {
 */
 std::string PrepClass::headerPaths() {
   std::ostringstream temp;
-  temp << " -I" << this->sourceDirectory() << " -I" << this->outputDirectory();
+  temp << " -I\"" << this->sourceDirectory() << "\" -I\"" << this->outputDirectory() << "\"";
   if (this->includeDirectory() != "") {
-    temp << " -I" << this->includeDirectory();
+    temp << " -I\"" << this->includeDirectory() << "\"";
   }
-  temp << " -I" << this->vcpkgDirPath() << "/"
+  temp << " -I\"" << this->vcpkgDirPath() << "/"
        << "installed"
        << "/" << this->architecture() << "/"
-       << "include";
+       << "include\"";
   return temp.str();
 }
 
@@ -208,15 +208,15 @@ std::string PrepClass::dbgLibPaths() {
   std::string localDbgLibs = this->libDirectory() + "/" + "debug";
   for (std::vector<std::string>::iterator jt = this->_dbgLocalLibNames.begin();
        jt != this->_dbgLocalLibNames.end(); ++jt) {
-    temp << " -L" << localDbgLibs << " "
-         << " -l" << stripLibName(*jt);
+    temp << " -L\"" << localDbgLibs << "\" "
+         << "-l" << stripLibName(*jt);
   }
 
   std::string dbgLibPath = this->vcpkgDirPath() + "/" + "installed" + "/" +
                            this->architecture() + "/" + "debug" + "/" + "lib";
   for (std::vector<std::string>::iterator it = this->_fullLibNames.begin();
        it != this->_fullLibNames.end(); ++it) {
-    temp << " -L" << dbgLibPath << " "
+    temp << " -L\"" << dbgLibPath << "\" "
          << "-l" << stripLibName(*it);
   }
   return temp.str();
@@ -227,15 +227,15 @@ std::string PrepClass::rlsLibPaths() {
   std::string localRlsLibs = this->libDirectory() + "/" + "release";
   for (std::vector<std::string>::iterator jt = this->_rlsLocalLibNames.begin();
        jt != this->_rlsLocalLibNames.end(); ++jt) {
-    temp << " -L" << localRlsLibs << " "
-         << " -l" << stripLibName(*jt);
+    temp << " -L\"" << localRlsLibs << "\" "
+         << "-l" << stripLibName(*jt);
   }
 
   std::string dbgLibPath = this->vcpkgDirPath() + "/" + "installed" + "/" +
                            this->architecture() + "/" + "lib";
   for (std::vector<std::string>::iterator it = this->_fullLibNames.begin();
        it != this->_fullLibNames.end(); ++it) {
-    temp << " -L" << dbgLibPath << " "
+    temp << " -L\"" << dbgLibPath << "\" "
          << "-l" << stripLibName(*it);
   }
   return temp.str();

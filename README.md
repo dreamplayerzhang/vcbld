@@ -110,7 +110,7 @@ A vcbld.json would look like the following (without the comments):
 	"version" : "0.1.0",
 	"language" : "c++", // notice the lower case. camelCase is followed in vcbld JSON files.
 	"standard" : "17",
-	"binaryType" : "app", // or "staticLibrary" or "sharedLibrary"
+	"binaryType" : "app", // or "staticLibrary" or "dynamicLibrary"
 	"binaryName" : "vcbld", // Name of the resulting binary, use a "lib" prefix if it were a library.
     	"sourceDirectory" : "./src", // Name of your source directory
     	"includeDirectory" : "./include", // Name of your include directory, can be left blank.

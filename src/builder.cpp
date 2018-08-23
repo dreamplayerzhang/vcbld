@@ -29,15 +29,15 @@ Builder::Builder(const std::string &buildType)
 void Builder::compile() {
 
   if (this->_buildType == "release") {
-    this->_compileCommand << "cd " << this->_rlsDir << " && "
-                          << this->compilerPath() << " " << this->headerPaths()
+    this->_compileCommand << "cd " << this->_rlsDir << " && \""
+                          << this->compilerPath() << "\" " << this->headerPaths()
                           << " " << this->compilerFlags() << " "
                           << this->compilerDefines() << " "
                           << "-std=" << this->language() << this->standard()
                           << " -c " << this->sourceFiles();
   } else {
-    this->_compileCommand << "cd " << this->_dbgDir << " && "
-                          << this->compilerPath() << " " << this->headerPaths()
+    this->_compileCommand << "cd " << this->_dbgDir << " && \""
+                          << this->compilerPath() << "\" " << this->headerPaths()
                           << " " << this->compilerFlags() << " "
                           << this->compilerDefines() << " -g "
                           << "-std=" << this->language() << this->standard()
@@ -76,13 +76,13 @@ void Builder::appLink() {
   }
 
   if (this->_buildType == "release") {
-    this->_appLinkCmnd << "cd " << this->_rlsDir << " && "
-                       << this->compilerPath() << " -o " << this->binaryName()
+    this->_appLinkCmnd << "cd " << this->_rlsDir << " && \""
+                       << this->compilerPath() << "\" -o " << this->binaryName()
                        << " " << temp << " " << this->rlsLibPaths() << " "
                        << this->linkerFlags();
   } else {
-    this->_appLinkCmnd << "cd " << this->_dbgDir << " && "
-                       << this->compilerPath() << " -o " << this->binaryName()
+    this->_appLinkCmnd << "cd " << this->_dbgDir << " && \""
+                       << this->compilerPath() << "\" -o " << this->binaryName()
                        << " " << temp << " " << this->dbgLibPaths() << " "
                        << this->linkerFlags();
   }
@@ -127,13 +127,13 @@ void Builder::dylibLink() {
   }
 
   if (this->_buildType == "release") {
-    this->_libLinkCmnd << "cd " << this->_rlsDir << " && "
-                       << this->compilerPath() << dylibArg << " -o "
+    this->_libLinkCmnd << "cd " << this->_rlsDir << " && \""
+                       << this->compilerPath() << "\"" << dylibArg << " -o "
                        << this->binaryName() << dylibExt << " " << temp << " "
                        << this->rlsLibPaths() << " " << this->linkerFlags();
   } else {
-    this->_libLinkCmnd << "cd " << this->_dbgDir << " && "
-                       << this->compilerPath() << dylibArg << " -o "
+    this->_libLinkCmnd << "cd " << this->_dbgDir << " && \""
+                       << this->compilerPath() << "\"" << dylibArg << " -o "
                        << this->binaryName() << dylibExt << " " << temp << " "
                        << this->dbgLibPaths() << " " << this->linkerFlags();
   }
@@ -168,13 +168,13 @@ void Builder::archive() {
   }
 
   if (this->_buildType == "release") {
-    this->_archiveCmnd << "cd " << this->_rlsDir << " && "
-                       << this->archiverPath() << " rcs " << this->binaryName()
+    this->_archiveCmnd << "cd " << this->_rlsDir << " && \""
+                       << this->archiverPath() << "\" rcs " << this->binaryName()
                        << ".a"
                        << " " << temp;
   } else {
-    this->_archiveCmnd << "cd " << this->_dbgDir << " && "
-                       << this->archiverPath() << " rcs " << this->binaryName()
+    this->_archiveCmnd << "cd " << this->_dbgDir << " && \""
+                       << this->archiverPath() << "\" rcs " << this->binaryName()
                        << ".a"
                        << " " << temp;
   }
@@ -189,7 +189,7 @@ std::string Builder::getBldCommands() {
     return this->_compileCommand.str() + "\n" + this->_appLinkCmnd.str();
   } else if (this->binaryType() == "staticLibrary") {
     return this->_compileCommand.str() + "\n" + this->_archiveCmnd.str();
-  } else if (this->binaryType() == "sharedLibrary") {
+  } else if (this->binaryType() == "dynamicLibrary") {
     return this->_compileCommand.str() + "\n" + this->_libLinkCmnd.str();
   } else {
     std::cout << "Unknown binary type defined in vcbld.json." << std::endl;
@@ -242,7 +242,7 @@ void Builder::build() {
       std::cout << "Archiving failed!" << std::endl;
       std::cerr << e.what() << errno << std::endl;
     }
-  } else if (this->binaryType() == "sharedLibrary") {
+  } else if (this->binaryType() == "dynamicLibrary") {
     try {
       std::cout << "Compiling in " << this->_buildType << "...\n";
       this->compile();

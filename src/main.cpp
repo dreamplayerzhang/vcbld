@@ -22,6 +22,7 @@ namespace fs = std::experimental::filesystem;
 using namespace vcbld;
 
 std::string findVcbld(const std::string &PATH);
+std::string parseQuotes(const char* arg);
 
 int main(int argc, char *argv[]) {
   fs::path vcbldPath;
@@ -203,7 +204,7 @@ int main(int argc, char *argv[]) {
         std::string cmakeArgs;
         for (int i = 2; i < argc; i++) {
           cmakeArgs += " ";
-          cmakeArgs += argv[i];
+          cmakeArgs += parseQuotes(argv[i]);
         }
         args::cmake(cmakeArgs);
       }
@@ -258,4 +259,13 @@ std::string findVcbld(const std::string &PATH) {
   }
 
   return temp;
+}
+
+std::string parseQuotes(const char* arg) {
+  std::string temp = static_cast<std::string>(arg);
+  if (temp.find(" ") != std::string::npos) {
+    return "\"" + temp + "\"";
+  } else {
+    return temp;
+  }
 }

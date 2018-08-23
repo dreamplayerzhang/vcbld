@@ -129,7 +129,7 @@ void cmakeGen() {
                "build. Please create a build directory outside of the source "
                "code and call cmake from there. Thank you.\")\nendif()\n\n"
             << "set(SOURCE_FILES "
-            << "\"" << prepClass.sourceFilesSinPath() << "\")\n\n"
+            << prepClass.sourceFilesSinPath() << ")\n\n"
             << "set(DBG_LIB_PATH "
                "${_VCPKG_ROOT_DIR}/installed/${VCPKG_TARGET_TRIPLET}/debug/"
                "lib)\n"

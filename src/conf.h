@@ -15,6 +15,8 @@ public:
 
   std::string projPath() const;
   std::string compilerPath() const;
+  std::string cCompilerPath() const;
+  std::string cppCompilerPath() const;
   std::string vcpkgDirPath() const;
   std::string architecture() const;
   std::string cmakePath() const;

@@ -108,20 +108,18 @@ void build(const std::string &buildType) {
   builder.build();
 }
 
-void clean() {
+void clean(const std::string &buildType) {
   try {
     ConfClass confClass;
-    std::string command =
-        "rm -rf " + confClass.outputDirectory() + "/" + "debug" + "/" + "**";
-    int systemRet = system(command.c_str());
-    if (systemRet == -1) {
-      std::cout << "An error occured while deleting output." << std::endl;
-    }
-    command =
-        "rm -rf " + confClass.outputDirectory() + "/" + "release" + "/" + "**";
-    int systemRet2 = system(command.c_str());
-    if (systemRet2 == -1) {
-      std::cout << "An error occured while deleting output." << std::endl;
+    std::string cleanDir = confClass.outputDirectory() + "/" + buildType;
+    if (fs::is_directory(cleanDir)) {
+      std::vector<fs::directory_entry> dirEntry;
+      std::copy(fs::directory_iterator(cleanDir),
+                fs::directory_iterator(), back_inserter(dirEntry));
+      for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
+           it != dirEntry.end(); ++it) {
+          fs::remove_all(*it);
+      }
     }
   } catch (const std::exception &e) {
     std::cout << "An error occured while deleting output." << std::endl;
@@ -374,10 +372,15 @@ void restore() {
 void cmake(const std::string &cmakeArgs) {
   ConfClass confClass;
   std::ostringstream cmakeCmnd;
-  cmakeCmnd << "cd " << confClass.outputDirectory() << " && "
-            << confClass.cmakePath()
-            << " -DCMAKE_TOOLCHAIN_FILE=" << confClass.vcpkgDirPath()
-            << "/scripts/buildsystems/vcpkg.cmake " << cmakeArgs << " .. ";
+
+  cmakeCmnd << "cd " << confClass.outputDirectory() << " && \""
+            << confClass.cmakePath() << "\""
+            << " -DCMAKE_TOOLCHAIN_FILE=\"" << confClass.vcpkgDirPath()
+            << "/scripts/buildsystems/vcpkg.cmake\"" 
+            << " -DCMAKE_C_COMPILER=\"" << confClass.cCompilerPath() << "\""
+            << " -DCMAKE_CXX_COMPILER=\"" << confClass.cppCompilerPath() << "\""
+            << " -DCMAKE_MAKE_PROGRAM=\"" << confClass.makePath() << "\""
+            << " " << cmakeArgs << " .. ";
   int systemRet = system(cmakeCmnd.str().c_str());
   if (systemRet == -1) {
     std::cout << "An error occured while running cmake." << std::endl;

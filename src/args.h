@@ -9,7 +9,7 @@ namespace args {
 void New(const std::string &binType);
 void restore();
 void build(const std::string &buildType);
-void clean();
+void clean(const std::string &buildType);
 void run(const std::string &buildType);
 void available();
 void install(const std::string &packages);

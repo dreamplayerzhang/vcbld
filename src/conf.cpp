@@ -192,6 +192,15 @@ std::string ConfClass::compilerPath() const {
     return this->_cCompilerPath;
   }
 }
+
+std::string ConfClass::cCompilerPath() const {
+  return this->_cCompilerPath;
+}
+
+std::string ConfClass::cppCompilerPath() const {
+  return this->_cppCompilerPath;
+}
+
 std::string ConfClass::compilerDefines() const {
   return this->_compilerDefines.str();
 }

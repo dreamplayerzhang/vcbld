@@ -79,7 +79,16 @@ int main(int argc, char *argv[]) {
         }
       }
     } else if (strcmp(argv[1], "clean") == 0) {
-      args::clean();
+      if (argc < 3) {
+        args::clean("debug");
+      } else {
+        if (strcmp(argv[2], "release") == 0 || strcmp(argv[2], "-r") == 0) {
+          args::clean("release");
+        } else if (strcmp(argv[2], "debug") == 0 ||
+                   strcmp(argv[2], "-g") == 0) {
+          args::clean("debug");
+        }
+      }
     } else if (strcmp(argv[1], "all") == 0) {
       args::available();
     } else if (strcmp(argv[1], "run") == 0) {

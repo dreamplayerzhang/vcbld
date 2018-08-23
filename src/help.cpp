@@ -14,7 +14,7 @@ SDK commands:
     new       	[app|dylib|statlib]   Starts a new project.
     restore                           Restore missing dependencies in a project.
     build     	[debug|release]       Builds the project.
-    clean                             Clean build output(s).
+    clean       [debug|release]       Clean build output(s).
     run       	[debug|release]       Executes the project.
     includes                          Generates includePath.json file.
     gen                               Generates CMakeLists.txt file.

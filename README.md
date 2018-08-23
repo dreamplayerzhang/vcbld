@@ -1,5 +1,5 @@
 # vcbld
-A command-line software development kit and a minimalist build system that works with vcpkg. It works for the moment on posix systems, i.e. linux and macOS X. It runs on windows if you're using MinGW, MSYS or Cygwin. It has a minimal build system which works for small single hierarchy projects and allows for faster prototyping, however it has support for cmake and can be used to generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
+A command-line software development kit and a minimalist build system that works with vcpkg. It works for the moment on posix systems, i.e. linux and macOS X. It has a minimal build system which works for small single hierarchy projects and allows for faster prototyping, however it has support for cmake and can be used to generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
 The vcbld executable is about 500kb large, and depends on the presence of vcpkg and cmake. Of course you would also need a posix C/C++ compiler such as gcc or clang.
 
 ```
@@ -44,8 +44,6 @@ However, you can add your default vcpkg directory to the PATH enviroment variabl
  ```
  $ echo 'export PATH=$PATH:/path/to/vcpkg/directory' >> ~/.bashrc 
  ```
- On windows you can add the vcpkg binary directory to your PATH via accessing the Control Panel -> System -> Advanced system settings -> Environment variables -> Edit System Variable (or New System Variable). There you can add the vcpkg folder to your PATH.
-
 Now you're ready to go!
 Remember you can always access the help menu using:
 ```
@@ -95,7 +93,7 @@ The conf.json file contains several default variables depending on the operating
 }
 ```
 Notice that it contains absolute paths!
-The first 2 variables are the paths of the C and C++ compilers. The default compilers for macOS X is clang, while for linux it would be gcc and g++ respectively. On windows, the default compiler is the MinGW gcc.
+The first 2 variables are the paths of the C and C++ compilers. vcbld lets you choose the default compiler for your project when you start a new project or when you set one up.
 The vcpkgDirectory variable is the parent directory of the vcpkg executable you wish to choose for your project and the current instance of the vcbld executable. It defaults to the vcpkg path to which the vcbld executable was added.
 
 The architecture depends on the host operating system. You can check the vcpkg triplet documentation [here.](https://github.com/Microsoft/vcpkg/blob/master/docs/users/triplets.md)
@@ -103,7 +101,6 @@ The architecture depends on the host operating system. You can check the vcpkg t
 Although vcbld doesn't support cross-compilation on the same machine, vcbld projects can be cross-compiled on different operating systems.
 cmakePath and makePath are your installation locations of cmake and make. The archiverPath is the path of the archiver used to build static libraries. vcbld checks the presence of an installed cmake in your vcpkg/downloads/tools directory which it would choose by default, otherwise, it specifies the cmake executable in your PATH.
 vcbld supports building using cmake and make within the executable. It can also generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
-On windows, the default make file is the one supplied by the MinGW installation.
 
 A new project will also have a vcbld.json and package.json files in the project directory.
 A vcbld.json would look like the following (without the comments):
@@ -243,7 +240,7 @@ https://www.youtube.com/watch?v=zY-8IX6Lnsk
 ## Contributing:
 All contributions are welcome!
 
-For the moment, vcbld was tried on macOS X and linux, however, since my windows machine died recently, I wasn't able to test it on windows. I would appreciate if contributors could try building and using vcbld on windows. That would be of great help.
+For the moment, vcbld was tried on macOS X and linux. Development on windows is needed as well.
 
 ## License:
 Code licensed under the [MIT License.](https://github.com/MoAlyousef/vcbld/blob/master/LICENSE)

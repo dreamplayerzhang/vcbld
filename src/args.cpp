@@ -371,16 +371,20 @@ void restore() {
 
 void cmake(const std::string &cmakeArgs) {
   ConfClass confClass;
-  std::ostringstream cmakeCmnd;
-
+  std::ostringstream cmakeCmnd, temp;
+  if (confClass.architecture().find("windows") != std::string::npos) {
+    temp << " -DCMAKE_C_COMPILER=\"" << confClass.cCompilerPath() << "\""
+         << " -DCMAKE_CXX_COMPILER=\"" << confClass.cppCompilerPath() << "\""
+         << " -DCMAKE_MAKE_PROGRAM=\"" << confClass.makePath() << "\""
+         << " -G \"Unix Makefiles\" ";
+  } else {
+    temp << " ";
+  }
   cmakeCmnd << "cd " << confClass.outputDirectory() << " && \""
             << confClass.cmakePath() << "\""
             << " -DCMAKE_TOOLCHAIN_FILE=\"" << confClass.vcpkgDirPath()
             << "/scripts/buildsystems/vcpkg.cmake\"" 
-            << " -DCMAKE_C_COMPILER=\"" << confClass.cCompilerPath() << "\""
-            << " -DCMAKE_CXX_COMPILER=\"" << confClass.cppCompilerPath() << "\""
-            << " -DCMAKE_MAKE_PROGRAM=\"" << confClass.makePath() << "\""
-            << " " << cmakeArgs << " .. ";
+            << temp.str() << cmakeArgs << " .. ";
   int systemRet = system(cmakeCmnd.str().c_str());
   if (systemRet == -1) {
     std::cout << "An error occured while running cmake." << std::endl;

@@ -114,11 +114,11 @@ void clean(const std::string &buildType) {
     std::string cleanDir = confClass.outputDirectory() + "/" + buildType;
     if (fs::is_directory(cleanDir)) {
       std::vector<fs::directory_entry> dirEntry;
-      std::copy(fs::directory_iterator(cleanDir),
-                fs::directory_iterator(), back_inserter(dirEntry));
+      std::copy(fs::directory_iterator(cleanDir), fs::directory_iterator(),
+                back_inserter(dirEntry));
       for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
            it != dirEntry.end(); ++it) {
-          fs::remove_all(*it);
+        fs::remove_all(*it);
       }
     }
   } catch (const std::exception &e) {
@@ -372,18 +372,18 @@ void restore() {
 void cmake(const std::string &cmakeArgs) {
   ConfClass confClass;
   std::ostringstream cmakeCmnd, temp;
-  // if (confClass.architecture().find("windows") == std::string::npos) {
+  if (confClass.architecture().find("windows") == std::string::npos) {
     temp << " -DCMAKE_C_COMPILER=\"" << confClass.cCompilerPath() << "\""
          << " -DCMAKE_CXX_COMPILER=\"" << confClass.cppCompilerPath() << "\""
          << " -DCMAKE_MAKE_PROGRAM=\"" << confClass.makePath() << "\" ";
-  // } else {
-  //   temp << " ";
-  // }
+  } else {
+    temp << " ";
+  }
   cmakeCmnd << "cd " << confClass.outputDirectory() << " && \""
             << confClass.cmakePath() << "\""
-            << " -DCMAKE_PREFIX_PATH=\"" << confClass.vcpkgDirPath() 
-            << "/installed/" << confClass.architecture() << "\""
-            << temp.str() << cmakeArgs << " .. ";
+            << " -DCMAKE_PREFIX_PATH=\"" << confClass.vcpkgDirPath()
+            << "/installed/" << confClass.architecture() << "\"" << temp.str()
+            << cmakeArgs << " .. ";
   int systemRet = system(cmakeCmnd.str().c_str());
   if (systemRet == -1) {
     std::cout << "An error occured while running cmake." << std::endl;

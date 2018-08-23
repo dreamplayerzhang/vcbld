@@ -172,7 +172,7 @@ ConfClass::ConfClass() {
       fs::exists(confJson["makePath"].get<std::string>())) {
     this->_makePath =
         fs::canonical(confJson["makePath"].get<std::string>()).string();
-    posixify(this->_cmakePath);
+    posixify(this->_makePath);
   }
 
   if (confJson["archiverPath"].get<std::string>() != "" &&

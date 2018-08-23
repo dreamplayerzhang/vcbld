@@ -92,10 +92,10 @@ ConfClass::ConfClass() {
       this->_libDirectory = fs::canonical(vcbldJson["libDirectory"].get<std::string>()).string();
       posixify(this->_libDirectory);
       } else {
-        this->_libDirectory = this->_projPath + "";
+        this->_libDirectory = "";
       }
     } catch (...) {
-      this->_libDirectory = this->_projPath + "";
+      this->_libDirectory = "";
     }
 
     for (json::iterator it = vcbldJson["compilerDefines"].begin();

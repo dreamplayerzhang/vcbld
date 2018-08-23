@@ -122,15 +122,15 @@ std::string PrepClass::sourceFiles() {
           fs::path((*it).path().filename().string()).extension() == ".cxx" ||
           fs::path((*it).path().filename().string()).extension() == ".qrc" ||
           fs::path((*it).path().filename().string()).extension() == ".uic") {
-        // fullPath = std::move((*it).path().string());
-        // posixify(fullPath);
-        temp << (*it).path().filename().string() << " ";
+        fullPath = std::move((*it).path().string());
+        posixify(fullPath);
+        temp << "\"" << fullPath << "\" ";
       }
     }
   }
   return temp.str();
 }
-/*
+
 std::string PrepClass::sourceFilesSinPath() {
   std::vector<fs::directory_entry> dirEntry;
   std::string tempPath;
@@ -151,16 +151,42 @@ std::string PrepClass::sourceFilesSinPath() {
           fs::path((*it).path().filename().string()).extension() == ".cxx" ||
           fs::path((*it).path().filename().string()).extension() == ".qrc" ||
           fs::path((*it).path().filename().string()).extension() == ".uic") {
-        temp << "\"" << (*it).path().filename().string() << "\" ";
+        temp << (*it).path().filename().string() << " ";
       }
     }
   }
   return temp.str();
 }
-*/
+
+std::string PrepClass::objPath(const std::string &buildPath) {
+  std::vector<fs::directory_entry> dirEntry;
+  std::string fullPath;
+  std::ostringstream temp;
+
+  if (fs::is_directory(static_cast<fs::path>(buildPath))) {
+    std::copy(fs::directory_iterator(buildPath), fs::directory_iterator(),
+              back_inserter(dirEntry));
+    std::sort(dirEntry.begin(), dirEntry.end());
+    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
+                   dirEntry.end());
+
+    for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
+         it != dirEntry.end(); ++it) {
+      if (fs::path((*it).path().filename().string()).extension() == ".o" ||
+          fs::path((*it).path().filename().string()).extension() == ".obj") {
+        fullPath = std::move((*it).path().string());
+        posixify(fullPath);
+        temp << "\"" << fullPath << "\" ";
+      }
+    }
+  }
+  return temp.str();
+}
+
 std::string PrepClass::headerPaths() {
   std::ostringstream temp;
-  temp << " -I\"" << this->sourceDirectory() << "\" -I\"" << this->outputDirectory() << "\"";
+  temp << " -I\"" << this->sourceDirectory() << "\" -I\""
+       << this->outputDirectory() << "\"";
   if (this->includeDirectory() != "") {
     temp << " -I\"" << this->includeDirectory() << "\"";
   }

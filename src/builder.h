@@ -25,6 +25,7 @@ private:
   std::string _buildType;
   std::string _dbgDir;
   std::string _rlsDir;
+  std::string _buildDir;
   std::ostringstream _compileCommand;
   std::ostringstream _appLinkCmnd;
   std::ostringstream _libLinkCmnd;

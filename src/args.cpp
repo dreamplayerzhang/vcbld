@@ -133,7 +133,8 @@ void run(const std::string &buildType) {
   std::ostringstream command;
   ConfClass confClass;
   std::string ext;
-  if (confClass.architecture() == "x64-windows" || confClass.architecture() == "x86-windows") {
+  if (confClass.architecture() == "x64-windows" ||
+      confClass.architecture() == "x86-windows") {
     ext = ".exe";
   } else {
     ext = "";
@@ -199,7 +200,7 @@ void available() {
   }
 }
 
-void search(const std::string &pkg) {
+void find(const std::string &pkg) {
   try {
     PkgClass pkgClass;
     std::vector<fs::directory_entry> dirEntry;
@@ -311,10 +312,21 @@ void remove(const std::vector<std::string> &pkg) {
 
 void vcpkg(const std::string &vcpkgCmnds) {
   ConfClass confClass;
-  std::string temp = confClass.vcpkgDirPath() + "/" + "vcpkg" + " " + vcpkgCmnds;
+  std::string temp =
+      confClass.vcpkgDirPath() + "/" + "vcpkg" + " " + vcpkgCmnds;
   int systemRet = system(temp.c_str());
   if (systemRet == -1) {
     std::cout << "An error occured while running vcpkg." << std::endl;
+  }
+}
+
+void search(const std::string &pkg) {
+  ConfClass confClass;
+  std::string temp =
+      confClass.vcpkgDirPath() + "/" + "vcpkg" + " search " + pkg;
+  int systemRet = system(temp.c_str());
+  if (systemRet == -1) {
+    std::cout << "An error occured while searching for packages." << std::endl;
   }
 }
 

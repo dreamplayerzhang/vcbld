@@ -17,6 +17,7 @@ void uninstall(const std::string &packages);
 void add(const std::vector<std::string> &pkg);
 void remove(const std::vector<std::string> &pkg);
 void list();
+void find(const std::string &pkg);
 void search(const std::string &pkg);
 void includes();
 void generate();

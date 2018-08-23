@@ -40,7 +40,8 @@ int main(int argc, char *argv[]) {
     vcbldPath = fs::canonical(temp);
   }
 
-  if (!fs::exists(vcbldPath.string() + "/vcpkg") && !fs::exists(vcbldPath.string() + "/vcpkg.exe")) {
+  if (!fs::exists(vcbldPath.string() + "/vcpkg") &&
+      !fs::exists(vcbldPath.string() + "/vcpkg.exe")) {
     std::cout << "The vcpkg executable was not found!\nPlease add vcbld to the "
                  "same directory as your vcpkg executable!"
               << std::endl;
@@ -70,15 +71,16 @@ int main(int argc, char *argv[]) {
       if (argc < 3) {
         args::build("debug");
       } else {
-        if (strcmp(argv[2], "release") == 0) {
+        if (strcmp(argv[2], "release") == 0 || strcmp(argv[2], "-r") == 0) {
           args::build("release");
-        } else if (strcmp(argv[2], "debug") == 0) {
+        } else if (strcmp(argv[2], "debug") == 0 ||
+                   strcmp(argv[2], "-g") == 0) {
           args::build("debug");
         }
       }
     } else if (strcmp(argv[1], "clean") == 0) {
       args::clean();
-    } else if (strcmp(argv[1], "available") == 0) {
+    } else if (strcmp(argv[1], "all") == 0) {
       args::available();
     } else if (strcmp(argv[1], "run") == 0) {
       if (argc < 3) {
@@ -89,14 +91,15 @@ int main(int argc, char *argv[]) {
                     << std::endl;
         }
       } else {
-        if (strcmp(argv[2], "release") == 0) {
+        if (strcmp(argv[2], "release") == 0 || strcmp(argv[2], "-r") == 0) {
           try {
             args::run("release");
           } catch (...) {
             std::cout << "Build configuration or entry not available!"
                       << std::endl;
           }
-        } else if (strcmp(argv[2], "debug") == 0) {
+        } else if (strcmp(argv[2], "debug") == 0 ||
+                   strcmp(argv[2], "-g") == 0) {
           try {
             args::run("debug");
           } catch (const std::exception &e) {
@@ -106,11 +109,11 @@ int main(int argc, char *argv[]) {
           }
         }
       }
-    } else if (strcmp(argv[1], "search") == 0) {
+    } else if (strcmp(argv[1], "find") == 0) {
       if (argc < 3) {
         std::cout << "Please enter a package name to search for." << std::endl;
       } else {
-        args::search(static_cast<std::string>(argv[2]));
+        args::find(static_cast<std::string>(argv[2]));
       }
     } else if (strcmp(argv[1], "add") == 0) {
       if (argc < 3) {
@@ -151,6 +154,12 @@ int main(int argc, char *argv[]) {
         }
         args::install(package);
         args::add(packages);
+      }
+    } else if (strcmp(argv[1], "search") == 0) {
+      if (argc < 3) {
+        std::cout << "Please enter a package names to search for." << std::endl;
+      } else {
+        args::search(static_cast<std::string>(argv[2]));
       }
     } else if (strcmp(argv[1], "uninstall") == 0) {
       if (argc < 3) {
@@ -228,7 +237,7 @@ std::string findVcbld(const std::string &PATH) {
     sep = ":";
     foundSep = PATH.find_first_of(sep);
   }
-  
+
   if (PATH.find("/vcpkg/") != std::string::npos) {
     temp = PATH.substr(0, foundVcpkg + 6);
   }

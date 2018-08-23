@@ -24,22 +24,28 @@ Builder::Builder(const std::string &buildType)
 
   this->_dbgDir = this->outputDirectory() + "/" + "debug";
   this->_rlsDir = this->outputDirectory() + "/" + "release";
+
+  if (this->_buildType == "debug") {
+    this->_buildDir = this->_dbgDir;
+  } else {
+    this->_buildDir = this->_rlsDir;
+  }
 }
 
 void Builder::compile() {
 
   if (this->_buildType == "release") {
     this->_compileCommand << "cd " << this->_rlsDir << " && \""
-                          << this->compilerPath() << "\" " << this->headerPaths()
-                          << " " << this->compilerFlags() << " "
-                          << this->compilerDefines() << " "
+                          << this->compilerPath() << "\" "
+                          << this->headerPaths() << " " << this->compilerFlags()
+                          << " " << this->compilerDefines() << " "
                           << "-std=" << this->language() << this->standard()
                           << " -c " << this->sourceFiles();
   } else {
     this->_compileCommand << "cd " << this->_dbgDir << " && \""
-                          << this->compilerPath() << "\" " << this->headerPaths()
-                          << " " << this->compilerFlags() << " "
-                          << this->compilerDefines() << " -g "
+                          << this->compilerPath() << "\" "
+                          << this->headerPaths() << " " << this->compilerFlags()
+                          << " " << this->compilerDefines() << " -g "
                           << "-std=" << this->language() << this->standard()
                           << " -c " << this->sourceFiles();
   }
@@ -50,41 +56,16 @@ void Builder::compile() {
 }
 
 void Builder::appLink() {
-  std::vector<fs::directory_entry> dirEntry;
-  std::string temp, tempPath;
-  if (this->_buildType == "debug") {
-    tempPath = this->_dbgDir;
-  } else {
-    tempPath = this->_rlsDir;
-  }
-
-  if (fs::is_directory(static_cast<fs::path>(tempPath))) {
-    std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
-              back_inserter(dirEntry));
-    std::sort(dirEntry.begin(), dirEntry.end());
-    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
-                   dirEntry.end());
-
-    for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
-         it != dirEntry.end(); ++it) {
-      if (fs::path((*it).path().filename().string()).extension() == ".o" ||
-          fs::path((*it).path().filename().string()).extension() == ".obj") {
-        temp += " ";
-        temp += (*it).path().filename().string();
-      }
-    }
-  }
-
   if (this->_buildType == "release") {
     this->_appLinkCmnd << "cd " << this->_rlsDir << " && \""
                        << this->compilerPath() << "\" -o " << this->binaryName()
-                       << " " << temp << " " << this->rlsLibPaths() << " "
-                       << this->linkerFlags();
+                       << " " << this->objPath(this->_buildDir) << " "
+                       << this->rlsLibPaths() << " " << this->linkerFlags();
   } else {
     this->_appLinkCmnd << "cd " << this->_dbgDir << " && \""
                        << this->compilerPath() << "\" -o " << this->binaryName()
-                       << " " << temp << " " << this->dbgLibPaths() << " "
-                       << this->linkerFlags();
+                       << " " << this->objPath(this->_buildDir) << " "
+                       << this->dbgLibPaths() << " " << this->linkerFlags();
   }
   int systemRet = system(this->_appLinkCmnd.str().c_str());
   if (systemRet == -1) {
@@ -93,30 +74,6 @@ void Builder::appLink() {
 }
 
 void Builder::dylibLink() {
-  std::vector<fs::directory_entry> dirEntry;
-  std::string temp, tempPath;
-  if (this->_buildType == "debug") {
-    tempPath = this->_dbgDir;
-  } else {
-    tempPath = this->_rlsDir;
-  }
-
-  if (fs::is_directory(static_cast<fs::path>(tempPath))) {
-    std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
-              back_inserter(dirEntry));
-    std::sort(dirEntry.begin(), dirEntry.end());
-    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
-                   dirEntry.end());
-
-    for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
-         it != dirEntry.end(); ++it) {
-      if (fs::path((*it).path().filename().string()).extension() == ".o") {
-        temp += " ";
-        temp += (*it).path().string();
-      }
-    }
-  }
-
   std::string dylibArg, dylibExt;
   if (this->compilerPath().find("clang") != std::string::npos) {
     dylibArg = " -dynamiclib ";
@@ -129,12 +86,14 @@ void Builder::dylibLink() {
   if (this->_buildType == "release") {
     this->_libLinkCmnd << "cd " << this->_rlsDir << " && \""
                        << this->compilerPath() << "\"" << dylibArg << " -o "
-                       << this->binaryName() << dylibExt << " " << temp << " "
+                       << this->binaryName() << dylibExt << " "
+                       << this->objPath(this->_buildDir) << " "
                        << this->rlsLibPaths() << " " << this->linkerFlags();
   } else {
     this->_libLinkCmnd << "cd " << this->_dbgDir << " && \""
                        << this->compilerPath() << "\"" << dylibArg << " -o "
-                       << this->binaryName() << dylibExt << " " << temp << " "
+                       << this->binaryName() << dylibExt << " "
+                       << this->objPath(this->_buildDir) << " "
                        << this->dbgLibPaths() << " " << this->linkerFlags();
   }
   int systemRet = system(this->_libLinkCmnd.str().c_str());
@@ -144,39 +103,16 @@ void Builder::dylibLink() {
 }
 
 void Builder::archive() {
-  std::vector<fs::directory_entry> dirEntry;
-  std::string temp, tempPath;
-  if (this->_buildType == "debug") {
-    tempPath = this->_dbgDir;
-  } else {
-    tempPath = this->_rlsDir;
-  }
-
-  if (fs::is_directory(static_cast<fs::path>(tempPath))) {
-    std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
-              back_inserter(dirEntry));
-    std::sort(dirEntry.begin(), dirEntry.end());
-    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
-                   dirEntry.end());
-    for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
-         it != dirEntry.end(); ++it) {
-      if (fs::path((*it).path().filename().string()).extension() == ".o") {
-        temp += " ";
-        temp += (*it).path().string();
-      }
-    }
-  }
-
   if (this->_buildType == "release") {
     this->_archiveCmnd << "cd " << this->_rlsDir << " && \""
-                       << this->archiverPath() << "\" rcs " << this->binaryName()
-                       << ".a"
-                       << " " << temp;
+                       << this->archiverPath() << "\" rcs "
+                       << this->binaryName() << ".a"
+                       << " " << this->objPath(this->_buildDir);
   } else {
     this->_archiveCmnd << "cd " << this->_dbgDir << " && \""
-                       << this->archiverPath() << "\" rcs " << this->binaryName()
-                       << ".a"
-                       << " " << temp;
+                       << this->archiverPath() << "\" rcs "
+                       << this->binaryName() << ".a"
+                       << " " << this->objPath(this->_buildDir);
   }
   int systemRet = system(this->_archiveCmnd.str().c_str());
   if (systemRet == -1) {

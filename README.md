@@ -13,8 +13,9 @@ SDK commands:
     includes                          Generates includePath.json file.
     gen                               Generates CMakeLists.txt file.
     list                              Shows a list of packages added to the project.
-    available                         Shows a list of installed vcpkg packages.
-    search                            Search within installed vcpkg packages.
+    all                               Shows a list of installed vcpkg packages.
+    find        [package name]        Search within installed vcpkg packages.
+    search      [package name]        Search vcpkg ports for packages to install.
     add       	[package names]       Add package to the project.
     remove    	[package names]       Remove package from the project.
     install   	[package names]       Install packages using vcpkg and add project.
@@ -25,6 +26,13 @@ SDK commands:
     help                              Show help.
 
     --version                         Current vcbld version in use.
+```
+
+#### Some shortcut flags:
+You can use the -g flag to signify debug, and the -r flag to signify release.
+```
+$ vcbld build -g
+$ vcbld build -r
 ```
 
 ## Getting vcbld:

@@ -202,7 +202,7 @@ $ vcbld run release
 ```
 Or to generate a visual studio project for example, you can run:
 ```
-$ vcbld cmake -G "Visual Studio 15 2017 Win64" ..
+$ vcbld cmake -G "Visual Studio 15 2017 Win64"
 ```
 
 Alternatively, you can run cmake manually on the generated CMakeLists.txt file, in which case you would need to use the vcpkg toolchain definition which should point to your vcpkg.cmake script. For more information, check the vcpkg [readme](https://github.com/Microsoft/vcpkg) or documentation:

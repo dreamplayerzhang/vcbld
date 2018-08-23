@@ -131,10 +131,10 @@ void cmakeGen() {
             << "set(SOURCE_FILES "
             << prepClass.sourceFilesSinPath() << ")\n\n"
             << "set(DBG_LIB_PATH "
-               "${_VCPKG_ROOT_DIR}/installed/${VCPKG_TARGET_TRIPLET}/debug/"
+               "${CMAKE_PREFIX_PATH}/debug/"
                "lib)\n"
             << "set(RLS_LIB_PATH "
-               "${_VCPKG_ROOT_DIR}/installed/${VCPKG_TARGET_TRIPLET}/lib)\n\n"
+               "${CMAKE_PREFIX_PATH}/lib)\n\n"
             << prepClass.cmakeOutput() << "\n";
 
         if (prepClass.binaryType() == "app") {
@@ -146,7 +146,7 @@ void cmakeGen() {
         }
 
         ofs << "target_include_directories(${PROJECT_NAME} PUBLIC "
-               "${_VCPKG_ROOT_DIR}/installed/${VCPKG_TARGET_TRIPLET}"
+               "${CMAKE_PREFIX_PATH}"
             << "/include)\n"
             << "target_include_directories(${PROJECT_NAME} PUBLIC "
                "${CMAKE_CURRENT_SOURCE_DIR}/../include)\n";

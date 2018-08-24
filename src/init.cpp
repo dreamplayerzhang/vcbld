@@ -36,7 +36,7 @@
 #define PATHSEP "/"
 #endif
 #else
-#define PLATFORM_NAME NULL
+#define PLATFORM_NAME nullptr
 #endif
 
 namespace fs = std::experimental::filesystem;
@@ -46,7 +46,7 @@ namespace init {
 void setup(const fs::path &vcbldPath) {
   std::string PATH = std::getenv("PATH");
   std::string brewLLVM = "/usr/local/opt/llvm/bin";
-  std::vector<std::string> paths, cCompilers, cppCompilers, cmakePaths,
+  std::vector<fs::path> paths, cCompilers, cppCompilers, cmakePaths,
       makePaths, archiverPaths, vcpkgPaths;
   std::string cCompilerPath, cppCompilerPath, cmakePath, makePath, archiverPath,
       vcpkgPath;
@@ -57,14 +57,14 @@ void setup(const fs::path &vcbldPath) {
     paths.emplace_back(brewLLVM);
   }
   if (fs::exists(vcbldPath)) {
-    paths.emplace_back(fs::canonical(vcbldPath).string());
+    paths.emplace_back(fs::canonical(vcbldPath));
     paths.emplace_back(
         findCmake(fs::canonical(vcbldPath) / "downloads" / "tools"));
   }
 
   try {
     finder(paths, "C:/");
-    if (std::getenv("HOME") != NULL)
+    if (std::getenv("HOME") != nullptr)
       finder(paths, std::getenv("HOME"));
     if ((fs::canonical(vcbldPath).filename().string() == "release" || fs::canonical(vcbldPath).filename().string() == "Release") &&
         fs::is_directory(fs::canonical(vcbldPath)
@@ -75,101 +75,101 @@ void setup(const fs::path &vcbldPath) {
           paths,
           fs::canonical(vcbldPath).parent_path().parent_path().parent_path());
     }
-    if (std::getenv("PROGRAMFILES") != NULL)
+    if (std::getenv("PROGRAMFILES") != nullptr)
       finder(paths, std::getenv("PROGRAMFILES"));
-    if (std::getenv("MINGW_HOME") != NULL)
+    if (std::getenv("MINGW_HOME") != nullptr)
       finder(paths, std::getenv("MINGW_HOME"));
-  } catch (const std::exception &e) {
+  } catch (...) {
     // fail quietly
   }
 
   std::sort(paths.begin(), paths.end());
   paths.erase(std::unique(paths.begin(), paths.end()), paths.end());
 
-  for (std::vector<std::string>::iterator it = paths.begin(); it != paths.end();
+  for (std::vector<fs::path>::iterator it = paths.begin(); it != paths.end();
        ++it) {
     replaceHome(*it);
 
-    if (fs::exists((*it) + "/gcc")) {
-      cCompilers.emplace_back((*it) + "/gcc");
+    if (fs::exists((*it) / "gcc")) {
+      cCompilers.emplace_back((*it) / "gcc");
     }
-    if (fs::exists((*it) + "/gcc.exe")) {
-      cCompilers.emplace_back((*it) + "\\gcc.exe");
+    if (fs::exists((*it) / "gcc.exe")) {
+      cCompilers.emplace_back((*it) / "gcc.exe");
     }
-    if (fs::exists((*it) + "/gcc-8")) {
-      cCompilers.emplace_back((*it) + "/gcc-8");
+    if (fs::exists((*it) / "gcc-8")) {
+      cCompilers.emplace_back((*it) / "gcc-8");
     }
-    if (fs::exists((*it) + "/gcc-7")) {
-      cCompilers.emplace_back((*it) + "/gcc-7");
+    if (fs::exists((*it) / "gcc-7")) {
+      cCompilers.emplace_back((*it) / "gcc-7");
     }
-    if (fs::exists((*it) + "/gcc-6")) {
-      cCompilers.emplace_back((*it) + "/gcc-6");
+    if (fs::exists((*it) / "gcc-6")) {
+      cCompilers.emplace_back((*it) / "gcc-6");
     }
-    if (fs::exists((*it) + "/gcc-5")) {
-      cCompilers.emplace_back((*it) + "/gcc-6");
+    if (fs::exists((*it) / "gcc-5")) {
+      cCompilers.emplace_back((*it) / "gcc-6");
     }
-    if (fs::exists((*it) + "/clang") && !fs::is_directory((*it) + "/clang")) {
-      cCompilers.emplace_back((*it) + "/clang");
+    if (fs::exists((*it) / "clang") && !fs::is_directory((*it) / "clang")) {
+      cCompilers.emplace_back((*it) / "clang");
     }
-    if (fs::exists((*it) + "/clang.exe")) {
-      cCompilers.emplace_back((*it) + "\\clang.exe");
+    if (fs::exists((*it) / "clang.exe")) {
+      cCompilers.emplace_back((*it) / "clang.exe");
     }
-    if (fs::exists((*it) + "/clang-6.0")) {
-      cCompilers.emplace_back((*it) + "/clang-6.0");
+    if (fs::exists((*it) / "clang-6.0")) {
+      cCompilers.emplace_back((*it) / "clang-6.0");
     }
-    if (fs::exists((*it) + "/clang-5.0")) {
-      cCompilers.emplace_back((*it) + "/clang-5.0");
+    if (fs::exists((*it) / "clang-5.0")) {
+      cCompilers.emplace_back((*it) / "clang-5.0");
     }
-    if (fs::exists((*it) + "/clang-4.0")) {
-      cCompilers.emplace_back((*it) + "/clang-4.0");
+    if (fs::exists((*it) / "clang-4.0")) {
+      cCompilers.emplace_back((*it) / "clang-4.0");
     }
-    if (fs::exists((*it) + "/g++")) {
-      cppCompilers.emplace_back((*it) + "/g++");
+    if (fs::exists((*it) / "g++")) {
+      cppCompilers.emplace_back((*it) / "g++");
     }
-    if (fs::exists((*it) + "/g++.exe")) {
-      cppCompilers.emplace_back((*it) + "\\g++.exe");
+    if (fs::exists((*it) / "g++.exe")) {
+      cppCompilers.emplace_back((*it) / "g++.exe");
     }
-    if (fs::exists((*it) + "/g++-8")) {
-      cppCompilers.emplace_back((*it) + "/g++-8");
+    if (fs::exists((*it) / "/g++-8")) {
+      cppCompilers.emplace_back((*it) / "/g++-8");
     }
-    if (fs::exists((*it) + "/g++-7")) {
-      cppCompilers.emplace_back((*it) + "/g++-7");
+    if (fs::exists((*it) / "g++-7")) {
+      cppCompilers.emplace_back((*it) / "g++-7");
     }
-    if (fs::exists((*it) + "/g++-6")) {
-      cppCompilers.emplace_back((*it) + "/g++-6");
+    if (fs::exists((*it) / "g++-6")) {
+      cppCompilers.emplace_back((*it) / "g++-6");
     }
-    if (fs::exists((*it) + "/clang++")) {
-      cppCompilers.emplace_back((*it) + "/clang++");
+    if (fs::exists((*it) / "clang++")) {
+      cppCompilers.emplace_back((*it) / "clang++");
     }
-    if (fs::exists((*it) + "/clang++.exe")) {
-      cppCompilers.emplace_back((*it) + "\\clang++.exe");
+    if (fs::exists((*it) / "clang++.exe")) {
+      cppCompilers.emplace_back((*it) / "clang++.exe");
     }
-    if (fs::exists((*it) + "/cmake") && !fs::is_directory((*it) + "/cmake")) {
-      cmakePaths.emplace_back((*it) + "/cmake");
+    if (fs::exists((*it) / "cmake") && !fs::is_directory((*it) / "cmake")) {
+      cmakePaths.emplace_back((*it) / "cmake");
     }
-    if (fs::exists((*it) + "/cmake.exe")) {
-      cmakePaths.emplace_back((*it) + "\\cmake.exe");
+    if (fs::exists((*it) / "cmake.exe")) {
+      cmakePaths.emplace_back((*it) / "cmake.exe");
     }
-    if (fs::exists((*it) + "/make")) {
-      makePaths.emplace_back((*it) + "/make");
+    if (fs::exists((*it) / "make")) {
+      makePaths.emplace_back((*it) / "make");
     }
-    if (fs::exists((*it) + "/make.exe")) {
-      makePaths.emplace_back((*it) + "\\make.exe");
+    if (fs::exists((*it) / "make.exe")) {
+      makePaths.emplace_back((*it) / "make.exe");
     }
-    if (fs::exists((*it) + "/mingw32-make.exe")) {
-      makePaths.emplace_back((*it) + "\\mingw32-make.exe");
+    if (fs::exists((*it) / "mingw32-make.exe")) {
+      makePaths.emplace_back((*it) / "mingw32-make.exe");
     }
-    if (fs::exists((*it) + "/ar")) {
-      archiverPaths.emplace_back((*it) + "/ar");
+    if (fs::exists((*it) / "ar")) {
+      archiverPaths.emplace_back((*it) / "ar");
     }
-    if (fs::exists((*it) + "/ar.exe")) {
-      archiverPaths.emplace_back((*it) + "\\ar.exe");
+    if (fs::exists((*it) / "ar.exe")) {
+      archiverPaths.emplace_back((*it) / "ar.exe");
     }
-    if (fs::exists((*it) + "/vcpkg") && !fs::is_directory((*it) + "/vcpkg")) {
-      vcpkgPaths.emplace_back((*it) + "/vcpkg");
+    if (fs::exists((*it) / "vcpkg") && !fs::is_directory((*it) / "vcpkg")) {
+      vcpkgPaths.emplace_back((*it) / "vcpkg");
     }
-    if (fs::exists((*it) + "/vcpkg.exe")) {
-      vcpkgPaths.emplace_back((*it) + "\\vcpkg.exe");
+    if (fs::exists((*it) / "vcpkg.exe")) {
+      vcpkgPaths.emplace_back((*it) / "vcpkg.exe");
     }
   }
 
@@ -185,12 +185,12 @@ void setup(const fs::path &vcbldPath) {
   }
 
   if (!fs::exists("conf.json")) {
-    cCompilerPath = chooser(cCompilers, "C compiler.");
-    cppCompilerPath = chooser(cppCompilers, "C++ compiler.");
-    cmakePath = chooser(cmakePaths, "cmake executable.");
-    makePath = chooser(makePaths, "make executable.");
+    cCompilerPath = chooser(cCompilers, " C compiler.");
+    cppCompilerPath = chooser(cppCompilers, " C++ compiler.");
+    cmakePath = chooser(cmakePaths, " cmake executable.");
+    makePath = chooser(makePaths, " make executable.");
     archiverPath = chooser(archiverPaths, "n archiver.");
-    vcpkgPath = chooser(vcpkgPaths, "vcpkg executable.");
+    vcpkgPath = chooser(vcpkgPaths, " vcpkg executable.");
     posixify(vcpkgPath);
 
     try {
@@ -330,34 +330,36 @@ void init(const std::string &binType) {
   }
 }
 
-void findPathDirs(std::string &PATH, std::vector<std::string> &dirs) {
-  std::string rem;
+void findPathDirs(std::string &PATH, std::vector<fs::path> &dirs) {
+  std::string rem = PATH;
   size_t foundSep;
   std::string sep;
-  if (PATH.find(";") != std::string::npos) {
+  if (rem.find(";") != std::string::npos) {
     sep = ";";
-    foundSep = PATH.find_first_of(sep);
+    foundSep = rem.find_first_of(sep);
   } else {
     sep = ":";
-    foundSep = PATH.find_first_of(sep);
+    foundSep = rem.find_first_of(sep);
   }
-  dirs.emplace_back(PATH.substr(0, foundSep));
-  rem = PATH.substr(foundSep + 1, PATH.length());
+  dirs.emplace_back(rem.substr(0, foundSep));
+  rem = rem.substr(foundSep + 1, rem.length());
   if (rem.find_last_of(sep) != std::string::npos) {
     findPathDirs(rem, dirs);
   }
 }
 
-void replaceHome(std::string &path) {
+void replaceHome(fs::path &path) {
   const char *home = std::getenv("HOME");
-  if (home != NULL) {
-    if (path[0] == '~') {
-      path.replace(0, 1, home);
+  std::string temp = path.string();
+  if (home != nullptr) {
+    if (temp[0] == '~') {
+      temp.replace(0, 1, home);
+      path = temp;
     }
   }
 }
 
-std::string findCmake(const std::string &dir) {
+fs::path findCmake(const fs::path &dir) {
   std::string temp;
   std::string fileName = "bin";
   const fs::recursive_directory_iterator end;
@@ -367,13 +369,11 @@ std::string findCmake(const std::string &dir) {
                                    return e.path().filename() == fileName;
                                  });
     if (it == end) {
-      temp = "";
       return temp;
     } else {
-      temp = fs::canonical(it->path()).string();
-      posixify(temp);
+      temp = fs::canonical(it->path());
     }
-  } catch (const std::exception &exception) {
+  } catch (...) {
     // fail quietly
   }
   return temp;
@@ -386,7 +386,7 @@ void posixify(std::string &path) {
   }
 }
 
-void finder(std::vector<std::string> &vector, const std::string &dir) {
+void finder(std::vector<fs::path> &vector, const fs::path &dir) {
   if (fs::is_directory(dir)) {
     std::vector<fs::directory_entry> dirEntry;
     std::copy(fs::directory_iterator(dir), fs::directory_iterator(),
@@ -401,14 +401,14 @@ void finder(std::vector<std::string> &vector, const std::string &dir) {
         vector.emplace_back((*it).path().string());
         if (fs::exists((*it).path() / "downloads" / "tools")) {
           vector.emplace_back(
-              findCmake(((*it).path() / "downloads" / "tools").string()));
+              findCmake((*it).path() / "downloads" / "tools"));
         }
       }
     }
   }
 }
 
-std::string chooser(std::vector<std::string> &vector, const std::string &cli) {
+std::string chooser(std::vector<fs::path> &vector, const std::string &cli) {
   std::sort(vector.begin(), vector.end());
   vector.erase(std::unique(vector.begin(), vector.end()), vector.end());
   std::string temp;
@@ -420,14 +420,14 @@ std::string chooser(std::vector<std::string> &vector, const std::string &cli) {
   } else {
     std::cout << "list of available c compilers:" << std::endl;
     int i = 1;
-    for (std::vector<std::string>::const_iterator it = vector.begin();
+    for (std::vector<fs::path>::const_iterator it = vector.begin();
          it != vector.end(); ++it) {
-      std::cout << i << ") " << *it << std::endl;
+      std::cout << i << ") " << (*it).string() << std::endl;
       i++;
     }
-    std::cout << "Please choose a " << cli << std::endl;
+    std::cout << "Please choose a" << cli << std::endl;
     try {
-      int entry;
+      unsigned int entry;
       std::cin >> entry;
       if (entry <= vector.size() && entry != 0 &&
           typeid(entry) == typeid(int)) {

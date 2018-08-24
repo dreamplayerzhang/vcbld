@@ -15,12 +15,12 @@ namespace vcbld {
 namespace init {
 void init(const std::string &binType);
 void setup(const fs::path &vcbldPath);
-void findPathDirs(std::string &PATH, std::vector<std::string> &dirs);
-std::string findCmake(const std::string &dir);
-void replaceHome(std::string &path);
-void finder(std::vector<std::string> &vector , const std::string &cli);
+void findPathDirs(std::string &PATH, std::vector<fs::path> &dirs);
+fs::path findCmake(const fs::path &path);
+void replaceHome(fs::path &path);
+void finder(std::vector<fs::path> &vector , const fs::path &dir);
 void posixify(std::string &path);
-std::string chooser(std::vector<std::string> &vector , const std::string &cli);
+std::string chooser(std::vector<fs::path> &vector , const std::string &cli);
 
 } // namespace init
 } // namespace vcbld

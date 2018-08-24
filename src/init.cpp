@@ -490,8 +490,12 @@ std::string cCompiler(std::vector<std::string> &cCompilers) {
     }
   }
   if (temp != "") {
-    temp = fs::canonical(temp).string();
-    posixify(temp);
+    try {
+      temp = fs::canonical(temp).string();
+      posixify(temp);
+    } catch (...) {
+      posixify(temp);
+    }
   }
   return temp;
 }
@@ -529,8 +533,12 @@ std::string cppCompiler(std::vector<std::string> &cppCompilers) {
     }
   }
   if (temp != "") {
-    temp = fs::canonical(temp).string();
-    posixify(temp);
+    try {
+      temp = fs::canonical(temp).string();
+      posixify(temp);
+    } catch (...) {
+      posixify(temp);
+    }
   }
   return temp;
 }

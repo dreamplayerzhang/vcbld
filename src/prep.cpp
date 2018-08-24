@@ -187,7 +187,7 @@ std::string PrepClass::headerPaths() {
   std::ostringstream temp;
   temp << " -I\"" << this->sourceDirectory() << "\" -I\""
        << this->outputDirectory() << "\"";
-  if (this->includeDirectory() != "") {
+  if (this->includeDirectory() != "" && fs::exists(this->includeDirectory())) {
     temp << " -I\"" << this->includeDirectory() << "\"";
   }
   temp << " -I\"" << this->vcpkgDirPath() << "/"
@@ -230,7 +230,8 @@ std::string PrepClass::stripLibName(const std::string &lib) {
 }
 
 std::string PrepClass::dbgLibPaths() {
-  std::ostringstream temp;
+  if (this->libDirectory() != "" && fs::exists(this->libDirectory() + "/" + "debug")) {
+      std::ostringstream temp;
   std::string localDbgLibs = this->libDirectory() + "/" + "debug";
   for (std::vector<std::string>::iterator jt = this->_dbgLocalLibNames.begin();
        jt != this->_dbgLocalLibNames.end(); ++jt) {
@@ -246,10 +247,14 @@ std::string PrepClass::dbgLibPaths() {
          << "-l" << stripLibName(*it);
   }
   return temp.str();
+  } else {
+    return "";
+  }
 }
 
 std::string PrepClass::rlsLibPaths() {
-  std::ostringstream temp;
+  if (this->libDirectory() != "" && fs::exists(this->libDirectory() + "/release")) {
+      std::ostringstream temp;
   std::string localRlsLibs = this->libDirectory() + "/" + "release";
   for (std::vector<std::string>::iterator jt = this->_rlsLocalLibNames.begin();
        jt != this->_rlsLocalLibNames.end(); ++jt) {
@@ -265,6 +270,9 @@ std::string PrepClass::rlsLibPaths() {
          << "-l" << stripLibName(*it);
   }
   return temp.str();
+  } else {
+    return "";
+  }
 }
 
 bool PrepClass::hasComponents(const std::string &libName) {

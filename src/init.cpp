@@ -45,98 +45,117 @@ namespace vcbld {
 namespace init {
 void setup(const fs::path &vcbldPath) {
   std::string PATH = std::getenv("PATH");
-  std::string cmakeDir = vcbldPath.string() + "/downloads/tools";
   std::string brewLLVM = "/usr/local/opt/llvm/bin";
   std::vector<std::string> paths, cCompilers, cppCompilers, cmakePaths,
-      makePaths, archiverPaths;
-  std::string cCompilerPath, cppCompilerPath, cmakePath, makePath, archiverPath;
+      makePaths, archiverPaths, vcpkgPaths;
+  std::string cCompilerPath, cppCompilerPath, cmakePath, makePath, archiverPath,
+      vcpkgPath;
 
   findPathDirs(PATH, paths);
-  paths.emplace_back(findCmake(cmakeDir));
 
   if (fs::exists(brewLLVM)) {
     paths.emplace_back(brewLLVM);
   }
+  if (fs::exists(vcbldPath)) {
+    paths.emplace_back(fs::canonical(vcbldPath).string());
+  }
 
-  if (PLATFORM_NAME == "x64-windows" || PLATFORM_NAME == "x86-windows") {
-    try {
-      if (fs::is_directory("C:/")) {
-        std::vector<fs::directory_entry> dirEntry;
-        std::copy(fs::directory_iterator("C:/"), fs::directory_iterator(),
-                  back_inserter(dirEntry));
-        for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
-             it != dirEntry.end(); ++it) {
-          if ((*it).path().string().find("MinGW") != std::string::npos) {
+  try {
+    if (fs::is_directory("C:/")) {
+      std::vector<fs::directory_entry> dirEntry;
+      std::copy(fs::directory_iterator("C:/"), fs::directory_iterator(),
+                back_inserter(dirEntry));
+      for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
+           it != dirEntry.end(); ++it) {
+        if ((*it).path().string().find("MinGW") != std::string::npos ||
+            (*it).path().string().find("cmake") != std::string::npos) {
+          paths.emplace_back((*it).path().string() + "\\bin");
+        }
+        if (fs::exists((*it).path().string() + "/vcpkg")) {
+          paths.emplace_back((*it).path().string());
+          if (fs::exists((*it).path().string() + "/downloads/tools")) {
+            paths.emplace_back(
+                findCmake((*it).path().string() + "/downloads/tools"));
+          }
+        }
+      }
+    }
+  } catch (...) {
+    // fail quietly
+  }
+
+  try {
+    const char *progFiles = std::getenv("HOME");
+    if (progFiles != NULL) {
+      if (fs::is_directory(progFiles)) {
+        std::vector<fs::directory_entry> dirEntry3;
+        std::copy(fs::directory_iterator(progFiles), fs::directory_iterator(),
+                  back_inserter(dirEntry3));
+        for (std::vector<fs::directory_entry>::iterator it = dirEntry3.begin();
+             it != dirEntry3.end(); ++it) {
+          if ((*it).path().string().find("MinGW") != std::string::npos ||
+              (*it).path().string().find("cmake") != std::string::npos) {
+            paths.emplace_back((*it).path().string() + "\\bin");
+          }
+          if (fs::exists((*it).path().string() + "/vcpkg")) {
+            paths.emplace_back((*it).path().string());
+            if (fs::exists((*it).path().string() + "/downloads/tools")) {
+              paths.emplace_back(
+                  findCmake((*it).path().string() + "/downloads/tools"));
+            }
+          }
+        }
+      }
+    }
+  } catch (...) {
+    // fail quietly
+  }
+
+  try {
+    const char *progFiles = std::getenv("PROGRAMFILES");
+    if (progFiles != NULL) {
+      if (fs::is_directory(progFiles)) {
+        std::vector<fs::directory_entry> dirEntry3;
+        std::copy(fs::directory_iterator(progFiles), fs::directory_iterator(),
+                  back_inserter(dirEntry3));
+        for (std::vector<fs::directory_entry>::iterator it = dirEntry3.begin();
+             it != dirEntry3.end(); ++it) {
+          if ((*it).path().string().find("MinGW") != std::string::npos ||
+              (*it).path().string().find("cmake") != std::string::npos) {
+            paths.emplace_back((*it).path().string() + "\\bin");
+            if (fs::exists((*it).path().string() + "/vcpkg")) {
+              paths.emplace_back((*it).path().string());
+              if (fs::exists((*it).path().string() + "/downloads/tools")) {
+                paths.emplace_back(
+                    findCmake((*it).path().string() + "/downloads/tools"));
+              }
+            }
+          }
+        }
+      }
+    }
+  } catch (...) {
+    // fail quietly
+  }
+
+  try {
+    const char *progFiles = std::getenv("MINGW_HOME");
+    if (progFiles != NULL) {
+      if (fs::is_directory(progFiles)) {
+        std::vector<fs::directory_entry> dirEntry3;
+        std::copy(fs::directory_iterator(progFiles), fs::directory_iterator(),
+                  back_inserter(dirEntry3));
+        for (std::vector<fs::directory_entry>::iterator it = dirEntry3.begin();
+             it != dirEntry3.end(); ++it) {
+          if ((*it).path().string().find("MinGW") != std::string::npos ||
+              (*it).path().string().find("cmake") != std::string::npos) {
             paths.emplace_back((*it).path().string() + "\\bin");
           }
         }
       }
-    } catch (...) {
-      // fail quietly
     }
-
-    try {
-      const char *progFiles = std::getenv("HOME");
-      if (progFiles != NULL) {
-        if (fs::is_directory(progFiles)) {
-          std::vector<fs::directory_entry> dirEntry3;
-          std::copy(fs::directory_iterator(progFiles), fs::directory_iterator(),
-                    back_inserter(dirEntry3));
-          for (std::vector<fs::directory_entry>::iterator it =
-                   dirEntry3.begin();
-               it != dirEntry3.end(); ++it) {
-            if ((*it).path().string().find("MinGW") != std::string::npos ||
-                (*it).path().string().find("cmake") != std::string::npos) {
-              paths.emplace_back((*it).path().string() + "\\bin");
-            }
-          }
-        }
-      }
-    } catch (...) {
-      // fail quietly
-    }
-
-    try {
-      const char *progFiles = std::getenv("PROGRAMFILES");
-      if (progFiles != NULL) {
-        if (fs::is_directory(progFiles)) {
-          std::vector<fs::directory_entry> dirEntry3;
-          std::copy(fs::directory_iterator(progFiles), fs::directory_iterator(),
-                    back_inserter(dirEntry3));
-          for (std::vector<fs::directory_entry>::iterator it =
-                   dirEntry3.begin();
-               it != dirEntry3.end(); ++it) {
-            if ((*it).path().string().find("MinGW") != std::string::npos ||
-                (*it).path().string().find("cmake") != std::string::npos) {
-              paths.emplace_back((*it).path().string() + "\\bin");
-            }
-          }
-        }
-      }
-    } catch (...) {
-      // fail quietly
-    }
-
-    try {
-      const char *progFiles = std::getenv("MINGW_HOME");
-      if (progFiles != NULL) {
-        if (fs::is_directory(progFiles)) {
-          std::vector<fs::directory_entry> dirEntry3;
-          std::copy(fs::directory_iterator(progFiles), fs::directory_iterator(),
-                    back_inserter(dirEntry3));
-          for (std::vector<fs::directory_entry>::iterator it =
-                   dirEntry3.begin();
-               it != dirEntry3.end(); ++it) {
-            if ((*it).path().string().find("MinGW") != std::string::npos ||
-                (*it).path().string().find("cmake") != std::string::npos) {
-              paths.emplace_back((*it).path().string() + "\\bin");
-            }
-          }
-        }
-      }
-    } catch (...) {
-      // fail quietly
-    }
+  } catch (...) {
+    // fail quietly
   }
 
   std::sort(paths.begin(), paths.end());
@@ -221,6 +240,12 @@ void setup(const fs::path &vcbldPath) {
     if (fs::exists((*it) + "/ar.exe")) {
       archiverPaths.emplace_back((*it) + "\\ar.exe");
     }
+    if (fs::exists((*it) + "/vcpkg")) {
+      vcpkgPaths.emplace_back((*it) + "/vcpkg");
+    }
+    if (fs::exists((*it) + "/vcpkg.exe")) {
+      vcpkgPaths.emplace_back((*it) + "\\vcpkg.exe");
+    }
   }
 
   if (fs::exists("conf.json")) {
@@ -240,8 +265,8 @@ void setup(const fs::path &vcbldPath) {
     cmakePath = cmake(cmakePaths);
     makePath = make(makePaths);
     archiverPath = archiver(archiverPaths);
-    std::string vcpkgDir = fs::canonical(vcbldPath).string();
-    posixify(vcpkgDir);
+    vcpkgPath = vcpkg(vcpkgPaths);
+    posixify(vcpkgPath);
 
     try {
       std::ofstream confOutput("conf.json");
@@ -249,7 +274,7 @@ void setup(const fs::path &vcbldPath) {
         confOutput << std::setw(4) << "{\n\t\"cCompilerPath\" : \""
                    << cCompilerPath << "\",\n\t"
                    << "\"cppCompilerPath\" : \"" << cppCompilerPath << "\",\n\t"
-                   << "\"vcpkgDirectory\" : \"" << vcpkgDir << "\",\n\t"
+                   << "\"vcpkgPath\" : \"" << vcpkgPath << "\",\n\t"
                    << "\"architecture\" : \"" << PLATFORM_NAME << "\",\n\t"
                    << "\"cmakePath\" : \"" << cmakePath << "\",\n\t"
                    << "\"makePath\" : \"" << makePath << "\",\n\t"
@@ -399,8 +424,8 @@ void findPathDirs(std::string &PATH, std::vector<std::string> &dirs) {
 }
 
 void replaceHome(std::string &path) {
-  if (PLATFORM_NAME != "x64-windows" && PLATFORM_NAME != "x86-windows") {
-    std::string home = std::getenv("HOME");
+  const char *home = std::getenv("HOME");
+  if (home != NULL) {
     if (path[0] == '~') {
       path.replace(0, 1, home);
     }
@@ -430,7 +455,9 @@ std::string findCmake(const std::string &dir) {
   return temp;
 }
 
-std::string cCompiler(const std::vector<std::string> &cCompilers) {
+std::string cCompiler(std::vector<std::string> &cCompilers) {
+  std::sort(cCompilers.begin(), cCompilers.end());
+  cCompilers.erase(std::unique(cCompilers.begin(), cCompilers.end()), cCompilers.end());
   std::string temp;
   if (cCompilers.size() == 0) {
     std::cout << "vcbld couldn't locate a c compiler." << std::endl;
@@ -467,7 +494,9 @@ std::string cCompiler(const std::vector<std::string> &cCompilers) {
   return temp;
 }
 
-std::string cppCompiler(const std::vector<std::string> &cppCompilers) {
+std::string cppCompiler(std::vector<std::string> &cppCompilers) {
+  std::sort(cppCompilers.begin(), cppCompilers.end());
+  cppCompilers.erase(std::unique(cppCompilers.begin(), cppCompilers.end()), cppCompilers.end());
   std::string temp;
   if (cppCompilers.size() == 0) {
     std::cout << "vcbld couldn't locate a c++ compiler." << std::endl;
@@ -504,7 +533,9 @@ std::string cppCompiler(const std::vector<std::string> &cppCompilers) {
   return temp;
 }
 
-std::string cmake(const std::vector<std::string> &cmakes) {
+std::string cmake(std::vector<std::string> &cmakes) {
+  std::sort(cmakes.begin(), cmakes.end());
+  cmakes.erase(std::unique(cmakes.begin(), cmakes.end()), cmakes.end());
   std::string temp;
   if (cmakes.size() == 0) {
     std::cout << "vcbld couldn't locate a cmake executable." << std::endl;
@@ -541,7 +572,9 @@ std::string cmake(const std::vector<std::string> &cmakes) {
   return temp;
 }
 
-std::string make(const std::vector<std::string> &makes) {
+std::string make(std::vector<std::string> &makes) {
+  std::sort(makes.begin(), makes.end());
+  makes.erase(std::unique(makes.begin(), makes.end()), makes.end());
   std::string temp;
   if (makes.size() == 0) {
     std::cout << "vcbld couldn't locate a make executable." << std::endl;
@@ -576,7 +609,9 @@ std::string make(const std::vector<std::string> &makes) {
   }
   return temp;
 }
-std::string archiver(const std::vector<std::string> &archivers) {
+std::string archiver(std::vector<std::string> &archivers) {
+  std::sort(archivers.begin(), archivers.end());
+  archivers.erase(std::unique(archivers.begin(), archivers.end()), archivers.end());
   std::string temp;
   if (archivers.size() == 0) {
     std::cout << "vcbld couldn't locate an archiver." << std::endl;
@@ -604,6 +639,45 @@ std::string archiver(const std::vector<std::string> &archivers) {
       }
     } catch (...) {
       temp = archivers[0];
+    }
+  }
+  if (temp != "") {
+    temp = fs::canonical(temp).string();
+    posixify(temp);
+  }
+  return temp;
+}
+
+std::string vcpkg(std::vector<std::string> &vcpkgs) {
+  std::sort(vcpkgs.begin(), vcpkgs.end());
+  vcpkgs.erase(std::unique(vcpkgs.begin(), vcpkgs.end()), vcpkgs.end());
+  std::string temp;
+  if (vcpkgs.size() == 0) {
+    std::cout << "vcbld couldn't locate a vcpkg executable." << std::endl;
+    temp = "";
+  } else if (vcpkgs.size() == 1) {
+    temp = vcpkgs[0];
+  } else {
+    std::cout << "list of available vcpkg executables:" << std::endl;
+    int ar_it = 1;
+    for (std::vector<std::string>::const_iterator it = vcpkgs.begin();
+         it != vcpkgs.end(); ++it) {
+      std::cout << ar_it << ") " << *it << std::endl;
+      ar_it++;
+    }
+    std::cout << "Please choose your default vcpkg executable." << std::endl;
+    try {
+      int entry;
+      std::cin >> entry;
+      if (entry <= vcpkgs.size() && entry != 0 &&
+          typeid(entry) == typeid(int)) {
+        temp = vcpkgs[entry - 1];
+      } else {
+        std::cout << "Error!" << std::endl;
+        temp = vcpkgs[0];
+      }
+    } catch (...) {
+      temp = vcpkgs[0];
     }
   }
   if (temp != "") {

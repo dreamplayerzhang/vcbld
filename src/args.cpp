@@ -246,6 +246,9 @@ void commands() {
 void list() {
   try {
     PkgClass pkgClass;
+    if (pkgClass.packageNames().size() == 0) {
+      std::cout << "No packages were added to your project!" << std::endl;
+    }
     for (std::vector<std::string>::iterator it =
              pkgClass.packageNames().begin();
          it != pkgClass.packageNames().end(); ++it) {

@@ -140,10 +140,10 @@ ConfClass::ConfClass() {
 
   this->_architecture = confJson["architecture"].get<std::string>();
 
-  if (confJson["vcpkgDirectory"].get<std::string>() != "" &&
-      fs::exists(confJson["vcpkgDirectory"].get<std::string>())) {
+  if (confJson["vcpkgPath"].get<std::string>() != "" &&
+      fs::exists(confJson["vcpkgPath"].get<std::string>())) {
     this->_vcpkgDirectory =
-        fs::canonical(confJson["vcpkgDirectory"].get<std::string>()).string();
+        fs::canonical(confJson["vcpkgPath"].get<std::string>()).parent_path().string();
     posixify(this->_vcpkgDirectory);
   }
 

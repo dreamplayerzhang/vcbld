@@ -4,26 +4,26 @@ The vcbld executable is about 500kb large, and depends on the presence of vcpkg 
 
 ```
 SDK commands:
-    setup                             Creates a conf.json in the project directory.
-    new       	[app|dylib|statlib]   Starts a new project.
-    restore                           Restore missing dependencies in a project.
-    build     	[debug|release]       Builds the project.
-    clean       [debug|release]       Clean build output(s).
-    run       	[debug|release]       Executes the project.
-    includes                          Generates includePath.json file.
-    gen                               Generates CMakeLists.txt file.
-    list                              Shows a list of packages added to the project.
-    all                               Shows a list of installed vcpkg packages.
-    find        [package name]        Search within installed vcpkg packages.
-    search      [package name]        Search vcpkg ports for packages to install.
-    add       	[package names]       Add package to the project.
-    remove    	[package names]       Remove package from the project.
-    install   	[package names]       Install packages using vcpkg and add project.
-    uninstall 	[package names]       Uninstall packages using vcpkg and remove from project.
-    vcpkg     	[vcpkg command]       Runs vcpkg commands.
-    cmake     	[cmake arguments]     Runs cmake in the output directory using the vcpkg toolchain.
-    make      	[make arguments]      Runs make in the output directory.
-    help                              Show help.
+    setup                           Creates a conf.json in the project directory.
+    new        [app|dylib|statlib]  Starts a new project.
+    restore                         Restore missing dependencies in a project.
+    build      [debug|release]      Builds the project.
+    clean      [debug|release]      Clean build output(s).
+    run        [debug|release]      Executes the project.
+    includes                        Generates includePath.json file.
+    gen                             Generates CMakeLists.txt file.
+    list                            Shows a list of packages added to the project.
+    all                             Shows a list of installed vcpkg packages.
+    find       [package name]       Search within installed vcpkg packages.
+    search     [package name]       Search vcpkg ports for packages to install.
+    add        [package names]      Add package to the project.
+    remove     [package names]      Remove package from the project.
+    install    [package names]      Install packages using vcpkg and add project.
+    uninstall  [package names]      Uninstall packages using vcpkg and remove from project.
+    vcpkg      [vcpkg command]      Runs vcpkg commands.
+    cmake      [config + args]      Runs cmake in the output directory using the vcpkg toolchain.
+    make       [make arguments]     Runs make in the output directory.
+    help                            Show help.
 
     --version                         Current vcbld version in use.
 ```
@@ -36,7 +36,7 @@ $ vcbld build -r
 ```
 
 ## Getting vcbld:
-You can download a prebuilt vcbld executable [here](https://github.com/MoAlyousef/vcbld/releases). Currently there are prebuilt binaries for macOS X and debian linux. Otherwise, you can build from source. After downlowding or building the executable, move the vcbld executable to your default vcpkg directory where the vcpkg executable is located.
+You can download a prebuilt vcbld executable [here](https://github.com/MoAlyousef/vcbld/releases). Currently there are prebuilt binaries for macOS X and debian linux. Otherwise, you can build from source.
 
 ## Building vcbld:
 vcbld has a single external dependency, namely Nlohmann-json which is a header-only library and is included in this git repository. To build vcbld, create a directory called vcbld. Access that directory using the command line. Clone this repository and build using cmake. The command line commands would look something like this:
@@ -46,12 +46,17 @@ $ cd vcbld && mkdir bin && cd bin
 $ cmake .. && make
 ```
 Notice that vcbld needs cmake version 3.10 or higher to build. vcpkg ships with an updated version of cmake that you can use to build vcbld, which can be found in [vcpkg-root]/downloads/tools/cmake*/cmake*/bin/cmake.
-The built vcbld executable can be found in the release directory. You should copy the built executable and add it to your default vcpkg directory.
-Note that vcpkg doesn't automatically add itself to your PATH enviroment variable since you might be using multiple instances of vcpkg.
-However, you can add your default vcpkg directory to the PATH enviroment variable using:
+The built vcbld executable can be found in the release directory. 
+Note that vcpkg doesn't automatically add itself to your PATH enviroment variable. 
+However, you can add it to the PATH enviroment variable using:
  ```
- $ echo 'export PATH=$PATH:/path/to/vcpkg/directory' >> ~/.bashrc 
+ $ echo 'export PATH=$PATH:/path/to/vcbld/directory' >> ~/.bashrc 
  ```
+Or after building from source, by passing the make install command:
+```
+$ make install
+``` 
+
 Now you're ready to go!
 Remember you can always access the help menu using:
 ```
@@ -93,7 +98,7 @@ The conf.json file contains several default variables depending on the operating
 {
 	"cCompilerPath" : "/usr/bin/gcc-8",
 	"cppCompilerPath" : "/usr/bin/g++-8",
-	"vcpkgDirectory" : "/Users/mohammedalyousef/vcpkg",
+	"vcpkgPath" : "/Users/mohammedalyousef/vcpkg/vcpkg",
 	"architecture" : "x64-osx",
 	"cmakePath" : "/Users/mohammedalyousef/vcpkg/downloads/tools/cmake-3.11.4-osx/cmake-3.11.4-Darwin-x86_64/CMake.app/Contents/bin/cmake",
         "makePath" : "/usr/bin/make",
@@ -102,7 +107,7 @@ The conf.json file contains several default variables depending on the operating
 ```
 Notice that it contains absolute paths!
 The first 2 variables are the paths of the C and C++ compilers. vcbld lets you choose the default compiler for your project when you start a new project or when you set one up.
-The vcpkgDirectory variable is the parent directory of the vcpkg executable you wish to choose for your project and the current instance of the vcbld executable. It defaults to the vcpkg path to which the vcbld executable was added.
+The vcpkgPath variable is the path to the vcpkg executable you wish to choose for your project.
 
 The architecture depends on the host operating system. You can check the vcpkg triplet documentation [here.](https://github.com/Microsoft/vcpkg/blob/master/docs/users/triplets.md)
 
@@ -196,7 +201,7 @@ $ vcbld run
 ```
 Also you can supply arguments to your cmake command like the following:
 ```
-$ vcbld cmake -DCMAKE_BUILD_TYPE=Release
+$ vcbld cmake release
 $ vcbld make
 $ vcbld run release
 ```

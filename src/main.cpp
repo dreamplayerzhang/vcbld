@@ -21,33 +21,11 @@ namespace fs = std::experimental::filesystem;
 
 using namespace vcbld;
 
-std::string findVcbld(const std::string &PATH);
 std::string parseQuotes(const char* arg);
 
 int main(int argc, char *argv[]) {
-  fs::path vcbldPath;
-  fs::path temp = argv[0];
-  temp = temp.parent_path();
-
-  if (temp == "") {
-    try {
-      std::string vcbldExec = std::getenv("PATH");
-      vcbldPath = fs::canonical(findVcbld(vcbldExec));
-    } catch (const std::exception &e) {
-      std::cout << "Error starting vcbld." << std::endl;
-      std::cerr << e.what() << " " << errno << std::endl;
-    }
-  } else {
-    vcbldPath = fs::canonical(temp);
-  }
-
-  if (!fs::exists(vcbldPath.string() + "/vcpkg") &&
-      !fs::exists(vcbldPath.string() + "/vcpkg.exe")) {
-    std::cout << "The vcpkg executable was not found!\nPlease add vcbld to the "
-                 "same directory as your vcpkg executable!"
-              << std::endl;
-    std::exit(1);
-  }
+  fs::path vcbldPath = argv[0];
+  vcbldPath = vcbldPath.parent_path();
 
   if (argc >= 2) {
     if (strcmp(argv[1], "new") == 0) {
@@ -197,12 +175,19 @@ int main(int argc, char *argv[]) {
         args::vcpkg(vcpkgArgs);
       }
     } else if (strcmp(argv[1], "cmake") == 0) {
+      std::string cmakeArgs = "";
       if (argc < 3) {
-        std::string empty = " ";
-        args::cmake(empty);
+        args::cmake(cmakeArgs);
       } else {
-        std::string cmakeArgs;
-        for (int i = 2; i < argc; i++) {
+        if (strcmp(argv[2], "debug") == 0 || strcmp(argv[2], "-g") == 0) {
+            cmakeArgs += "-DCMAKE_BUILD_TYPE=Debug";
+          } else if (strcmp(argv[2], "release") == 0 || strcmp(argv[2], "-r") == 0) {
+            cmakeArgs += "-DCMAKE_BUILD_TYPE=Release";
+          } else {
+            cmakeArgs += parseQuotes(argv[2]);
+          }
+        if (argc >= 4)
+        for (int i = 3; i < argc; i++) {
           cmakeArgs += " ";
           cmakeArgs += parseQuotes(argv[i]);
         }
@@ -233,32 +218,6 @@ int main(int argc, char *argv[]) {
     std::cout << "Type help to get the help menu." << std::endl;
     std::exit(1);
   }
-}
-
-std::string findVcbld(const std::string &PATH) {
-  std::string temp, sep;
-  size_t foundVcpkg = PATH.find("/vcpkg/");
-  size_t foundSep;
-
-  if (PATH.find(";") != std::string::npos) {
-    sep = ";";
-    foundSep = PATH.find_first_of(sep);
-  } else {
-    sep = ":";
-    foundSep = PATH.find_first_of(sep);
-  }
-
-  if (PATH.find("/vcpkg/") != std::string::npos) {
-    temp = PATH.substr(0, foundVcpkg + 6);
-  }
-  size_t foundPath = temp.find_last_of(sep);
-  temp = temp.substr(foundPath + 1, temp.length());
-  if (temp[0] == '~') {
-    std::string home = std::getenv("HOME");
-    temp.replace(0, 1, home);
-  }
-
-  return temp;
 }
 
 std::string parseQuotes(const char* arg) {

@@ -36,7 +36,7 @@
 #define PATHSEP "/"
 #endif
 #else
-#define PLATFORM_NAME nullptr
+#define PLATFORM_NAME NULL
 #endif
 
 namespace fs = std::experimental::filesystem;
@@ -66,15 +66,6 @@ void setup(const fs::path &vcbldPath) {
     finder(paths, "C:/");
     if (std::getenv("HOME") != nullptr)
       finder(paths, std::getenv("HOME"));
-    if ((fs::canonical(vcbldPath).filename().string() == "release" || fs::canonical(vcbldPath).filename().string() == "Release") &&
-        fs::is_directory(fs::canonical(vcbldPath)
-                             .parent_path()
-                             .parent_path()
-                             .parent_path())) {
-      finder(
-          paths,
-          fs::canonical(vcbldPath).parent_path().parent_path().parent_path());
-    }
     if (std::getenv("PROGRAMFILES") != nullptr)
       finder(paths, std::getenv("PROGRAMFILES"));
     if (std::getenv("MINGW_HOME") != nullptr)
@@ -191,6 +182,11 @@ void setup(const fs::path &vcbldPath) {
     makePath = chooser(makePaths, " make executable.");
     archiverPath = chooser(archiverPaths, "n archiver.");
     vcpkgPath = chooser(vcpkgPaths, " vcpkg executable.");
+    posixify(cCompilerPath);
+    posixify(cppCompilerPath);
+    posixify(cmakePath);
+    posixify(makePath);
+    posixify(archiverPath);
     posixify(vcpkgPath);
 
     try {
@@ -360,7 +356,7 @@ void replaceHome(fs::path &path) {
 }
 
 fs::path findCmake(const fs::path &dir) {
-  std::string temp;
+  fs::path temp;
   std::string fileName = "bin";
   const fs::recursive_directory_iterator end;
   try {
@@ -411,14 +407,12 @@ void finder(std::vector<fs::path> &vector, const fs::path &dir) {
 std::string chooser(std::vector<fs::path> &vector, const std::string &cli) {
   std::sort(vector.begin(), vector.end());
   vector.erase(std::unique(vector.begin(), vector.end()), vector.end());
-  std::string temp;
+  fs::path temp;
   if (vector.size() == 0) {
-    std::cout << "vcbld couldn't locate a " << cli << std::endl;
     temp = "";
   } else if (vector.size() == 1) {
     temp = vector[0];
   } else {
-    std::cout << "list of available c compilers:" << std::endl;
     int i = 1;
     for (std::vector<fs::path>::const_iterator it = vector.begin();
          it != vector.end(); ++it) {
@@ -427,13 +421,12 @@ std::string chooser(std::vector<fs::path> &vector, const std::string &cli) {
     }
     std::cout << "Please choose a" << cli << std::endl;
     try {
-      unsigned int entry;
+      int entry;
       std::cin >> entry;
       if (entry <= vector.size() && entry != 0 &&
           typeid(entry) == typeid(int)) {
         temp = vector[entry - 1];
       } else {
-        std::cout << "Error!" << std::endl;
         temp = vector[0];
       }
     } catch (...) {
@@ -443,12 +436,11 @@ std::string chooser(std::vector<fs::path> &vector, const std::string &cli) {
   if (temp != "") {
     try {
       temp = fs::canonical(temp).string();
-      posixify(temp);
     } catch (...) {
-      posixify(temp);
+		//
     }
   }
-  return temp;
+  return temp.string();
 }
 
 } // namespace init

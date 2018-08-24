@@ -59,104 +59,27 @@ void setup(const fs::path &vcbldPath) {
   if (fs::exists(vcbldPath)) {
     paths.emplace_back(fs::canonical(vcbldPath).string());
     paths.emplace_back(
-                findCmake(fs::canonical(vcbldPath).string() + "/downloads/tools"));
+        findCmake(fs::canonical(vcbldPath) / "downloads" / "tools"));
   }
 
   try {
-    if (fs::is_directory("C:/")) {
-      std::vector<fs::directory_entry> dirEntry;
-      std::copy(fs::directory_iterator("C:/"), fs::directory_iterator(),
-                back_inserter(dirEntry));
-      for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
-           it != dirEntry.end(); ++it) {
-        if ((*it).path().string().find("MinGW") != std::string::npos ||
-            (*it).path().string().find("cmake") != std::string::npos) {
-          paths.emplace_back((*it).path().string() + "\\bin");
-        }
-        if (fs::exists((*it).path().string() + "/vcpkg")) {
-          paths.emplace_back((*it).path().string());
-          if (fs::exists((*it).path().string() + "/downloads/tools")) {
-            paths.emplace_back(
-                findCmake((*it).path().string() + "/downloads/tools"));
-          }
-        }
-      }
+    finder(paths, "C:/");
+    if (std::getenv("HOME") != NULL)
+      finder(paths, std::getenv("HOME"));
+    if (fs::canonical(vcbldPath).filename().string() == "release" &&
+        fs::is_directory(fs::canonical(vcbldPath)
+                             .parent_path()
+                             .parent_path()
+                             .parent_path())) {
+      finder(
+          paths,
+          fs::canonical(vcbldPath).parent_path().parent_path().parent_path());
     }
-  } catch (...) {
-    // fail quietly
-  }
-
-  try {
-    const char *progFiles = std::getenv("HOME");
-    if (progFiles != NULL) {
-      if (fs::is_directory(progFiles)) {
-        std::vector<fs::directory_entry> dirEntry3;
-        std::copy(fs::directory_iterator(progFiles), fs::directory_iterator(),
-                  back_inserter(dirEntry3));
-        for (std::vector<fs::directory_entry>::iterator it = dirEntry3.begin();
-             it != dirEntry3.end(); ++it) {
-          if ((*it).path().string().find("MinGW") != std::string::npos ||
-              (*it).path().string().find("cmake") != std::string::npos) {
-            paths.emplace_back((*it).path().string() + "\\bin");
-          }
-          if (fs::exists((*it).path().string() + "/vcpkg")) {
-            paths.emplace_back((*it).path().string());
-            if (fs::exists((*it).path().string() + "/downloads/tools")) {
-              paths.emplace_back(
-                  findCmake((*it).path().string() + "/downloads/tools"));
-            }
-          }
-        }
-      }
-    }
-  } catch (...) {
-    // fail quietly
-  }
-
-  try {
-    const char *progFiles = std::getenv("PROGRAMFILES");
-    if (progFiles != NULL) {
-      if (fs::is_directory(progFiles)) {
-        std::vector<fs::directory_entry> dirEntry3;
-        std::copy(fs::directory_iterator(progFiles), fs::directory_iterator(),
-                  back_inserter(dirEntry3));
-        for (std::vector<fs::directory_entry>::iterator it = dirEntry3.begin();
-             it != dirEntry3.end(); ++it) {
-          if ((*it).path().string().find("MinGW") != std::string::npos ||
-              (*it).path().string().find("cmake") != std::string::npos) {
-            paths.emplace_back((*it).path().string() + "\\bin");
-            if (fs::exists((*it).path().string() + "/vcpkg")) {
-              paths.emplace_back((*it).path().string());
-              if (fs::exists((*it).path().string() + "/downloads/tools")) {
-                paths.emplace_back(
-                    findCmake((*it).path().string() + "/downloads/tools"));
-              }
-            }
-          }
-        }
-      }
-    }
-  } catch (...) {
-    // fail quietly
-  }
-
-  try {
-    const char *progFiles = std::getenv("MINGW_HOME");
-    if (progFiles != NULL) {
-      if (fs::is_directory(progFiles)) {
-        std::vector<fs::directory_entry> dirEntry3;
-        std::copy(fs::directory_iterator(progFiles), fs::directory_iterator(),
-                  back_inserter(dirEntry3));
-        for (std::vector<fs::directory_entry>::iterator it = dirEntry3.begin();
-             it != dirEntry3.end(); ++it) {
-          if ((*it).path().string().find("MinGW") != std::string::npos ||
-              (*it).path().string().find("cmake") != std::string::npos) {
-            paths.emplace_back((*it).path().string() + "\\bin");
-          }
-        }
-      }
-    }
-  } catch (...) {
+    if (std::getenv("PROGRAMFILES") != NULL)
+      finder(paths, std::getenv("PROGRAMFILES"));
+    if (std::getenv("MINGW_HOME") != NULL)
+      finder(paths, std::getenv("MINGW_HOME"));
+  } catch (const std::exception &e) {
     // fail quietly
   }
 
@@ -262,12 +185,12 @@ void setup(const fs::path &vcbldPath) {
   }
 
   if (!fs::exists("conf.json")) {
-    cCompilerPath = cCompiler(cCompilers);
-    cppCompilerPath = cppCompiler(cppCompilers);
-    cmakePath = cmake(cmakePaths);
-    makePath = make(makePaths);
-    archiverPath = archiver(archiverPaths);
-    vcpkgPath = vcpkg(vcpkgPaths);
+    cCompilerPath = chooser(cCompilers, "C compiler.");
+    cppCompilerPath = chooser(cppCompilers, "C++ compiler.");
+    cmakePath = chooser(cmakePaths, "cmake executable.");
+    makePath = chooser(makePaths, "make executable.");
+    archiverPath = chooser(archiverPaths, "n archiver.");
+    vcpkgPath = chooser(vcpkgPaths, "vcpkg executable.");
     posixify(vcpkgPath);
 
     try {
@@ -451,248 +374,7 @@ std::string findCmake(const std::string &dir) {
       posixify(temp);
     }
   } catch (const std::exception &exception) {
-    std::cout << "Couldn't find a cmake executable in the current directory."
-              << std::endl;
-  }
-  return temp;
-}
-
-std::string cCompiler(std::vector<std::string> &cCompilers) {
-  std::sort(cCompilers.begin(), cCompilers.end());
-  cCompilers.erase(std::unique(cCompilers.begin(), cCompilers.end()), cCompilers.end());
-  std::string temp;
-  if (cCompilers.size() == 0) {
-    std::cout << "vcbld couldn't locate a c compiler." << std::endl;
-    temp = "";
-  } else if (cCompilers.size() == 1) {
-    temp = cCompilers[0];
-  } else {
-    std::cout << "list of available c compilers:" << std::endl;
-    int i = 1;
-    for (std::vector<std::string>::const_iterator it = cCompilers.begin();
-         it != cCompilers.end(); ++it) {
-      std::cout << i << ") " << *it << std::endl;
-      i++;
-    }
-    std::cout << "Please choose your project's c compiler." << std::endl;
-    try {
-      int entry;
-      std::cin >> entry;
-      if (entry <= cCompilers.size() && entry != 0 &&
-          typeid(entry) == typeid(int)) {
-        temp = cCompilers[entry - 1];
-      } else {
-        std::cout << "Error!" << std::endl;
-        temp = cCompilers[0];
-      }
-    } catch (...) {
-      temp = cCompilers[0];
-    }
-  }
-  if (temp != "") {
-    try {
-      temp = fs::canonical(temp).string();
-      posixify(temp);
-    } catch (...) {
-      posixify(temp);
-    }
-  }
-  return temp;
-}
-
-std::string cppCompiler(std::vector<std::string> &cppCompilers) {
-  std::sort(cppCompilers.begin(), cppCompilers.end());
-  cppCompilers.erase(std::unique(cppCompilers.begin(), cppCompilers.end()), cppCompilers.end());
-  std::string temp;
-  if (cppCompilers.size() == 0) {
-    std::cout << "vcbld couldn't locate a c++ compiler." << std::endl;
-    temp = "";
-  } else if (cppCompilers.size() == 1) {
-    temp = cppCompilers[0];
-  } else {
-    std::cout << "list of available c++ compilers:" << std::endl;
-    int j = 1;
-    for (std::vector<std::string>::const_iterator it = cppCompilers.begin();
-         it != cppCompilers.end(); ++it) {
-      std::cout << j << ") " << *it << std::endl;
-      j++;
-    }
-    std::cout << "Please choose your project's c++ compiler." << std::endl;
-    try {
-      int entry;
-      std::cin >> entry;
-      if (entry <= cppCompilers.size() && entry != 0 &&
-          typeid(entry) == typeid(int)) {
-        temp = cppCompilers[entry - 1];
-      } else {
-        std::cout << "Error!" << std::endl;
-        temp = cppCompilers[0];
-      }
-    } catch (...) {
-      temp = cppCompilers[0];
-    }
-  }
-  if (temp != "") {
-    try {
-      temp = fs::canonical(temp).string();
-      posixify(temp);
-    } catch (...) {
-      posixify(temp);
-    }
-  }
-  return temp;
-}
-
-std::string cmake(std::vector<std::string> &cmakes) {
-  std::sort(cmakes.begin(), cmakes.end());
-  cmakes.erase(std::unique(cmakes.begin(), cmakes.end()), cmakes.end());
-  std::string temp;
-  if (cmakes.size() == 0) {
-    std::cout << "vcbld couldn't locate a cmake executable." << std::endl;
-    temp = "";
-  } else if (cmakes.size() == 1) {
-    temp = cmakes[0];
-  } else {
-    std::cout << "list of available cmake executables:" << std::endl;
-    int cmake_it = 1;
-    for (std::vector<std::string>::const_iterator it = cmakes.begin();
-         it != cmakes.end(); ++it) {
-      std::cout << cmake_it << ") " << *it << std::endl;
-      cmake_it++;
-    }
-    std::cout << "Please choose your project's cmake executable." << std::endl;
-    try {
-      int entry;
-      std::cin >> entry;
-      if (entry <= cmakes.size() && entry != 0 &&
-          typeid(entry) == typeid(int)) {
-        temp = cmakes[entry - 1];
-      } else {
-        std::cout << "Error!" << std::endl;
-        temp = cmakes[0];
-      }
-    } catch (...) {
-      temp = cmakes[0];
-    }
-  }
-  if (temp != "") {
-    temp = fs::canonical(temp).string();
-    posixify(temp);
-  }
-  return temp;
-}
-
-std::string make(std::vector<std::string> &makes) {
-  std::sort(makes.begin(), makes.end());
-  makes.erase(std::unique(makes.begin(), makes.end()), makes.end());
-  std::string temp;
-  if (makes.size() == 0) {
-    std::cout << "vcbld couldn't locate a make executable." << std::endl;
-    temp = "";
-  } else if (makes.size() == 1) {
-    temp = makes[0];
-  } else {
-    std::cout << "list of available make executables:" << std::endl;
-    int make_it = 1;
-    for (std::vector<std::string>::const_iterator it = makes.begin();
-         it != makes.end(); ++it) {
-      std::cout << make_it << ") " << *it << std::endl;
-      make_it++;
-    }
-    std::cout << "Please choose your project's make executable." << std::endl;
-    try {
-      int entry;
-      std::cin >> entry;
-      if (entry <= makes.size() && entry != 0 && typeid(entry) == typeid(int)) {
-        temp = makes[entry - 1];
-      } else {
-        std::cout << "Error!" << std::endl;
-        temp = makes[0];
-      }
-    } catch (...) {
-      temp = makes[0];
-    }
-  }
-  if (temp != "") {
-    temp = fs::canonical(temp).string();
-    posixify(temp);
-  }
-  return temp;
-}
-std::string archiver(std::vector<std::string> &archivers) {
-  std::sort(archivers.begin(), archivers.end());
-  archivers.erase(std::unique(archivers.begin(), archivers.end()), archivers.end());
-  std::string temp;
-  if (archivers.size() == 0) {
-    std::cout << "vcbld couldn't locate an archiver." << std::endl;
-    temp = "";
-  } else if (archivers.size() == 1) {
-    temp = archivers[0];
-  } else {
-    std::cout << "list of available archivers:" << std::endl;
-    int ar_it = 1;
-    for (std::vector<std::string>::const_iterator it = archivers.begin();
-         it != archivers.end(); ++it) {
-      std::cout << ar_it << ") " << *it << std::endl;
-      ar_it++;
-    }
-    std::cout << "Please choose your project's archiver." << std::endl;
-    try {
-      int entry;
-      std::cin >> entry;
-      if (entry <= archivers.size() && entry != 0 &&
-          typeid(entry) == typeid(int)) {
-        temp = archivers[entry - 1];
-      } else {
-        std::cout << "Error!" << std::endl;
-        temp = archivers[0];
-      }
-    } catch (...) {
-      temp = archivers[0];
-    }
-  }
-  if (temp != "") {
-    temp = fs::canonical(temp).string();
-    posixify(temp);
-  }
-  return temp;
-}
-
-std::string vcpkg(std::vector<std::string> &vcpkgs) {
-  std::sort(vcpkgs.begin(), vcpkgs.end());
-  vcpkgs.erase(std::unique(vcpkgs.begin(), vcpkgs.end()), vcpkgs.end());
-  std::string temp;
-  if (vcpkgs.size() == 0) {
-    std::cout << "vcbld couldn't locate a vcpkg executable." << std::endl;
-    temp = "";
-  } else if (vcpkgs.size() == 1) {
-    temp = vcpkgs[0];
-  } else {
-    std::cout << "list of available vcpkg executables:" << std::endl;
-    int ar_it = 1;
-    for (std::vector<std::string>::const_iterator it = vcpkgs.begin();
-         it != vcpkgs.end(); ++it) {
-      std::cout << ar_it << ") " << *it << std::endl;
-      ar_it++;
-    }
-    std::cout << "Please choose your default vcpkg executable." << std::endl;
-    try {
-      int entry;
-      std::cin >> entry;
-      if (entry <= vcpkgs.size() && entry != 0 &&
-          typeid(entry) == typeid(int)) {
-        temp = vcpkgs[entry - 1];
-      } else {
-        std::cout << "Error!" << std::endl;
-        temp = vcpkgs[0];
-      }
-    } catch (...) {
-      temp = vcpkgs[0];
-    }
-  }
-  if (temp != "") {
-    temp = fs::canonical(temp).string();
-    posixify(temp);
+    // fail quietly
   }
   return temp;
 }
@@ -702,6 +384,71 @@ void posixify(std::string &path) {
     path.replace(path.find("\\"), 1, "/");
     posixify(path);
   }
+}
+
+void finder(std::vector<std::string> &vector, const std::string &dir) {
+  if (fs::is_directory(dir)) {
+    std::vector<fs::directory_entry> dirEntry;
+    std::copy(fs::directory_iterator(dir), fs::directory_iterator(),
+              back_inserter(dirEntry));
+    for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
+         it != dirEntry.end(); ++it) {
+      if ((*it).path().string().find("MinGW") != std::string::npos ||
+          (*it).path().string().find("cmake") != std::string::npos) {
+        vector.emplace_back((*it).path() / "bin");
+      }
+      if (fs::exists(((*it).path() / "vcpkg").string())) {
+        vector.emplace_back((*it).path().string());
+        if (fs::exists((*it).path() / "downloads" / "tools")) {
+          vector.emplace_back(
+              findCmake(((*it).path() / "downloads" / "tools").string()));
+        }
+      }
+    }
+  }
+}
+
+std::string chooser(std::vector<std::string> &vector, const std::string &cli) {
+  std::sort(vector.begin(), vector.end());
+  vector.erase(std::unique(vector.begin(), vector.end()), vector.end());
+  std::string temp;
+  if (vector.size() == 0) {
+    std::cout << "vcbld couldn't locate a " << cli << std::endl;
+    temp = "";
+  } else if (vector.size() == 1) {
+    temp = vector[0];
+  } else {
+    std::cout << "list of available c compilers:" << std::endl;
+    int i = 1;
+    for (std::vector<std::string>::const_iterator it = vector.begin();
+         it != vector.end(); ++it) {
+      std::cout << i << ") " << *it << std::endl;
+      i++;
+    }
+    std::cout << "Please choose a " << cli << std::endl;
+    try {
+      int entry;
+      std::cin >> entry;
+      if (entry <= vector.size() && entry != 0 &&
+          typeid(entry) == typeid(int)) {
+        temp = vector[entry - 1];
+      } else {
+        std::cout << "Error!" << std::endl;
+        temp = vector[0];
+      }
+    } catch (...) {
+      temp = vector[0];
+    }
+  }
+  if (temp != "") {
+    try {
+      temp = fs::canonical(temp).string();
+      posixify(temp);
+    } catch (...) {
+      posixify(temp);
+    }
+  }
+  return temp;
 }
 
 } // namespace init

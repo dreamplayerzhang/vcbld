@@ -58,6 +58,8 @@ void setup(const fs::path &vcbldPath) {
   }
   if (fs::exists(vcbldPath)) {
     paths.emplace_back(fs::canonical(vcbldPath).string());
+    paths.emplace_back(
+                findCmake(fs::canonical(vcbldPath).string() + "/downloads/tools"));
   }
 
   try {
@@ -183,7 +185,7 @@ void setup(const fs::path &vcbldPath) {
     if (fs::exists((*it) + "/gcc-5")) {
       cCompilers.emplace_back((*it) + "/gcc-6");
     }
-    if (fs::exists((*it) + "/clang")) {
+    if (fs::exists((*it) + "/clang") && !fs::is_directory((*it) + "/clang")) {
       cCompilers.emplace_back((*it) + "/clang");
     }
     if (fs::exists((*it) + "/clang.exe")) {
@@ -219,7 +221,7 @@ void setup(const fs::path &vcbldPath) {
     if (fs::exists((*it) + "/clang++.exe")) {
       cppCompilers.emplace_back((*it) + "\\clang++.exe");
     }
-    if (fs::exists((*it) + "/cmake")) {
+    if (fs::exists((*it) + "/cmake") && !fs::is_directory((*it) + "/cmake")) {
       cmakePaths.emplace_back((*it) + "/cmake");
     }
     if (fs::exists((*it) + "/cmake.exe")) {
@@ -240,7 +242,7 @@ void setup(const fs::path &vcbldPath) {
     if (fs::exists((*it) + "/ar.exe")) {
       archiverPaths.emplace_back((*it) + "\\ar.exe");
     }
-    if (fs::exists((*it) + "/vcpkg")) {
+    if (fs::exists((*it) + "/vcpkg") && !fs::is_directory((*it) + "/vcpkg")) {
       vcpkgPaths.emplace_back((*it) + "/vcpkg");
     }
     if (fs::exists((*it) + "/vcpkg.exe")) {

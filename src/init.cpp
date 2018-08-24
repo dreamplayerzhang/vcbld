@@ -66,7 +66,7 @@ void setup(const fs::path &vcbldPath) {
     finder(paths, "C:/");
     if (std::getenv("HOME") != NULL)
       finder(paths, std::getenv("HOME"));
-    if (fs::canonical(vcbldPath).filename().string() == "release" &&
+    if ((fs::canonical(vcbldPath).filename().string() == "release" || fs::canonical(vcbldPath).filename().string() == "Release") &&
         fs::is_directory(fs::canonical(vcbldPath)
                              .parent_path()
                              .parent_path()

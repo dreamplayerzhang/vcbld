@@ -32,12 +32,12 @@ PrepClass::PrepClass() : PkgClass() {
 
       for (std::vector<std::string>::iterator jt = this->packageNames().begin();
            jt != this->packageNames().end(); ++jt) {
-        foundFile = (*it).path().filename().string().find(*jt);
+        foundFile = it->path().filename().string().find(*jt);
         if (foundFile != std::string::npos && foundFile == 0) {
-          std::string fileName = (*it).path().filename().string();
+          std::string fileName = it->path().filename().string();
           std::string line;
           try {
-            std::ifstream ifs((*it).path());
+            std::ifstream ifs(it->path());
             if (ifs.is_open()) {
               while (!ifs.eof()) {
                 getline(ifs, line);
@@ -74,8 +74,8 @@ PrepClass::PrepClass() : PkgClass() {
       for (std::vector<fs::directory_entry>::iterator jt =
                localDbgDirEntry.begin();
            jt != localDbgDirEntry.end(); ++jt) {
-        if (((*jt).path().filename().string()).at(0) != '.') {
-          this->_dbgLocalLibNames.push_back((*jt).path().filename().string());
+        if ((jt->path().filename().string()).at(0) != '.') {
+          this->_dbgLocalLibNames.push_back(jt->path().filename().string());
         }
       }
     }
@@ -94,8 +94,8 @@ PrepClass::PrepClass() : PkgClass() {
       for (std::vector<fs::directory_entry>::iterator jt =
                localRlsDirEntry.begin();
            jt != localRlsDirEntry.end(); ++jt) {
-        if (((*jt).path().filename().string()).at(0) != '.') {
-          this->_rlsLocalLibNames.push_back((*jt).path().filename().string());
+        if ((jt->path().filename().string()).at(0) != '.') {
+          this->_rlsLocalLibNames.push_back(jt->path().filename().string());
         }
       }
     }
@@ -116,13 +116,13 @@ std::string PrepClass::sourceFiles() {
 
     for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
          it != dirEntry.end(); ++it) {
-      if (fs::path((*it).path().filename().string()).extension() == ".cpp" ||
-          fs::path((*it).path().filename().string()).extension() == ".rc" ||
-          fs::path((*it).path().filename().string()).extension() == ".c" ||
-          fs::path((*it).path().filename().string()).extension() == ".cxx" ||
-          fs::path((*it).path().filename().string()).extension() == ".qrc" ||
-          fs::path((*it).path().filename().string()).extension() == ".uic") {
-        fullPath = std::move((*it).path().string());
+      if (fs::path(it->path().filename().string()).extension() == ".cpp" ||
+          fs::path(it->path().filename().string()).extension() == ".rc" ||
+          fs::path(it->path().filename().string()).extension() == ".c" ||
+          fs::path(it->path().filename().string()).extension() == ".cxx" ||
+          fs::path(it->path().filename().string()).extension() == ".qrc" ||
+          fs::path(it->path().filename().string()).extension() == ".uic") {
+        fullPath = std::move(it->path().string());
         posixify(fullPath);
         temp << "\"" << fullPath << "\" ";
       }
@@ -145,13 +145,13 @@ std::string PrepClass::sourceFilesSinPath() {
 
     for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
          it != dirEntry.end(); ++it) {
-      if (fs::path((*it).path().filename().string()).extension() == ".cpp" ||
-          fs::path((*it).path().filename().string()).extension() == ".rc" ||
-          fs::path((*it).path().filename().string()).extension() == ".c" ||
-          fs::path((*it).path().filename().string()).extension() == ".cxx" ||
-          fs::path((*it).path().filename().string()).extension() == ".qrc" ||
-          fs::path((*it).path().filename().string()).extension() == ".uic") {
-        temp << (*it).path().filename().string() << " ";
+      if (fs::path(it->path().filename().string()).extension() == ".cpp" ||
+          fs::path(it->path().filename().string()).extension() == ".rc" ||
+          fs::path(it->path().filename().string()).extension() == ".c" ||
+          fs::path(it->path().filename().string()).extension() == ".cxx" ||
+          fs::path(it->path().filename().string()).extension() == ".qrc" ||
+          fs::path(it->path().filename().string()).extension() == ".uic") {
+        temp << it->path().filename().string() << " ";
       }
     }
   }
@@ -172,9 +172,9 @@ std::string PrepClass::objPath(const std::string &buildPath) {
 
     for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
          it != dirEntry.end(); ++it) {
-      if (fs::path((*it).path().filename().string()).extension() == ".o" ||
-          fs::path((*it).path().filename().string()).extension() == ".obj") {
-        fullPath = std::move((*it).path().string());
+      if (fs::path(it->path().filename().string()).extension() == ".o" ||
+          fs::path(it->path().filename().string()).extension() == ".obj") {
+        fullPath = std::move(it->path().string());
         posixify(fullPath);
         temp << "\"" << fullPath << "\" ";
       }
@@ -230,46 +230,50 @@ std::string PrepClass::stripLibName(const std::string &lib) {
 }
 
 std::string PrepClass::dbgLibPaths() {
-  if (this->libDirectory() != "" && fs::exists(this->libDirectory() + "/" + "debug")) {
-      std::ostringstream temp;
-  std::string localDbgLibs = this->libDirectory() + "/" + "debug";
-  for (std::vector<std::string>::iterator jt = this->_dbgLocalLibNames.begin();
-       jt != this->_dbgLocalLibNames.end(); ++jt) {
-    temp << " -L\"" << localDbgLibs << "\" "
-         << "-l" << stripLibName(*jt);
-  }
+  if (this->libDirectory() != "" &&
+      fs::exists(this->libDirectory() + "/" + "debug")) {
+    std::ostringstream temp;
+    std::string localDbgLibs = this->libDirectory() + "/" + "debug";
+    for (std::vector<std::string>::iterator jt =
+             this->_dbgLocalLibNames.begin();
+         jt != this->_dbgLocalLibNames.end(); ++jt) {
+      temp << " -L\"" << localDbgLibs << "\" "
+           << "-l" << stripLibName(*jt);
+    }
 
-  std::string dbgLibPath = this->vcpkgDirPath() + "/" + "installed" + "/" +
-                           this->architecture() + "/" + "debug" + "/" + "lib";
-  for (std::vector<std::string>::iterator it = this->_fullLibNames.begin();
-       it != this->_fullLibNames.end(); ++it) {
-    temp << " -L\"" << dbgLibPath << "\" "
-         << "-l" << stripLibName(*it);
-  }
-  return temp.str();
+    std::string dbgLibPath = this->vcpkgDirPath() + "/" + "installed" + "/" +
+                             this->architecture() + "/" + "debug" + "/" + "lib";
+    for (std::vector<std::string>::iterator it = this->_fullLibNames.begin();
+         it != this->_fullLibNames.end(); ++it) {
+      temp << " -L\"" << dbgLibPath << "\" "
+           << "-l" << stripLibName(*it);
+    }
+    return temp.str();
   } else {
     return "";
   }
 }
 
 std::string PrepClass::rlsLibPaths() {
-  if (this->libDirectory() != "" && fs::exists(this->libDirectory() + "/release")) {
-      std::ostringstream temp;
-  std::string localRlsLibs = this->libDirectory() + "/" + "release";
-  for (std::vector<std::string>::iterator jt = this->_rlsLocalLibNames.begin();
-       jt != this->_rlsLocalLibNames.end(); ++jt) {
-    temp << " -L\"" << localRlsLibs << "\" "
-         << "-l" << stripLibName(*jt);
-  }
+  if (this->libDirectory() != "" &&
+      fs::exists(this->libDirectory() + "/release")) {
+    std::ostringstream temp;
+    std::string localRlsLibs = this->libDirectory() + "/" + "release";
+    for (std::vector<std::string>::iterator jt =
+             this->_rlsLocalLibNames.begin();
+         jt != this->_rlsLocalLibNames.end(); ++jt) {
+      temp << " -L\"" << localRlsLibs << "\" "
+           << "-l" << stripLibName(*jt);
+    }
 
-  std::string dbgLibPath = this->vcpkgDirPath() + "/" + "installed" + "/" +
-                           this->architecture() + "/" + "lib";
-  for (std::vector<std::string>::iterator it = this->_fullLibNames.begin();
-       it != this->_fullLibNames.end(); ++it) {
-    temp << " -L\"" << dbgLibPath << "\" "
-         << "-l" << stripLibName(*it);
-  }
-  return temp.str();
+    std::string dbgLibPath = this->vcpkgDirPath() + "/" + "installed" + "/" +
+                             this->architecture() + "/" + "lib";
+    for (std::vector<std::string>::iterator it = this->_fullLibNames.begin();
+         it != this->_fullLibNames.end(); ++it) {
+      temp << " -L\"" << dbgLibPath << "\" "
+           << "-l" << stripLibName(*it);
+    }
+    return temp.str();
   } else {
     return "";
   }
@@ -283,7 +287,7 @@ bool PrepClass::hasComponents(const std::string &libName) {
   foundQt = libName.find("Qt");
   if (foundBoost != std::string::npos && foundBoost == 0) {
     stripComponent = libName.substr(6, libName.length());
-    _boostComponents.push_back(stripComponent);
+    this->_boostComponents.push_back(stripComponent);
     return true;
   } else if (foundQt != std::string::npos && foundBoost == 0) {
     stripComponent = libName.substr(4, libName.length());
@@ -298,20 +302,21 @@ std::string PrepClass::cmakeOutput() {
   for (std::vector<std::string>::iterator it = this->_dbgLocalLibNames.begin();
        it != this->_dbgLocalLibNames.end(); ++it) {
     std::string libName = stripLibName(*it);
-    this->_cmakeOutput   << "find_library(" << libName << "_DBG NAMES "
-                         << libName << " HINTS "
-                         << "${LOCAL_DBG_LIB_PATH})\n"
-                         << "set(dbgLIBS ${dbgLIBS} ${" << libName << "_DBG})\n\n";
+    this->_cmakeOutput << "find_library(" << libName << "_DBG NAMES " << libName
+                       << " HINTS "
+                       << "${LOCAL_DBG_LIB_PATH})\n"
+                       << "set(dbgLIBS ${dbgLIBS} ${" << libName
+                       << "_DBG})\n\n";
   }
 
-    for (std::vector<std::string>::iterator it = this->_rlsLocalLibNames.begin();
+  for (std::vector<std::string>::iterator it = this->_rlsLocalLibNames.begin();
        it != this->_rlsLocalLibNames.end(); ++it) {
     std::string libName = stripLibName(*it);
-    this->_cmakeOutput   << "find_library(" << libName << "_RLS NAMES "
-                         << libName << " HINTS "
-                         << "${LOCAL_RLS_LIB_PATH})\n"
-                         << "set(rlsLIBS ${rlsLIBS} ${" << libName
-                         << "_RLS})\n\n";
+    this->_cmakeOutput << "find_library(" << libName << "_RLS NAMES " << libName
+                       << " HINTS "
+                       << "${LOCAL_RLS_LIB_PATH})\n"
+                       << "set(rlsLIBS ${rlsLIBS} ${" << libName
+                       << "_RLS})\n\n";
   }
 
   for (std::vector<std::string>::iterator it = this->_fullLibNames.begin();

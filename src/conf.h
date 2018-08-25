@@ -37,9 +37,9 @@ public:
   std::string compilerFlags() const;
   std::string linkerFlags() const;
 
-  void posixify(std::string &path);
-
 private:
+  void posixify(std::string &path);
+  
   std::string _projPath;
   std::string _cCompilerPath;
   std::string _cppCompilerPath;

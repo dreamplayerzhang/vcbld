@@ -21,7 +21,7 @@ namespace fs = std::experimental::filesystem;
 
 using namespace vcbld;
 
-std::string parseQuotes(const char* arg);
+std::string parseQuotes(const char *arg);
 
 int main(int argc, char *argv[]) {
   fs::path vcbldPath = argv[0];
@@ -180,17 +180,18 @@ int main(int argc, char *argv[]) {
         args::cmake(cmakeArgs);
       } else {
         if (strcmp(argv[2], "debug") == 0 || strcmp(argv[2], "-g") == 0) {
-            cmakeArgs += "-DCMAKE_BUILD_TYPE=Debug";
-          } else if (strcmp(argv[2], "release") == 0 || strcmp(argv[2], "-r") == 0) {
-            cmakeArgs += "-DCMAKE_BUILD_TYPE=Release";
-          } else {
-            cmakeArgs += parseQuotes(argv[2]);
-          }
-        if (argc >= 4)
-        for (int i = 3; i < argc; i++) {
-          cmakeArgs += " ";
-          cmakeArgs += parseQuotes(argv[i]);
+          cmakeArgs += "-DCMAKE_BUILD_TYPE=Debug";
+        } else if (strcmp(argv[2], "release") == 0 ||
+                   strcmp(argv[2], "-r") == 0) {
+          cmakeArgs += "-DCMAKE_BUILD_TYPE=Release";
+        } else {
+          cmakeArgs += parseQuotes(argv[2]);
         }
+        if (argc >= 4)
+          for (int i = 3; i < argc; i++) {
+            cmakeArgs += " ";
+            cmakeArgs += parseQuotes(argv[i]);
+          }
         args::cmake(cmakeArgs);
       }
     } else if (strcmp(argv[1], "make") == 0) {
@@ -220,7 +221,7 @@ int main(int argc, char *argv[]) {
   }
 }
 
-std::string parseQuotes(const char* arg) {
+std::string parseQuotes(const char *arg) {
   std::string temp = static_cast<std::string>(arg);
   if (temp.find(" ") != std::string::npos) {
     return "\"" + temp + "\"";

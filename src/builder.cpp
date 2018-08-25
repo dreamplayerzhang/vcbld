@@ -219,8 +219,8 @@ void Builder::copy() {
            it != this->dbgLocalLibNames().end(); ++it) {
         fullName = localDbgPath + "/" + (*it);
         if (fs::exists(fullName)) {
-          if ((*it).find(".a") == std::string::npos &&
-              (*it).find(".lib") == std::string::npos) {
+          if (it->find(".a") == std::string::npos &&
+              it->find(".lib") == std::string::npos) {
             if (!fs::exists(this->_dbgDir + "/" + (*it))) {
               fs::copy(fullName, this->_dbgDir);
             }
@@ -233,8 +233,8 @@ void Builder::copy() {
            it != this->rlsLocalLibNames().end(); ++it) {
         fullName = localRlsPath + "/" + (*it);
         if (fs::exists(fullName)) {
-          if ((*it).find(".a") == std::string::npos &&
-              (*it).find(".lib") == std::string::npos) {
+          if (it->find(".a") == std::string::npos &&
+              it->find(".lib") == std::string::npos) {
             if (!fs::exists(this->_rlsDir + "/" + (*it))) {
               fs::copy(fullName, this->_rlsDir);
             }
@@ -252,15 +252,15 @@ void Builder::copy() {
     }
     if (fs::exists(fullName)) {
       if (this->_buildType == "debug") {
-        if ((*it).find(".a") == std::string::npos &&
-            (*it).find(".lib") == std::string::npos) {
+        if (it->find(".a") == std::string::npos &&
+            it->find(".lib") == std::string::npos) {
           if (!fs::exists(this->_dbgDir + "/" + (*it))) {
             fs::copy(fullName, this->_dbgDir);
           }
         }
       } else {
-        if ((*it).find(".a") == std::string::npos &&
-            (*it).find(".lib") == std::string::npos) {
+        if (it->find(".a") == std::string::npos &&
+            it->find(".lib") == std::string::npos) {
           if (!fs::exists(this->_rlsDir + "/" + (*it))) {
             fs::copy(fullName, this->_rlsDir);
           }
@@ -269,5 +269,4 @@ void Builder::copy() {
     }
   }
 }
-
 } // namespace vcbld

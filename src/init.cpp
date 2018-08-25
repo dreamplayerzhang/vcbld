@@ -389,15 +389,15 @@ void finder(std::vector<fs::path> &vector, const fs::path &dir) {
               back_inserter(dirEntry));
     for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
          it != dirEntry.end(); ++it) {
-      if ((*it).path().string().find("MinGW") != std::string::npos ||
-          (*it).path().string().find("cmake") != std::string::npos) {
-        vector.emplace_back((*it).path() / "bin");
+      if (it->path().string().find("MinGW") != std::string::npos ||
+          it->path().string().find("cmake") != std::string::npos) {
+        vector.emplace_back(it->path() / "bin");
       }
-      if (fs::exists(((*it).path() / "vcpkg").string())) {
-        vector.emplace_back((*it).path().string());
-        if (fs::exists((*it).path() / "downloads" / "tools")) {
+      if (fs::exists((it->path() / "vcpkg").string())) {
+        vector.emplace_back(it->path().string());
+        if (fs::exists(it->path() / "downloads" / "tools")) {
           vector.emplace_back(
-              findCmake((*it).path() / "downloads" / "tools"));
+              findCmake(it->path() / "downloads" / "tools"));
         }
       }
     }
@@ -416,7 +416,7 @@ std::string chooser(std::vector<fs::path> &vector, const std::string &cli) {
     int i = 1;
     for (std::vector<fs::path>::const_iterator it = vector.begin();
          it != vector.end(); ++it) {
-      std::cout << i << ") " << (*it).string() << std::endl;
+      std::cout << i << ") " << it->string() << std::endl;
       i++;
     }
     std::cout << "Please choose a" << cli << std::endl;

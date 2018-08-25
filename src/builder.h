@@ -13,15 +13,16 @@ public:
   Builder(const Builder &) = delete;
   Builder &operator=(const Builder &) = delete;
 
+  void build();
+  std::string getBldCommands();
+
+private:
   void compile();
   void appLink();
   void dylibLink();
   void archive();
-  std::string getBldCommands();
-  void build();
   void copy();
 
-private:
   std::string _buildType;
   std::string _dbgDir;
   std::string _rlsDir;

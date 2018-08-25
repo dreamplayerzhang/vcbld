@@ -143,7 +143,9 @@ ConfClass::ConfClass() {
   if (confJson["vcpkgPath"].get<std::string>() != "" &&
       fs::exists(confJson["vcpkgPath"].get<std::string>())) {
     this->_vcpkgDirectory =
-        fs::canonical(confJson["vcpkgPath"].get<std::string>()).parent_path().string();
+        fs::canonical(confJson["vcpkgPath"].get<std::string>())
+            .parent_path()
+            .string();
     posixify(this->_vcpkgDirectory);
   }
 
@@ -193,9 +195,7 @@ std::string ConfClass::compilerPath() const {
   }
 }
 
-std::string ConfClass::cCompilerPath() const {
-  return this->_cCompilerPath;
-}
+std::string ConfClass::cCompilerPath() const { return this->_cCompilerPath; }
 
 std::string ConfClass::cppCompilerPath() const {
   return this->_cppCompilerPath;
@@ -209,21 +209,27 @@ std::string ConfClass::compilerFlags() const {
 }
 std::string ConfClass::linkerFlags() const { return this->_linkerFlags.str(); }
 
-std::string ConfClass::cmakePath() const { return _cmakePath; }
-std::string ConfClass::makePath() const { return _makePath; }
-std::string ConfClass::archiverPath() const { return _archiverPath; }
-std::string ConfClass::projectName() const { return _projectName; }
-std::string ConfClass::version() const { return _version; }
-std::string ConfClass::language() const { return _language; }
-std::string ConfClass::standard() const { return _standard; }
-std::string ConfClass::binaryType() const { return _binaryType; }
-std::string ConfClass::binaryName() const { return _binaryName; }
-std::string ConfClass::vcpkgDirPath() const { return _vcpkgDirectory; }
-std::string ConfClass::outputDirectory() const { return _outputDirectory; }
-std::string ConfClass::sourceDirectory() const { return _sourceDirectory; }
-std::string ConfClass::includeDirectory() const { return _includeDirectory; }
-std::string ConfClass::libDirectory() const { return _libDirectory; }
-std::string ConfClass::architecture() const { return _architecture; }
+std::string ConfClass::cmakePath() const { return this->_cmakePath; }
+std::string ConfClass::makePath() const { return this->_makePath; }
+std::string ConfClass::archiverPath() const { return this->_archiverPath; }
+std::string ConfClass::projectName() const { return this->_projectName; }
+std::string ConfClass::version() const { return this->_version; }
+std::string ConfClass::language() const { return this->_language; }
+std::string ConfClass::standard() const { return this->_standard; }
+std::string ConfClass::binaryType() const { return this->_binaryType; }
+std::string ConfClass::binaryName() const { return this->_binaryName; }
+std::string ConfClass::vcpkgDirPath() const { return this->_vcpkgDirectory; }
+std::string ConfClass::outputDirectory() const {
+  return this->_outputDirectory;
+}
+std::string ConfClass::sourceDirectory() const {
+  return this->_sourceDirectory;
+}
+std::string ConfClass::includeDirectory() const {
+  return this->_includeDirectory;
+}
+std::string ConfClass::libDirectory() const { return this->_libDirectory; }
+std::string ConfClass::architecture() const { return this->_architecture; }
 
 void ConfClass::posixify(std::string &path) {
   if (path.find("\\") != std::string::npos) {

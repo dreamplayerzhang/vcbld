@@ -98,10 +98,10 @@ std::string PkgClass::getVersion(const std::string &pkgName) {
                    dirEntry.end());
     for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
          it != dirEntry.end(); ++it) {
-      std::string fileName = (*it).path().filename().string();
+      std::string fileName = it->path().filename().string();
       foundPkg = fileName.find(pkg);
       if (foundPkg != std::string::npos && foundPkg == 0) {
-        temp2 = (*it).path().filename().string().substr(pkg.length(),
+        temp2 = it->path().filename().string().substr(pkg.length(),
                                                         fileName.length());
       }
     }

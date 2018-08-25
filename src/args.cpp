@@ -184,8 +184,8 @@ void available() {
       for (std::vector<fs::directory_entry>::const_iterator it =
                dirEntry.begin();
            it != dirEntry.end(); ++it) {
-        if (((*it).path().filename().string()).at(0) != '.') {
-          std::cout << ((*it).path().filename().string()) << std::endl;
+        if ((it->path().filename().string()).at(0) != '.') {
+          std::cout << (it->path().filename().string()) << std::endl;
         }
       }
     } else {
@@ -218,8 +218,8 @@ void find(const std::string &pkg) {
       for (std::vector<fs::directory_entry>::const_iterator it =
                dirEntry.begin();
            it != dirEntry.end(); ++it) {
-        if (((*it).path().filename().string()).find(pkg) != std::string::npos) {
-          std::cout << ((*it).path().filename().string()) << std::endl;
+        if ((it->path().filename().string()).find(pkg) != std::string::npos) {
+          std::cout << (it->path().filename().string()) << std::endl;
         }
       }
     } else {

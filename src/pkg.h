@@ -11,8 +11,8 @@ namespace vcbld {
 class PkgClass : public ConfClass {
 public:
   PkgClass(); // reads all configuration files
-  PkgClass(const ConfClass &) = delete;
-  PkgClass &operator=(const ConfClass &) = delete;
+  PkgClass(const PkgClass &) = delete;
+  PkgClass &operator=(const PkgClass &) = delete;
 
   void write();
   void include(const std::string &pkg);

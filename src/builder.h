@@ -9,6 +9,7 @@
 namespace vcbld {
 class Builder : public PrepClass {
 public:
+  Builder() = delete;
   explicit Builder(const std::string &buildType);
   Builder(const Builder &) = delete;
   Builder &operator=(const Builder &) = delete;

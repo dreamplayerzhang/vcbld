@@ -95,11 +95,6 @@ void New(const std::string &binType) {
   } else {
     std::cout << "main.cpp already exists." << std::endl;
   }
-  init::init(binType);
-}
-
-void setup(const fs::path &vcbldPath) {
-  init::setup(vcbldPath);
 }
 
 void build(const std::string &buildType) {

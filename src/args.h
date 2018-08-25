@@ -14,7 +14,6 @@ namespace fs = std::experimental::filesystem;
 namespace vcbld {
 namespace args {
 void New(const std::string &binType);
-void setup(const fs::path &vcbldPath);
 void restore();
 void build(const std::string &buildType);
 void clean(const std::string &buildType);

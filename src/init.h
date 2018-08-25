@@ -12,15 +12,45 @@
 namespace fs = std::experimental::filesystem;
 
 namespace vcbld {
-namespace init {
-void init(const std::string &binType);
-void setup(const fs::path &vcbldPath);
-void findPathDirs(std::string &PATH, std::vector<fs::path> &dirs);
-void replaceHome(fs::path &path);
-void finder(std::vector<fs::path> &vector , const fs::path &dir);
-void posixify(std::string &path);
-fs::path findCmake(const fs::path &path);
-std::string chooser(std::vector<fs::path> &vector , const std::string &cli);
-} // namespace init
+class Init {
+public:
+  Init() = delete;
+  Init(const fs::path &vcbldPath);
+  Init(const int &) = delete;
+  Init &operator=(const Init &) = delete;
+
+  void init(const std::string &binType);
+  void setup();
+  void sorter(std::vector<fs::path> &vector);
+  void lister(std::vector<fs::path> &vector);
+  std::string chooser(std::vector<fs::path> &vector, const int &choice);
+
+  void setCompiler(const int &i = 1);
+  void setCppCompiler(const int &i = 1);
+  void setCmake(const int &i = 1);
+  void setMake(const int &i = 1);
+  void setArchiver(const int &i = 1);
+  void setVcpkg(const int &i = 1);
+
+  std::vector<fs::path> &cCompilers();
+  std::vector<fs::path> &cppCompilers();
+  std::vector<fs::path> &cmakePaths();
+  std::vector<fs::path> &makePaths();
+  std::vector<fs::path> &archiverPaths();
+  std::vector<fs::path> &vcpkgPaths();
+
+private:
+  void findPathDirs(std::string &PATH, std::vector<fs::path> &dirs);
+  void replaceHome(fs::path &path);
+  void finder(std::vector<fs::path> &vector, const fs::path &dir);
+  void posixify(std::string &path);
+  fs::path findCmake(const fs::path &path);
+
+  fs::path _vcbldPath;
+  std::vector<fs::path> _paths, _cCompilers, _cppCompilers, _cmakePaths,
+      _makePaths, _archiverPaths, _vcpkgPaths;
+  std::string _cCompilerPath, _cppCompilerPath, _cmakePath, _makePath,
+      _archiverPath, _vcpkgPath;
+};
 } // namespace vcbld
 #endif // !INIT_H

@@ -12,8 +12,6 @@
 #include <iterator>
 #include <nlohmann/json.hpp>
 
-#include "init.h"
-
 using json = nlohmann::json;
 namespace fs = std::experimental::filesystem;
 
@@ -78,7 +76,22 @@ void PkgClass::write() {
   }
   if (isEmpty == true) {
     fs::remove("package.json");
-    init::init(binaryType());
+    try {
+      std::ofstream pkgsOutput("package.json");
+      if (pkgsOutput.is_open())
+      {
+        pkgsOutput << std::setw(4) << "{\n\t\"packages\" : []\n}";
+        pkgsOutput.flush();
+        pkgsOutput.close();
+        std::cout << "package.json written successfully." << std::endl;
+      }
+      else
+      {
+        std::cout << "package.json exists." << std::endl;
+      }
+    } catch (const std::exception &e) {
+      std::cerr << e.what() << " " << errno << std::endl;
+    }
   }
 }
 

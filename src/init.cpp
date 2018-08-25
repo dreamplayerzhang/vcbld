@@ -205,7 +205,7 @@ void setup(const fs::path &vcbldPath) {
 
   if (fs::exists("conf.json")) {
     std::cout << "conf.json was found in the directory, would you like to "
-                 "reconfigure it?\ntype yes to reconfigure..."
+                 "reconfigure it?\nType yes to reconfigure..."
               << std::endl;
     std::string entry;
     std::cin >> entry;
@@ -247,47 +247,6 @@ void setup(const fs::path &vcbldPath) {
       }
     } catch (const std::exception &e) {
       std::cerr << e.what() << " " << errno << std::endl;
-    }
-  }
-
-  if (!fs::exists("package.json")) {
-    try {
-      std::ofstream pkgsOutput("package.json");
-      if (pkgsOutput.is_open()) {
-        pkgsOutput << std::setw(4) << "{\n\t\"packages\" : []\n}";
-        pkgsOutput.flush();
-        pkgsOutput.close();
-        std::cout << "package.json written successfully." << std::endl;
-      }
-    } catch (const std::exception &e) {
-      std::cerr << e.what() << " " << errno << std::endl;
-    }
-  }
-
-  if (fs::exists("vcbld.json")) {
-    ConfClass confClass;
-    if (!fs::exists(confClass.outputDirectory())) {
-      fs::create_directory(confClass.outputDirectory());
-      fs::create_directory(confClass.outputDirectory() + "/debug");
-      fs::create_directory(confClass.outputDirectory() + "/release");
-      std::cout << "output directory created successfully." << std::endl;
-    }
-
-    if (confClass.includeDirectory() != "") {
-      if (!fs::exists(confClass.includeDirectory())) {
-        fs::create_directory(confClass.includeDirectory());
-        std::cout << "include directory created successfully." << std::endl;
-      }
-    }
-
-    if (confClass.includeDirectory() != "") {
-      if (!fs::exists(confClass.libDirectory()) &&
-          confClass.libDirectory() != "") {
-        fs::create_directory(confClass.libDirectory());
-        fs::create_directory(confClass.libDirectory() + "/debug");
-        fs::create_directory(confClass.libDirectory() + "/release");
-        std::cout << "lib directory created successfully." << std::endl;
-      }
     }
   }
 }
@@ -341,7 +300,25 @@ void init(const std::string &binType) {
         vcbldOutput.close();
         std::cout << "vcbld.json written successfully." << std::endl;
       } else {
-        std::cout << "vcbld.json exists." << std::endl;
+        ConfClass confClass;
+    if (!fs::exists(confClass.outputDirectory())) {
+      fs::create_directory(confClass.outputDirectory());
+      fs::create_directory(confClass.outputDirectory() + "/debug");
+      fs::create_directory(confClass.outputDirectory() + "/release");
+      std::cout << "output directory created successfully." << std::endl;
+    }
+
+    if (confClass.includeDirectory() != "" && !fs::exists(confClass.includeDirectory())) {
+        fs::create_directory(confClass.includeDirectory());
+        std::cout << "include directory created successfully." << std::endl;
+    }
+
+    if (confClass.libDirectory() != "" && !fs::exists(confClass.libDirectory())) {
+        fs::create_directory(confClass.libDirectory());
+        fs::create_directory(confClass.libDirectory() + "/debug");
+        fs::create_directory(confClass.libDirectory() + "/release");
+        std::cout << "lib directory created successfully." << std::endl;
+    }
       }
     } catch (const std::exception &e) {
       std::cerr << e.what() << " " << errno << std::endl;

@@ -10,8 +10,6 @@
 #include <vector>
 
 #include "args.h"
-#include "help.h"
-#include "init.h"
 
 #define MAJOR_VERSION 0
 #define MINOR_VERSION 1
@@ -31,13 +29,12 @@ int main(int argc, char *argv[]) {
     if (strcmp(argv[1], "new") == 0) {
       if (argc < 3) {
         args::New("app");
-        init::setup(vcbldPath);
       } else {
         args::New(static_cast<std::string>(argv[2]));
-        init::setup(vcbldPath);
       }
+      args::setup(vcbldPath);
     } else if (strcmp(argv[1], "setup") == 0) {
-      init::setup(vcbldPath);
+      args::setup(vcbldPath);
     } else if (strcmp(argv[1], "restore") == 0) {
       args::restore();
     } else if (strcmp(argv[1], "includes") == 0) {
@@ -128,7 +125,7 @@ int main(int argc, char *argv[]) {
     } else if (strcmp(argv[1], "help") == 0) {
       std::cout << "\nvcbld command line tools, version: \t" << MAJOR_VERSION
                 << "." << MINOR_VERSION << "." << PATCH_VERSION << std::endl;
-      help::mainHelp();
+      args::help();
     } else if (strcmp(argv[1], "install") == 0) {
       if (argc < 3) {
         std::cout << "Please enter package names to install." << std::endl;

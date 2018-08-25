@@ -31,7 +31,7 @@ PkgClass::PkgClass() : ConfClass() {
     }
     for (json::iterator it = pkgsJson["packages"].begin();
          it != pkgsJson["packages"].end(); ++it) {
-      this->_packageNames.push_back(*it);
+      _packageNames.push_back(*it);
     }
   } catch (...) {
     std::cerr << "Error reading package.json." << std::endl;
@@ -41,8 +41,8 @@ PkgClass::PkgClass() : ConfClass() {
 void PkgClass::write() {
   json pkgsJson;
 
-  for (std::vector<std::string>::iterator it = this->_packageNames.begin();
-       it != this->_packageNames.end(); ++it) {
+  for (std::vector<std::string>::iterator it = _packageNames.begin();
+       it != _packageNames.end(); ++it) {
     pkgsJson["packages"].push_back(*it);
   }
   try {
@@ -78,17 +78,17 @@ void PkgClass::write() {
   }
   if (isEmpty == true) {
     fs::remove("package.json");
-    init::init(this->binaryType());
+    init::init(binaryType());
   }
 }
 
 std::string PkgClass::getVersion(const std::string &pkgName) {
   std::vector<fs::directory_entry> dirEntry;
   std::string tempPath =
-      this->vcpkgDirPath() + "/" + "installed" + "/" + +"vcpkg" + "/" + "info";
+      vcpkgDirPath() + "/" + "installed" + "/" + +"vcpkg" + "/" + "info";
   std::string temp, temp2;
   size_t foundArch, foundPkg;
-  std::string arch = "_" + this->architecture() + ".list";
+  std::string arch = "_" + architecture() + ".list";
   std::string pkg = pkgName + "_";
   if (fs::is_directory(static_cast<fs::path>(tempPath))) {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
@@ -112,14 +112,14 @@ std::string PkgClass::getVersion(const std::string &pkgName) {
 }
 
 void PkgClass::include(const std::string &pkgName) {
-  this->_packageNames.push_back(pkgName);
+  _packageNames.push_back(pkgName);
 }
 
 void PkgClass::remove(const std::string &pkgName) {
-  for (std::vector<std::string>::iterator it = this->_packageNames.begin();
-       it != this->_packageNames.end();) {
+  for (std::vector<std::string>::iterator it = _packageNames.begin();
+       it != _packageNames.end();) {
     if (*it == pkgName) {
-      it = this->_packageNames.erase(it);
+      it = _packageNames.erase(it);
     } else {
       ++it;
     }
@@ -127,6 +127,6 @@ void PkgClass::remove(const std::string &pkgName) {
 }
 
 std::vector<std::string> &PkgClass::packageNames() {
-  return this->_packageNames;
+  return _packageNames;
 }
 } // namespace vcbld

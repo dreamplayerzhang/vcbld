@@ -3,11 +3,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <errno.h>
-#if defined(_WIN32) || defined(_WIN64)
-#include <filesystem>
-#else
-#include <experimental/filesystem>
-#endif
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -17,6 +12,7 @@
 
 #include "builder.h"
 #include "gen.h"
+#include "help.h"
 #include "init.h"
 #include "pkg.h"
 
@@ -26,7 +22,6 @@ namespace vcbld {
 namespace args {
 
 void New(const std::string &binType) {
-
   if (!fs::exists("src")) {
     fs::create_directory("src");
     std::cout << "src directory created successfully." << std::endl;
@@ -101,6 +96,10 @@ void New(const std::string &binType) {
     std::cout << "main.cpp already exists." << std::endl;
   }
   init::init(binType);
+}
+
+void setup(const fs::path &vcbldPath) {
+  init::setup(vcbldPath);
 }
 
 void build(const std::string &buildType) {
@@ -402,6 +401,9 @@ void make(const std::string &makeArgs) {
   if (systemRet == -1) {
     std::cout << "An error occured while running make." << std::endl;
   }
+}
+void help() {
+  help::mainHelp();
 }
 
 std::string sinTriplet(const std::string &pkg) {

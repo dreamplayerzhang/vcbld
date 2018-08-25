@@ -435,13 +435,12 @@ std::string chooser(std::vector<fs::path> &vector, const std::string &cli) {
   }
   if (temp != "") {
     try {
-      temp = fs::canonical(temp).string();
+      temp = fs::canonical(temp);
     } catch (...) {
 		//
     }
   }
   return temp.string();
 }
-
 } // namespace init
 } // namespace vcbld

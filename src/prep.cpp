@@ -116,12 +116,12 @@ std::string PrepClass::sourceFiles() {
 
     for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
          it != dirEntry.end(); ++it) {
-      if (fs::path(it->path().filename().string()).extension() == ".cpp" ||
-          fs::path(it->path().filename().string()).extension() == ".rc" ||
-          fs::path(it->path().filename().string()).extension() == ".c" ||
-          fs::path(it->path().filename().string()).extension() == ".cxx" ||
-          fs::path(it->path().filename().string()).extension() == ".qrc" ||
-          fs::path(it->path().filename().string()).extension() == ".uic") {
+      if (fs::path(it->path().filename()).extension() == ".cpp" ||
+          fs::path(it->path().filename()).extension() == ".rc" ||
+          fs::path(it->path().filename()).extension() == ".c" ||
+          fs::path(it->path().filename()).extension() == ".cxx" ||
+          fs::path(it->path().filename()).extension() == ".qrc" ||
+          fs::path(it->path().filename()).extension() == ".uic") {
         fullPath = std::move(it->path().string());
         posixify(fullPath);
         temp << "\"" << fullPath << "\" ";
@@ -145,12 +145,12 @@ std::string PrepClass::sourceFilesSinPath() {
 
     for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
          it != dirEntry.end(); ++it) {
-      if (fs::path(it->path().filename().string()).extension() == ".cpp" ||
-          fs::path(it->path().filename().string()).extension() == ".rc" ||
-          fs::path(it->path().filename().string()).extension() == ".c" ||
-          fs::path(it->path().filename().string()).extension() == ".cxx" ||
-          fs::path(it->path().filename().string()).extension() == ".qrc" ||
-          fs::path(it->path().filename().string()).extension() == ".uic") {
+      if (fs::path(it->path().filename()).extension() == ".cpp" ||
+          fs::path(it->path().filename()).extension() == ".rc" ||
+          fs::path(it->path().filename()).extension() == ".c" ||
+          fs::path(it->path().filename()).extension() == ".cxx" ||
+          fs::path(it->path().filename()).extension() == ".qrc" ||
+          fs::path(it->path().filename()).extension() == ".uic") {
         temp << it->path().filename().string() << " ";
       }
     }
@@ -172,8 +172,8 @@ std::string PrepClass::objPath(const std::string &buildPath) {
 
     for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
          it != dirEntry.end(); ++it) {
-      if (fs::path(it->path().filename().string()).extension() == ".o" ||
-          fs::path(it->path().filename().string()).extension() == ".obj") {
+      if (fs::path(it->path().filename()).extension() == ".o" ||
+          fs::path(it->path().filename()).extension() == ".obj") {
         fullPath = std::move(it->path().string());
         posixify(fullPath);
         temp << "\"" << fullPath << "\" ";

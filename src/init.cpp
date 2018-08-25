@@ -46,8 +46,8 @@ namespace init {
 void setup(const fs::path &vcbldPath) {
   std::string PATH = std::getenv("PATH");
   std::string brewLLVM = "/usr/local/opt/llvm/bin";
-  std::vector<fs::path> paths, cCompilers, cppCompilers, cmakePaths,
-      makePaths, archiverPaths, vcpkgPaths;
+  std::vector<fs::path> paths, cCompilers, cppCompilers, cmakePaths, makePaths,
+      archiverPaths, vcpkgPaths;
   std::string cCompilerPath, cppCompilerPath, cmakePath, makePath, archiverPath,
       vcpkgPath;
 
@@ -60,6 +60,39 @@ void setup(const fs::path &vcbldPath) {
     paths.emplace_back(fs::canonical(vcbldPath));
     paths.emplace_back(
         findCmake(fs::canonical(vcbldPath) / "downloads" / "tools"));
+  }
+
+  if (fs::exists(vcbldPath / "vcpkg") || fs::exists(vcbldPath / "vcpkg.exe")) {
+    paths.emplace_back(fs::canonical(vcbldPath));
+    paths.emplace_back(
+        findCmake(fs::canonical(vcbldPath) / "downloads" / "tools"));
+  }
+
+  if (fs::exists(vcbldPath.parent_path() / "vcpkg" / "vcpkg") ||
+      fs::exists(vcbldPath.parent_path() / "vcpkg" / "vcpkg.exe")) {
+    paths.emplace_back(fs::canonical(vcbldPath).parent_path());
+    paths.emplace_back(findCmake(fs::canonical(vcbldPath).parent_path() /
+                                 "downloads" / "tools"));
+  }
+
+  if (fs::exists(vcbldPath.parent_path().parent_path() / "vcpkg" / "vcpkg") ||
+      fs::exists(vcbldPath.parent_path().parent_path() / "vcpkg" /
+                 "vcpkg.exe")) {
+    paths.emplace_back(fs::canonical(vcbldPath).parent_path().parent_path());
+    paths.emplace_back(
+        findCmake(fs::canonical(vcbldPath).parent_path().parent_path() /
+                  "downloads" / "tools"));
+  }
+
+  if (fs::exists(vcbldPath.parent_path().parent_path().parent_path() / "vcpkg" /
+                 "vcpkg") ||
+      fs::exists(vcbldPath.parent_path().parent_path().parent_path() / "vcpkg" /
+                 "vcpkg.exe")) {
+    paths.emplace_back(
+        fs::canonical(vcbldPath).parent_path().parent_path().parent_path());
+    paths.emplace_back(findCmake(
+        fs::canonical(vcbldPath).parent_path().parent_path().parent_path() /
+        "downloads" / "tools"));
   }
 
   try {
@@ -97,7 +130,10 @@ void setup(const fs::path &vcbldPath) {
       cCompilers.emplace_back((*it) / "gcc-6");
     }
     if (fs::exists((*it) / "gcc-5")) {
-      cCompilers.emplace_back((*it) / "gcc-6");
+      cCompilers.emplace_back((*it) / "gcc-5");
+    }
+    if (fs::exists((*it) / "gcc-4")) {
+      cCompilers.emplace_back((*it) / "gcc-4");
     }
     if (fs::exists((*it) / "clang") && !fs::is_directory((*it) / "clang")) {
       cCompilers.emplace_back((*it) / "clang");
@@ -128,6 +164,9 @@ void setup(const fs::path &vcbldPath) {
     }
     if (fs::exists((*it) / "g++-6")) {
       cppCompilers.emplace_back((*it) / "g++-6");
+    }
+    if (fs::exists((*it) / "g++-5")) {
+      cppCompilers.emplace_back((*it) / "g++-5");
     }
     if (fs::exists((*it) / "clang++")) {
       cppCompilers.emplace_back((*it) / "clang++");
@@ -396,8 +435,7 @@ void finder(std::vector<fs::path> &vector, const fs::path &dir) {
       if (fs::exists((it->path() / "vcpkg").string())) {
         vector.emplace_back(it->path().string());
         if (fs::exists(it->path() / "downloads" / "tools")) {
-          vector.emplace_back(
-              findCmake(it->path() / "downloads" / "tools"));
+          vector.emplace_back(findCmake(it->path() / "downloads" / "tools"));
         }
       }
     }
@@ -437,7 +475,7 @@ std::string chooser(std::vector<fs::path> &vector, const std::string &cli) {
     try {
       temp = fs::canonical(temp);
     } catch (...) {
-		//
+      //
     }
   }
   return temp.string();

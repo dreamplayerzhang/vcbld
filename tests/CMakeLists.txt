@@ -20,16 +20,26 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/catch)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include)
 
-set(TEST_FILES test.cpp initTest.cpp buildTest.cpp genTest.cpp pkgTest.cpp prepTest.cpp)
+set(TEST_FILES confTest.cpp buildTest.cpp genTest.cpp pkgTest.cpp prepTest.cpp)
 
-add_executable(mainTest ${TEST_FILES})
-target_link_libraries(mainTest PRIVATE vcbldlib)
+add_executable(initTest initTest.cpp)
+target_link_libraries(initTest PRIVATE vcbldlib)
 
 if(GCC)
-    target_link_libraries(mainTest PRIVATE stdc++fs)
+    target_link_libraries(initTest PRIVATE stdc++fs)
 elseif(CLANG)
-    target_link_libraries(mainTest PRIVATE c++experimental)
+    target_link_libraries(initTest PRIVATE c++experimental)
 endif()
 
-add_test(Tests mainTest)
+add_executable(mainTests ${TEST_FILES})
+target_link_libraries(mainTests PRIVATE vcbldlib)
+
+if(GCC)
+    target_link_libraries(mainTests PRIVATE stdc++fs)
+elseif(CLANG)
+    target_link_libraries(mainTests PRIVATE c++experimental)
+endif()
+
+add_test(Init initTest)
+add_test(MainTests mainTests)
 

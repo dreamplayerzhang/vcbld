@@ -14,7 +14,8 @@ namespace vcbld {
 PrepClass prepClass;
 TEST_CASE("Preparation tests", "[prep]") {
   CHECK(prepClass.stripLibName("libname.so") == "name");
-  CHECK(prepClass.stripLibName("libvcbld.lib") == "vcbld");
+  CHECK(prepClass.stripLibName("libvcbldlib.lib") == "vcbldlib");
+  CHECK(prepClass.stripLibName("vcbldlib.lib") == "vcbldlib");
   CHECK(prepClass.sourceFilesSinPath() == "main.cpp ");
   CHECK(
       prepClass.sourceFiles() ==

@@ -43,18 +43,14 @@ void New(const std::string &binType) {
     std::cout << "lib directroy exists." << std::endl;
   }
 
-  if (!fs::exists("./lib/debug")) {
-    fs::create_directory("./lib/debug");
-    std::cout << "lib/debug directory created successfully." << std::endl;
+  if (!fs::exists("lib/debug")) {
+    fs::create_directory("lib/debug");
   } else {
-    std::cout << "lib/debug directroy exists." << std::endl;
   }
 
-  if (!fs::exists("./lib/release")) {
-    fs::create_directory("./lib/release");
-    std::cout << "lib/release directory created successfully." << std::endl;
+  if (!fs::exists("lib/release")) {
+    fs::create_directory("lib/release");
   } else {
-    std::cout << "lib/release directroy exists." << std::endl;
   }
 
   if (!fs::exists("bin")) {
@@ -64,21 +60,17 @@ void New(const std::string &binType) {
     std::cout << "bin directroy exists." << std::endl;
   }
 
-  if (!fs::exists("./bin/debug")) {
-    fs::create_directory("./bin/debug");
-    std::cout << "bin/debug directory created successfully." << std::endl;
+  if (!fs::exists("bin/debug")) {
+    fs::create_directory("bin/debug");
   } else {
-    std::cout << "bin/debug directroy exists." << std::endl;
   }
 
-  if (!fs::exists("./bin/release")) {
+  if (!fs::exists("bin/release")) {
     fs::create_directory("bin/release");
-    std::cout << "bin/release directory created successfully." << std::endl;
   } else {
-    std::cout << "bin/release directroy exists." << std::endl;
   }
 
-  if (!fs::exists("./src/main.cpp") && binType == "app") {
+  if (!fs::exists("src/main.cpp") && binType == "app") {
     std::ofstream ofs("./src/main.cpp");
 
     if (ofs.is_open()) {
@@ -397,9 +389,7 @@ void make(const std::string &makeArgs) {
     std::cout << "An error occured while running make." << std::endl;
   }
 }
-void help() {
-  help::mainHelp();
-}
+void help() { help::mainHelp(); }
 
 std::string sinTriplet(const std::string &pkg) {
   std::size_t found;

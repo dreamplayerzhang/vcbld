@@ -1,9 +1,17 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
+#if defined(_WIN32) || defined(_WIN64)
+#include <filesystem>
+#else
+#include <experimental/filesystem>
+#endif
+
 #include "args.h"
 #include "init.h"
 #include "vcbld.h"
+
+namespace fs = std::experimental::filesystem;
 
 using namespace vcbld;
 

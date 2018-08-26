@@ -198,12 +198,14 @@ std::string PrepClass::headerPaths() {
 }
 
 std::string PrepClass::stripLibName(const std::string &lib) {
-  std::size_t found;
+  std::size_t found, foundLib;
   std::string stripLib;
   std::string stripExt;
-  found = lib.find("lib");
-  if (found != std::string::npos && found == 0) {
+  foundLib = lib.find("lib");
+  if (foundLib != std::string::npos && foundLib == 0) {
     stripLib = lib.substr(3, lib.length());
+  } else {
+  	stripLib = lib;
   }
   found = stripLib.find(".a");
   if (found != std::string::npos) {

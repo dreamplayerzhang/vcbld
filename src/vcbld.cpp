@@ -11,7 +11,7 @@
 
 #include "args.h"
 #include "init.h"
-#include "vcbldConfig.h"
+#include "vcbld.h"
 
 namespace fs = std::experimental::filesystem;
 

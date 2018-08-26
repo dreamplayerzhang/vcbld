@@ -36,7 +36,7 @@ endif()
 set(SOURCE_FILES "args.cpp" "builder.cpp" "help.cpp" "conf.cpp" "init.cpp" "gen.cpp" "pkg.cpp" "prep.cpp")
 
 add_library(vcbldlib ${SOURCE_FILES})
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(${PROJECT_NAME} vcbld.cpp)
 
 target_include_directories(vcbldlib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include)
 

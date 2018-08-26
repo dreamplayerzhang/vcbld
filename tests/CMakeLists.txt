@@ -20,7 +20,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/catch)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include)
 
-set(TEST_FILES test.cpp initTest.cpp)
+set(TEST_FILES test.cpp initTest.cpp buildTest.cpp genTest.cpp pkgTest.cpp prepTest.cpp)
 
 add_executable(mainTest ${TEST_FILES})
 target_link_libraries(mainTest PRIVATE vcbldlib)

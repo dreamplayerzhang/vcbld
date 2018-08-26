@@ -1,10 +1,19 @@
-#include "initTest.h"
+#if defined(_WIN32) || defined(_WIN64)
+#include <filesystem>
+#else
+#include <experimental/filesystem>
+#endif
+#include "args.h"
+#include "conf.h"
+#include "init.h"
+
+#include "catch.hpp"
 
 namespace fs = std::experimental::filesystem;
 
 namespace vcbld {
 
-  TEST_CASE("Initialization checks") {
+  TEST_CASE("Initialization checks", "[init]") {
     args::New("app");
     CHECK(fs::exists("src"));
     CHECK(fs::exists("src/main.cpp"));
@@ -27,7 +36,7 @@ namespace vcbld {
     CHECK(fs::exists("package.json"));
   }
 
-  TEST_CASE("Conf.json reading test") {
+  TEST_CASE("Conf.json reading test", "[conf]") {
     ConfClass confClass;
     CHECK(confClass.projPath() != "");
     CHECK(confClass.cCompilerPath() != "");

@@ -6,11 +6,9 @@ set (vcbld_VERSION_MINOR 1)
 set (vcbld_VERSION_PATCH 0)
 
 configure_file (
-  "${PROJECT_SOURCE_DIR}/src/vcbldConfig.h.in"
-  "${PROJECT_BINARY_DIR}/vcbldConfig.h"
+  "${PROJECT_SOURCE_DIR}/src/vcbld.h.in"
+  "${PROJECT_SOURCE_DIR}/src/vcbld.h"
   )
-
-include_directories(${PROJECT_BINARY_DIR})
 
 add_subdirectory(src)
 

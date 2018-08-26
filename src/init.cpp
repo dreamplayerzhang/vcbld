@@ -67,18 +67,19 @@ Init::Init(const fs::path &vcbldPath) : _vcbldPath(vcbldPath) {
 
   if (fs::exists(_vcbldPath.parent_path() / "vcpkg" / "vcpkg") ||
       fs::exists(_vcbldPath.parent_path() / "vcpkg" / "vcpkg.exe")) {
-    _paths.emplace_back(fs::canonical(_vcbldPath).parent_path());
+    _paths.emplace_back(fs::canonical(_vcbldPath).parent_path() / "vcpkg");
     _paths.emplace_back(findCmake(fs::canonical(_vcbldPath).parent_path() /
-                                  "downloads" / "tools"));
+                                  "vcpkg" / "downloads" / "tools"));
   }
 
   if (fs::exists(_vcbldPath.parent_path().parent_path() / "vcpkg" / "vcpkg") ||
       fs::exists(_vcbldPath.parent_path().parent_path() / "vcpkg" /
                  "vcpkg.exe")) {
-    _paths.emplace_back(fs::canonical(_vcbldPath).parent_path().parent_path());
+    _paths.emplace_back(fs::canonical(_vcbldPath).parent_path().parent_path() /
+                        "vcpkg");
     _paths.emplace_back(
         findCmake(fs::canonical(_vcbldPath).parent_path().parent_path() /
-                  "downloads" / "tools"));
+                  "vcpkg" / "downloads" / "tools"));
   }
 
   if (fs::exists(_vcbldPath.parent_path().parent_path().parent_path() /
@@ -86,10 +87,11 @@ Init::Init(const fs::path &vcbldPath) : _vcbldPath(vcbldPath) {
       fs::exists(_vcbldPath.parent_path().parent_path().parent_path() /
                  "vcpkg" / "vcpkg.exe")) {
     _paths.emplace_back(
-        fs::canonical(_vcbldPath).parent_path().parent_path().parent_path());
+        fs::canonical(_vcbldPath).parent_path().parent_path().parent_path() /
+        "vcpkg");
     _paths.emplace_back(findCmake(
         fs::canonical(_vcbldPath).parent_path().parent_path().parent_path() /
-        "downloads" / "tools"));
+        "vcpkg" / "downloads" / "tools"));
   }
 
   try {
@@ -206,7 +208,6 @@ Init::Init(const fs::path &vcbldPath) : _vcbldPath(vcbldPath) {
   sorter(_makePaths);
   sorter(_archiverPaths);
   sorter(_vcpkgPaths);
-
 }
 
 void Init::setup() {

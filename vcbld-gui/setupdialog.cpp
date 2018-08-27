@@ -11,9 +11,9 @@ SetupDialog::SetupDialog(const QString &msg, std::vector<fs::path> &vector,
   int screenWidth = desktop->width();
   move(screenWidth / 2 - width() / 2, 120);
   setFixedSize(size());
-  QString labelText = ui->label->text();
+  QString labelText = "Please choose a";
   labelText += msg;
-  ui->label->setText("Please choose a");
+  ui->label->setText(labelText);
 
   for (std::vector<fs::path>::iterator it = vector.begin(); it != vector.end();
        ++it) {

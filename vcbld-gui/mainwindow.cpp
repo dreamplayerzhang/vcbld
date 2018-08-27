@@ -5,15 +5,16 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QProcess>
 #include <QString>
 #include <QWindow>
+#include <cstdlib>
 #include <iostream>
 
 #include "add.h"
 #include "args.h"
 #include "dialog.h"
 #include "init.h"
+#include "pkg.h"
 #include "remove.h"
 #include "setupdialog.h"
 #include "vcbld.h"
@@ -72,7 +73,6 @@ void MainWindow::on_actionOpen_triggered() {
     fs::path path = _dirName.toStdString();
     QString display = QString::fromStdString(path.filename().string());
     ui->label_3->setText(display);
-    ui->label_3->setText(_dirName);
     if (fs::exists("vcbld.json"))
       enableMenus();
   }
@@ -137,22 +137,30 @@ void MainWindow::on_actionClean_triggered() {
 
 void MainWindow::on_actionRun_triggered() {
   if (_dirName != "") {
-    //    ConfClass confClass;
-    QDir::setCurrent(_dirName);
+    ConfClass confClass;
+    std::string config, command;
+
     if (ui->actionDebug->isChecked()) {
-      args::run("debug");
-      // QProcess process;
-      // process.start(QString::fromStdString(confClass.outputDirectory() + "/"
-      // + "debug" + "/" + confClass.binaryName())); process.waitForFinished();
-      // QString output = process.readAllStandardOutput();
+      config = "debug";
     } else {
-      args::run("release");
-      // QProcess process;
-      // process.start(QString::fromStdString(confClass.outputDirectory() + "/"
-      // + "release" + "/" + confClass.binaryName()));
-      // process.waitForFinished();
-      // QString output = process.readAllStandardOutput();
+      config = "release";
     }
+
+#if defined(_WIN32) || defined(_WIN32)
+    command = "start cmd.exe @cmd /k " + confClass.outputDirectory() + "/" +
+              config + "/" + confClass.binaryName();
+#elif defined(__linux__)
+    command = "xterm -hold -e " + confClass.outputDirectory() + "/" + config +
+              "/" + confClass.binaryName() + " &";
+#elif defined(__APPLE__) && defined(__MACH__)
+    command = "open -a Terminal " + confClass.outputDirectory() + "/" + config +
+              "/" + confClass.binaryName() + " &";
+#else
+    command = "xterm -hold -e " + confClass.outputDirectory() + "/" + config +
+              "/" + confClass.binaryName() + " &";
+#endif
+    QDir::setCurrent(_dirName);
+    system(command.c_str());
   }
 }
 
@@ -255,7 +263,21 @@ void MainWindow::on_actionRemove_2_triggered() {
   rmv->raise();
 }
 
-void MainWindow::on_actionList_3_triggered() { args::list(); }
+void MainWindow::on_actionList_3_triggered() {
+  // args::list();
+  PkgClass pkgClass;
+  std::string list;
+  for (std::vector<std::string>::iterator it = pkgClass.packageNames().begin();
+       it != pkgClass.packageNames().end(); ++it) {
+    list += *it;
+    list += "\t";
+    list += pkgClass.getVersion(*it);
+    list += "\n";
+  }
+  QMessageBox msgBox;
+  msgBox.setText(QString::fromStdString(list));
+  msgBox.exec();
+}
 
 void MainWindow::setup(Init &init) {
   if (fs::exists("conf.json")) {

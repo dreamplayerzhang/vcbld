@@ -10,7 +10,6 @@
 #include <QMainWindow>
 
 #include "init.h"
-#include "setupdialog.h"
 
 namespace Ui {
 class MainWindow;

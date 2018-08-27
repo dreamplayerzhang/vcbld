@@ -47,7 +47,7 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 	message(FATAL_ERROR "Prevented in-tree build. Please create a build directory outside of the source directory and call cmake from there.")
 endif()
 
-set(CMAKE_PREFIX_PATH ~/Qt/5.11.1/clang_64)
+# set(CMAKE_PREFIX_PATH ~/Qt/5.11.1/clang_64)
 
 set(GUI_FILES "main.cpp" "mainwindow.cpp" "mainwindow.ui" "remove.cpp" "remove.ui" "add.cpp" "add.ui" "dialog.cpp" "dialog.ui" "setupdialog.cpp" "setupdialog.ui")
 

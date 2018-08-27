@@ -1,12 +1,13 @@
 #include "init.h"
 
-#include <algorithm>
-#include <errno.h>
 #if defined(_WIN32) || defined(_WIN64)
 #include <filesystem>
 #else
 #include <experimental/filesystem>
 #endif
+
+#include <algorithm>
+#include <errno.h>
 #include <fstream>
 #include <iomanip>
 #include <iostream>

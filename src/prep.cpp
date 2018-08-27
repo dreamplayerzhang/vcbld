@@ -1,12 +1,13 @@
 #include "prep.h"
 
-#include <algorithm>
-#include <errno.h>
 #if defined(_WIN32) || defined(_WIN64)
 #include <filesystem>
 #else
 #include <experimental/filesystem>
 #endif
+
+#include <algorithm>
+#include <errno.h>
 #include <fstream>
 #include <iostream>
 #include <iterator>
@@ -121,7 +122,8 @@ std::string PrepClass::sourceFiles() {
           fs::path(it->path().filename()).extension() == ".c" ||
           fs::path(it->path().filename()).extension() == ".cxx" ||
           fs::path(it->path().filename()).extension() == ".qrc" ||
-          fs::path(it->path().filename()).extension() == ".uic") {
+          fs::path(it->path().filename()).extension() == ".uic" ||
+          fs::path(it->path().filename()).extension() == ".ui") {
         fullPath = std::move(it->path().string());
         posixify(fullPath);
         temp << "\"" << fullPath << "\" ";
@@ -150,7 +152,8 @@ std::string PrepClass::sourceFilesSinPath() {
           fs::path(it->path().filename()).extension() == ".c" ||
           fs::path(it->path().filename()).extension() == ".cxx" ||
           fs::path(it->path().filename()).extension() == ".qrc" ||
-          fs::path(it->path().filename()).extension() == ".uic") {
+          fs::path(it->path().filename()).extension() == ".uic" ||
+          fs::path(it->path().filename()).extension() == ".ui") {
         temp << it->path().filename().string() << " ";
       }
     }

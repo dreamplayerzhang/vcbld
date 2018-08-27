@@ -1,9 +1,4 @@
 #include "mainwindow.h"
-#include "args.h"
-#include "conf.h"
-#include "init.h"
-#include "vcbld.h"
-#include "ui_mainwindow.h"
 
 #include <QDesktopWidget>
 #include <QDir>
@@ -11,6 +6,14 @@
 #include <QMessageBox>
 #include <QProcess>
 #include <QString>
+#include <QWindow>
+
+#include "add.h"
+#include "args.h"
+#include "init.h"
+#include "remove.h"
+#include "ui_mainwindow.h"
+#include "vcbld.h"
 
 using namespace vcbld;
 
@@ -26,6 +29,14 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow() { delete ui; }
+
+void MainWindow::enableMenus() {
+  if (_dirName != "")
+    ui->menuBuild->setEnabled(true);
+  ui->menuConfig->setEnabled(true);
+  ui->menuGenerate->setEnabled(true);
+  ui->menuPackages->setEnabled(true);
+}
 
 void MainWindow::on_actionNew_triggered() {
   _dirName = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "~",
@@ -43,14 +54,18 @@ void MainWindow::on_actionNew_triggered() {
     init.setMake();
     init.setArchiver();
     init.setup();
+    enableMenus();
   }
 }
 
 void MainWindow::on_actionOpen_triggered() {
   _dirName = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "~",
                                                QFileDialog::ShowDirsOnly);
-  QDir::setCurrent(_dirName);
-  ui->label_3->setText(_dirName);
+  if (_dirName != "") {
+    QDir::setCurrent(_dirName);
+    ui->label_3->setText(_dirName);
+    enableMenus();
+  }
 }
 
 void MainWindow::on_actionAlways_on_top_triggered(bool checked) {
@@ -112,18 +127,19 @@ void MainWindow::on_actionClean_triggered() {
 
 void MainWindow::on_actionRun_triggered() {
   if (_dirName != "") {
-    ConfClass confClass;
+    //    ConfClass confClass;
     QDir::setCurrent(_dirName);
     if (ui->actionDebug->isChecked()) {
       args::run("debug");
       // QProcess process;
-      // process.start(QString::fromStdString(confClass.outputDirectory() + "/" + "debug" + "/" + confClass.binaryName()));
-      // process.waitForFinished();
+      // process.start(QString::fromStdString(confClass.outputDirectory() + "/"
+      // + "debug" + "/" + confClass.binaryName())); process.waitForFinished();
       // QString output = process.readAllStandardOutput();
     } else {
       args::run("release");
       // QProcess process;
-      // process.start(QString::fromStdString(confClass.outputDirectory() + "/" + "release" + "/" + confClass.binaryName()));
+      // process.start(QString::fromStdString(confClass.outputDirectory() + "/"
+      // + "release" + "/" + confClass.binaryName()));
       // process.waitForFinished();
       // QString output = process.readAllStandardOutput();
     }
@@ -209,3 +225,30 @@ void MainWindow::on_actionCMakeLists_triggered() {
     args::generate();
   }
 }
+
+void MainWindow::on_actionBuild_run_triggered() {
+  if (_dirName != "") {
+    QDir::setCurrent(_dirName);
+    if (ui->actionDebug->isChecked()) {
+      args::build("debug");
+      args::run("debug");
+    } else {
+      args::build("release");
+      args::run("release");
+    }
+  }
+}
+
+void MainWindow::on_actionAdd_triggered() {
+  Add *add = new Add(this);
+  add->show();
+  add->raise();
+}
+
+void MainWindow::on_actionRemove_2_triggered() {
+  Remove *rmv = new Remove(this);
+  rmv->show();
+  rmv->raise();
+}
+
+void MainWindow::on_actionList_3_triggered() { args::list(); }

@@ -167,6 +167,8 @@ void available() {
     if (fs::is_directory(static_cast<fs::path>(vcpkgDirPath))) {
       std::copy(fs::directory_iterator(vcpkgDirPath), fs::directory_iterator(),
                 back_inserter(dirEntry));
+      std::sort(dirEntry.begin(), dirEntry.end());
+      dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
 
       for (std::vector<fs::directory_entry>::const_iterator it =
                dirEntry.begin();

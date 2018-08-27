@@ -49,7 +49,19 @@ private slots:
 
   void on_actionCMakeLists_triggered();
 
+  void on_actionBuild_run_triggered();
+
+  void on_actionAdd_triggered();
+
+  void on_actionRemove_2_triggered();
+
+  void on_actionList_3_triggered();
+
+signals:
+  void remove();
+
 private:
+  void enableMenus();
   Ui::MainWindow *ui;
   QString _dirName;
 };

@@ -1,22 +1,30 @@
 #ifndef REMOVE_H
 #define REMOVE_H
 
+#include <QListWidgetItem>
 #include <QMainWindow>
+
+#include "pkg.h"
 
 namespace Ui {
 class Remove;
 }
 
-class Remove : public QMainWindow
-{
-    Q_OBJECT
+class Remove : public QMainWindow {
+  Q_OBJECT
 
 public:
-    explicit Remove(QWidget *parent = nullptr);
-    ~Remove();
+  explicit Remove(QWidget *parent = nullptr);
+  ~Remove();
+
+private slots:
+  void on_cancelButton_clicked();
+
+  void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
 
 private:
-    Ui::Remove *ui;
+  vcbld::PkgClass pkgClass;
+  Ui::Remove *ui;
 };
 
 #endif // REMOVE_H

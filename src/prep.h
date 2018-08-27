@@ -14,6 +14,7 @@ public:
   PrepClass(const PrepClass &) = delete;
   PrepClass &operator=(const PrepClass &) = delete;
 
+  void posixify(std::string &path);
   std::string sourceFiles();
   std::string sourceFilesSinPath();
   std::string objPath(const std::string &buildPath);
@@ -27,7 +28,6 @@ public:
   std::vector<std::string> &rlsLocalLibNames();
 
 private:
-  void posixify(std::string &path);
   bool hasComponents(const std::string &libName);
   std::string findLib(const std::string &line);
 

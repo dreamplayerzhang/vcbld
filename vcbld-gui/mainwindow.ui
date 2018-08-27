@@ -76,6 +76,9 @@
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuConfig">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>Config</string>
     </property>
@@ -83,9 +86,13 @@
     <addaction name="actionRelease"/>
    </widget>
    <widget class="QMenu" name="menuBuild">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>Build</string>
     </property>
+    <addaction name="actionBuild_run"/>
     <addaction name="actionBuild"/>
     <addaction name="actionRun"/>
     <addaction name="actionClean"/>
@@ -93,6 +100,9 @@
     <addaction name="actionRun_make"/>
    </widget>
    <widget class="QMenu" name="menuGenerate">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>Generate</string>
     </property>
@@ -100,13 +110,15 @@
     <addaction name="actionIncludePath"/>
    </widget>
    <widget class="QMenu" name="menuPackages">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="title">
      <string>Packages</string>
     </property>
     <addaction name="actionAdd"/>
     <addaction name="actionRemove_2"/>
-    <addaction name="actionList_2"/>
-    <addaction name="actionSearch_2"/>
+    <addaction name="actionList_3"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -288,6 +300,16 @@
   <action name="actionHelp">
    <property name="text">
     <string>Help</string>
+   </property>
+  </action>
+  <action name="actionBuild_run">
+   <property name="text">
+    <string>Build &amp; run</string>
+   </property>
+  </action>
+  <action name="actionList_3">
+   <property name="text">
+    <string>List</string>
    </property>
   </action>
  </widget>

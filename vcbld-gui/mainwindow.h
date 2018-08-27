@@ -1,7 +1,16 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#if defined(_WIN32) || defined(_WIN64)
+#include <filesystem>
+#else
+#include <experimental/filesystem>
+#endif
+
 #include <QMainWindow>
+
+#include "init.h"
+#include "setupdialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -57,10 +66,9 @@ private slots:
 
   void on_actionList_3_triggered();
 
-signals:
-  void remove();
-
 private:
+  void chooser(const QString &, const SetupDialog *);
+  void setup(vcbld::Init &);
   void enableMenus();
   Ui::MainWindow *ui;
   QString _dirName;

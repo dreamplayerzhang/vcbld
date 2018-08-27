@@ -1,4 +1,5 @@
 #include "add.h"
+#include "ui_add.h"
 
 #if defined(_WIN32) || defined(_WIN64)
 #include <filesystem>
@@ -12,7 +13,6 @@
 #include <vector>
 
 #include "args.h"
-#include "ui_add.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -22,7 +22,7 @@ Add::Add(QWidget *parent) : QMainWindow(parent), ui(new Ui::Add) {
   ui->setupUi(this);
   QDesktopWidget *desktop = QApplication::desktop();
   int screenWidth = desktop->width();
-  move(screenWidth / 2 - width() / 2, 150);
+  move(screenWidth / 2 - width() / 2, 120);
   setFixedSize(size());
 
   try {

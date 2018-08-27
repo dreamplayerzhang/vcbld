@@ -49,7 +49,7 @@ endif()
 
 set(CMAKE_PREFIX_PATH ~/Qt/5.11.1/clang_64)
 
-set(GUI_FILES "main.cpp" "mainwindow.cpp" "mainwindow.ui" "remove.cpp" "remove.ui" "add.cpp" "add.ui")
+set(GUI_FILES "main.cpp" "mainwindow.cpp" "mainwindow.ui" "remove.cpp" "remove.ui" "add.cpp" "add.ui" "dialog.cpp" "dialog.ui" "setupdialog.cpp" "setupdialog.ui")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include)

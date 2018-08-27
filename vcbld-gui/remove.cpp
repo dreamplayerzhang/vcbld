@@ -1,10 +1,10 @@
 #include "remove.h"
+#include "ui_remove.h"
 
 #include <QDesktopWidget>
 #include <iostream>
 
 #include "args.h"
-#include "ui_remove.h"
 
 using namespace vcbld;
 
@@ -12,7 +12,7 @@ Remove::Remove(QWidget *parent) : QMainWindow(parent), ui(new Ui::Remove) {
   ui->setupUi(this);
   QDesktopWidget *desktop = QApplication::desktop();
   int screenWidth = desktop->width();
-  move(screenWidth / 2 - width() / 2, 150);
+  move(screenWidth / 2 - width() / 2, 120);
   setFixedSize(size());
 
   for (std::vector<std::string>::iterator it = pkgClass.packageNames().begin();

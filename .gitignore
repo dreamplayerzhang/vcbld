@@ -2,7 +2,6 @@ bin
 lib
 conf.json
 .vscode
-vcbld-gui
 
 .DS_Store
 CMakeCache.txt
@@ -15,3 +14,4 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 build
+CMakeLists.txt.user

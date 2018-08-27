@@ -153,6 +153,7 @@ void Builder::build() {
     try {
       std::cout << "Linking...\n";
       appLink();
+      std::cout << "Done\n";
     } catch (const std::exception &e) {
       std::cout << "Linking failed!" << std::endl;
       std::cerr << e.what() << " " << errno << std::endl;
@@ -174,6 +175,7 @@ void Builder::build() {
     try {
       std::cout << "Archiving...\n";
       archive();
+      std::cout << "Done\n";
     } catch (const std::exception &e) {
       std::cout << "Archiving failed!" << std::endl;
       std::cerr << e.what() << errno << std::endl;
@@ -189,6 +191,7 @@ void Builder::build() {
     try {
       std::cout << "Linking...\n";
       dylibLink();
+      std::cout << "Done\n";
     } catch (const std::exception &e) {
       std::cout << "Linking failed!" << std::endl;
       std::cerr << e.what() << errno << std::endl;

@@ -67,7 +67,6 @@ private slots:
   void on_actionList_3_triggered();
 
 private:
-  void chooser(const QString &, const SetupDialog *);
   void setup(vcbld::Init &);
   void enableMenus();
   Ui::MainWindow *ui;

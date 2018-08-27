@@ -8,26 +8,25 @@ namespace Ui {
 class Dialog;
 }
 
-class Dialog : public QDialog
-{
-    Q_OBJECT
+class Dialog : public QDialog {
+  Q_OBJECT
 
 public:
-    explicit Dialog(QWidget *parent = nullptr);
-    ~Dialog();
-    std::string binType() const;
+  explicit Dialog(QWidget *parent = nullptr);
+  ~Dialog();
+  std::string binType() const;
 
 private slots:
 
-    void on_pushButton_clicked();
+  void on_pushButton_clicked();
 
-    void on_pushButton_2_clicked();
+  void on_pushButton_2_clicked();
 
-    void on_pushButton_3_clicked();
+  void on_pushButton_3_clicked();
 
 private:
-    Ui::Dialog *ui;
-    QString _binType;
+  Ui::Dialog *ui;
+  QString _binType;
 };
 
 #endif // DIALOG_H

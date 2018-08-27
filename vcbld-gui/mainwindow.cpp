@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <iostream>
 #include <QDesktopWidget>
 #include <QDir>
 #include <QFileDialog>
@@ -9,6 +8,7 @@
 #include <QProcess>
 #include <QString>
 #include <QWindow>
+#include <iostream>
 
 #include "add.h"
 #include "args.h"
@@ -54,11 +54,11 @@ void MainWindow::on_actionNew_triggered() {
     Dialog *dialog = new Dialog(this);
     dialog->exec();
     if (dialog->binType() != "") {
-        args::New(dialog->binType());
-        init.init(dialog->binType());
-        enableMenus();
-        setup(init);
-        init.setup();
+      args::New(dialog->binType());
+      init.init(dialog->binType());
+      enableMenus();
+      setup(init);
+      init.setup();
     }
   }
 }
@@ -72,7 +72,8 @@ void MainWindow::on_actionOpen_triggered() {
     QString display = QString::fromStdString(path.filename().string());
     ui->label_3->setText(display);
     ui->label_3->setText(_dirName);
-    if (fs::exists("vcbld.json")) enableMenus();
+    if (fs::exists("vcbld.json"))
+      enableMenus();
   }
 }
 
@@ -255,123 +256,127 @@ void MainWindow::on_actionRemove_2_triggered() {
 
 void MainWindow::on_actionList_3_triggered() { args::list(); }
 
-
-void MainWindow::setup(Init &init)
-{
-    if (fs::exists("conf.json")) {
-        QMessageBox msgBox;
-        msgBox.setText("conf.json was found in the directory, would you like to "
-                                "reconfigure it?");
-        msgBox.addButton(tr("yes"), QMessageBox::AcceptRole);
-        msgBox.addButton(tr("no"), QMessageBox::RejectRole);
-        if (msgBox.exec() == QMessageBox::AcceptRole) {
-            fs::remove("conf.json");
-            setup(init);
-        } else {
-            return;
-        }
+void MainWindow::setup(Init &init) {
+  if (fs::exists("conf.json")) {
+    QMessageBox msgBox;
+    msgBox.setText("conf.json was found in the directory, would you like to "
+                   "reconfigure it?");
+    msgBox.addButton(tr("yes"), QMessageBox::AcceptRole);
+    msgBox.addButton(tr("no"), QMessageBox::RejectRole);
+    if (msgBox.exec() == QMessageBox::AcceptRole) {
+      fs::remove("conf.json");
+      setup(init);
     } else {
-        if (init.cCompilers().size() == 0) {
-            QMessageBox msgBox;
-            msgBox.setText("Couldn't locate a C compiler.");
-            msgBox.exec();
-          init.setCompiler();
-        } else if (init.cCompilers().size() == 1) {
-          init.setCompiler(1);
-        } else {
-          SetupDialog *setupCompiler = new SetupDialog(" C compiler", init.cCompilers(), this);
-          setupCompiler->exec();
-          try {
-            init.setCompiler(setupCompiler->choice());
-          } catch (...) {
-            init.setCompiler(1);
-          }
-          delete setupCompiler;
-        }
-        if (init.cppCompilers().size() == 0) {
-            QMessageBox msgBox;
-            msgBox.setText("Couldn't locate a C++ compiler.");
-            msgBox.exec();
-          init.setCppCompiler();
-        } else if (init.cppCompilers().size() == 1) {
-          init.setCppCompiler(1);
-        } else {
-            SetupDialog *setupCppCompiler = new SetupDialog(" C++ compiler", init.cppCompilers(), this);
-            setupCppCompiler->exec();
-            try {
-              init.setCppCompiler(setupCppCompiler->choice());
-            } catch (...) {
-              init.setCppCompiler(1);
-            }
-            delete setupCppCompiler;
-        }
-        if (init.cmakePaths().size() == 0) {
-            QMessageBox msgBox;
-            msgBox.setText("Couldn't locate a cmake executable.");
-            msgBox.exec();
-          init.setCmake();
-        } else if (init.cmakePaths().size() == 1) {
-          init.setCmake(1);
-        } else {
-            SetupDialog *setupCmakePath = new SetupDialog(" cmake executable", init.cmakePaths(), this);
-            setupCmakePath->exec();
-            try {
-              init.setCmake(setupCmakePath->choice());
-            } catch (...) {
-              init.setCmake(1);
-            }
-            delete setupCmakePath;
-        }
-        if (init.makePaths().size() == 0) {
-            QMessageBox msgBox;
-            msgBox.setText("Couldn't locate a make executable.");
-            msgBox.exec();
-          init.setMake();
-        } else if (init.makePaths().size() == 1) {
-          init.setMake(1);
-        } else {
-            SetupDialog *setupMakePath = new SetupDialog(" make executable", init.makePaths(), this);
-            setupMakePath->exec();
-            try {
-              init.setMake(setupMakePath->choice());
-            } catch (...) {
-              init.setMake(1);
-            }
-            delete setupMakePath;
-        }
-        if (init.archiverPaths().size() == 0) {
-            QMessageBox msgBox;
-            msgBox.setText("Couldn't locate an archiver.");
-            msgBox.exec();
-          init.setArchiver();
-        } else if (init.archiverPaths().size() == 1) {
-          init.setArchiver(1);
-        } else {
-            SetupDialog *setupArchiverPath = new SetupDialog("n archiver", init.archiverPaths(), this);
-            setupArchiverPath->exec();
-            try {
-              init.setArchiver(setupArchiverPath->choice());
-            } catch (...) {
-              init.setArchiver(1);
-            }
-            delete setupArchiverPath;
-        }
-        if (init.vcpkgPaths().size() == 0) {
-            QMessageBox msgBox;
-            msgBox.setText("Couldn't locate a vcpkg instance.");
-            msgBox.exec();
-          init.setVcpkg();
-        } else if (init.vcpkgPaths().size() == 1) {
-          init.setVcpkg(1);
-        } else {
-            SetupDialog *setupVcpkg = new SetupDialog(" vcpkg instance", init.vcpkgPaths(), this);
-            setupVcpkg->exec();
-            try {
-              init.setVcpkg(setupVcpkg->choice());
-            } catch (...) {
-              init.setVcpkg(1);
-            }
-            delete setupVcpkg;
-        }
+      return;
     }
+  } else {
+    if (init.cCompilers().size() == 0) {
+      QMessageBox msgBox;
+      msgBox.setText("Couldn't locate a C compiler.");
+      msgBox.exec();
+      init.setCompiler();
+    } else if (init.cCompilers().size() == 1) {
+      init.setCompiler(1);
+    } else {
+      SetupDialog *setupCompiler =
+          new SetupDialog(" C compiler", init.cCompilers(), this);
+      setupCompiler->exec();
+      try {
+        init.setCompiler(setupCompiler->choice());
+      } catch (...) {
+        init.setCompiler(1);
+      }
+      delete setupCompiler;
+    }
+    if (init.cppCompilers().size() == 0) {
+      QMessageBox msgBox;
+      msgBox.setText("Couldn't locate a C++ compiler.");
+      msgBox.exec();
+      init.setCppCompiler();
+    } else if (init.cppCompilers().size() == 1) {
+      init.setCppCompiler(1);
+    } else {
+      SetupDialog *setupCppCompiler =
+          new SetupDialog(" C++ compiler", init.cppCompilers(), this);
+      setupCppCompiler->exec();
+      try {
+        init.setCppCompiler(setupCppCompiler->choice());
+      } catch (...) {
+        init.setCppCompiler(1);
+      }
+      delete setupCppCompiler;
+    }
+    if (init.cmakePaths().size() == 0) {
+      QMessageBox msgBox;
+      msgBox.setText("Couldn't locate a cmake executable.");
+      msgBox.exec();
+      init.setCmake();
+    } else if (init.cmakePaths().size() == 1) {
+      init.setCmake(1);
+    } else {
+      SetupDialog *setupCmakePath =
+          new SetupDialog(" cmake executable", init.cmakePaths(), this);
+      setupCmakePath->exec();
+      try {
+        init.setCmake(setupCmakePath->choice());
+      } catch (...) {
+        init.setCmake(1);
+      }
+      delete setupCmakePath;
+    }
+    if (init.makePaths().size() == 0) {
+      QMessageBox msgBox;
+      msgBox.setText("Couldn't locate a make executable.");
+      msgBox.exec();
+      init.setMake();
+    } else if (init.makePaths().size() == 1) {
+      init.setMake(1);
+    } else {
+      SetupDialog *setupMakePath =
+          new SetupDialog(" make executable", init.makePaths(), this);
+      setupMakePath->exec();
+      try {
+        init.setMake(setupMakePath->choice());
+      } catch (...) {
+        init.setMake(1);
+      }
+      delete setupMakePath;
+    }
+    if (init.archiverPaths().size() == 0) {
+      QMessageBox msgBox;
+      msgBox.setText("Couldn't locate an archiver.");
+      msgBox.exec();
+      init.setArchiver();
+    } else if (init.archiverPaths().size() == 1) {
+      init.setArchiver(1);
+    } else {
+      SetupDialog *setupArchiverPath =
+          new SetupDialog("n archiver", init.archiverPaths(), this);
+      setupArchiverPath->exec();
+      try {
+        init.setArchiver(setupArchiverPath->choice());
+      } catch (...) {
+        init.setArchiver(1);
+      }
+      delete setupArchiverPath;
+    }
+    if (init.vcpkgPaths().size() == 0) {
+      QMessageBox msgBox;
+      msgBox.setText("Couldn't locate a vcpkg instance.");
+      msgBox.exec();
+      init.setVcpkg();
+    } else if (init.vcpkgPaths().size() == 1) {
+      init.setVcpkg(1);
+    } else {
+      SetupDialog *setupVcpkg =
+          new SetupDialog(" vcpkg instance", init.vcpkgPaths(), this);
+      setupVcpkg->exec();
+      try {
+        init.setVcpkg(setupVcpkg->choice());
+      } catch (...) {
+        init.setVcpkg(1);
+      }
+      delete setupVcpkg;
+    }
+  }
 }

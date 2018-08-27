@@ -1,13 +1,15 @@
 #include "mainwindow.h"
-#include "../src/args.h"
-#include "../src/init.h"
-#include "../src/vcbld.h"
+#include "args.h"
+#include "conf.h"
+#include "init.h"
+#include "vcbld.h"
 #include "ui_mainwindow.h"
 
 #include <QDesktopWidget>
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QProcess>
 #include <QString>
 
 using namespace vcbld;
@@ -110,11 +112,20 @@ void MainWindow::on_actionClean_triggered() {
 
 void MainWindow::on_actionRun_triggered() {
   if (_dirName != "") {
+    ConfClass confClass;
     QDir::setCurrent(_dirName);
     if (ui->actionDebug->isChecked()) {
       args::run("debug");
+      // QProcess process;
+      // process.start(QString::fromStdString(confClass.outputDirectory() + "/" + "debug" + "/" + confClass.binaryName()));
+      // process.waitForFinished();
+      // QString output = process.readAllStandardOutput();
     } else {
       args::run("release");
+      // QProcess process;
+      // process.start(QString::fromStdString(confClass.outputDirectory() + "/" + "release" + "/" + confClass.binaryName()));
+      // process.waitForFinished();
+      // QString output = process.readAllStandardOutput();
     }
   }
 }

@@ -106,6 +106,7 @@ void clean(const std::string &buildType) {
            it != dirEntry.end(); ++it) {
         fs::remove_all(*it);
       }
+      std::cout << "Cleaned build output." << std::endl;
     }
   } catch (const std::exception &e) {
     std::cout << "An error occured while deleting output." << std::endl;

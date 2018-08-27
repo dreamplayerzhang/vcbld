@@ -30,17 +30,17 @@ void MainWindow::on_actionNew_triggered() {
                                                QFileDialog::ShowDirsOnly);
   QDir::setCurrent(_dirName);
   if (_dirName != "") {
-      Init init(_dirName.toStdString());
-      ui->label_3->setText(_dirName);
-      args::New("app");
-      init.init("app");
-      init.setCompiler();
-      init.setCppCompiler();
-      init.setVcpkg();
-      init.setCmake();
-      init.setMake();
-      init.setArchiver();
-      init.setup();
+    Init init(_dirName.toStdString());
+    ui->label_3->setText(_dirName);
+    args::New("app");
+    init.init("app");
+    init.setCompiler();
+    init.setCppCompiler();
+    init.setVcpkg();
+    init.setCmake();
+    init.setMake();
+    init.setArchiver();
+    init.setup();
   }
 }
 
@@ -64,12 +64,11 @@ void MainWindow::on_actionAlways_on_top_triggered(bool checked) {
 #else
   Qt::WindowFlags flags = windowFlags();
   if (checked) {
-    setWindowFlags(flags | Qt::CustomizeWindowHint |
-                         Qt::WindowStaysOnTopHint);
+    setWindowFlags(flags | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
     show();
   } else {
     setWindowFlags(flags ^
-                         (Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
+                   (Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
     show();
   }
 #endif

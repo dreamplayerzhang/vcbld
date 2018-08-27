@@ -15,6 +15,7 @@
 #include "dialog.h"
 #include "init.h"
 #include "remove.h"
+#include "setupdialog.h"
 #include "vcbld.h"
 
 namespace fs = std::experimental::filesystem;

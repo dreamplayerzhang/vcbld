@@ -42,9 +42,11 @@ PrepClass::PrepClass() : PkgClass() {
             if (ifs.is_open()) {
               while (!ifs.eof()) {
                 getline(ifs, line);
-                if (findLib(line) != "") {
-                  std::string libFound = findLib(line);
-                  _fullLibNames.push_back(libFound);
+                if (findDbgLib(line) != "") {
+                  _fullDbgLibNames.push_back(findDbgLib(line));
+                }
+                if (findRlsLib(line) != "") {
+                  _fullLibNames.push_back(findRlsLib(line));
                 }
               }
             }
@@ -52,6 +54,11 @@ PrepClass::PrepClass() : PkgClass() {
             // fail quietly!
           }
         }
+        std::sort(_fullDbgLibNames.begin(), _fullDbgLibNames.end());
+        _fullDbgLibNames.erase(
+            std::unique(_fullDbgLibNames.begin(), _fullDbgLibNames.end()),
+            _fullDbgLibNames.end());
+        
         std::sort(_fullLibNames.begin(), _fullLibNames.end());
         _fullLibNames.erase(
             std::unique(_fullLibNames.begin(), _fullLibNames.end()),
@@ -248,8 +255,8 @@ std::string PrepClass::dbgLibPaths() {
 
     std::string dbgLibPath = vcpkgDirPath() + "/" + "installed" + "/" +
                              architecture() + "/" + "debug" + "/" + "lib";
-    for (std::vector<std::string>::iterator it = _fullLibNames.begin();
-         it != _fullLibNames.end(); ++it) {
+    for (std::vector<std::string>::iterator it = _fullDbgLibNames.begin();
+         it != _fullDbgLibNames.end(); ++it) {
       temp << " -L\"" << dbgLibPath << "\" "
            << "-l" << stripLibName(*it);
     }
@@ -271,11 +278,11 @@ std::string PrepClass::rlsLibPaths() {
            << "-l" << stripLibName(*jt);
     }
 
-    std::string dbgLibPath = vcpkgDirPath() + "/" + "installed" + "/" +
+    std::string rlsLibPath = vcpkgDirPath() + "/" + "installed" + "/" +
                              architecture() + "/" + "lib";
     for (std::vector<std::string>::iterator it = _fullLibNames.begin();
          it != _fullLibNames.end(); ++it) {
-      temp << " -L\"" << dbgLibPath << "\" "
+      temp << " -L\"" << rlsLibPath << "\" "
            << "-l" << stripLibName(*it);
     }
     return temp.str();
@@ -332,7 +339,7 @@ std::string PrepClass::cmakeOutput() {
     if (!hasComponents(libName)) {
       _cmakeOutput << "#Find " << libName << "\n"
                          << "find_library(" << libName << "_DBG NAMES "
-                         << libName << " HINTS "
+                         << stripLibName(_fullDbgLibNames[std::distance(_fullLibNames.begin(), it)]) << " HINTS "
                          << "${VCPKG_DBG_LIB_PATH})\n"
                          << "find_library(" << libName << "_RLS NAMES "
                          << libName << " HINTS "
@@ -375,6 +382,10 @@ std::vector<std::string> &PrepClass::fullLibNames() {
   return _fullLibNames;
 }
 
+std::vector<std::string> &PrepClass::fullDbgLibNames() {
+  return _fullDbgLibNames;
+}
+
 std::vector<std::string> &PrepClass::dbgLocalLibNames() {
   return _dbgLocalLibNames;
 }
@@ -383,12 +394,23 @@ std::vector<std::string> &PrepClass::rlsLocalLibNames() {
   return _rlsLocalLibNames;
 }
 
-std::string PrepClass::findLib(const std::string &line) {
+std::string PrepClass::findDbgLib(const std::string &line) {
   std::string libName;
   size_t found;
   found = line.find("debug/lib/");
   if (found != std::string::npos) {
     libName = line.substr(found + 10, line.length());
+  }
+  return libName;
+}
+
+std::string PrepClass::findRlsLib(const std::string &line) {
+  std::string libName, toFind;
+  toFind = architecture() + "/lib/";
+  size_t found;
+  found = line.find(toFind);
+  if (found != std::string::npos) {
+    libName = line.substr(found + toFind.length(), line.length());
   }
   return libName;
 }

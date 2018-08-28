@@ -24,17 +24,20 @@ public:
   std::string dbgLibPaths();
   std::string rlsLibPaths();
   std::vector<std::string> &fullLibNames();
+  std::vector<std::string> &fullDbgLibNames();
   std::vector<std::string> &dbgLocalLibNames();
   std::vector<std::string> &rlsLocalLibNames();
 
 private:
   bool hasComponents(const std::string &libName);
-  std::string findLib(const std::string &line);
+  std::string findDbgLib(const std::string &line);
+  std::string findRlsLib(const std::string &line);
 
   std::ostringstream _cmakeOutput;
   std::vector<std::string> _boostComponents;
   std::vector<std::string> _QtComponents;
   std::vector<std::string> _fullLibNames;
+  std::vector<std::string> _fullDbgLibNames;
   std::vector<std::string> _dbgLocalLibNames;
   std::vector<std::string> _rlsLocalLibNames;
 };

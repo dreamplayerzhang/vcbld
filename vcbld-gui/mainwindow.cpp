@@ -271,19 +271,19 @@ void MainWindow::on_actionRemove_2_triggered() {
 }
 
 void MainWindow::on_actionList_3_triggered() {
-  // args::list();
-  PkgClass pkgClass;
-  std::string list;
-  for (std::vector<std::string>::iterator it = pkgClass.packageNames().begin();
-       it != pkgClass.packageNames().end(); ++it) {
-    list += *it;
-    list += "\t";
-    list += pkgClass.getVersion(*it);
-    list += "\n";
-  }
-  QMessageBox msgBox;
-  msgBox.setText(QString::fromStdString(list));
-  msgBox.exec();
+  args::list();
+  // PkgClass pkgClass;
+  // std::string list;
+  // for (std::vector<std::string>::iterator it = pkgClass.packageNames().begin();
+  //      it != pkgClass.packageNames().end(); ++it) {
+  //   list += *it;
+  //   list += "\t";
+  //   list += pkgClass.getVersion(*it);
+  //   list += "\n";
+  // }
+  // QMessageBox msgBox;
+  // msgBox.setText(QString::fromStdString(list));
+  // msgBox.exec();
 }
 
 void MainWindow::setup(Init &init) {

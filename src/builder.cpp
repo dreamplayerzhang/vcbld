@@ -36,19 +36,17 @@ Builder::Builder(const std::string &buildType)
 void Builder::compile() {
 
   if (_buildType == "release") {
-    _compileCommand << "cd " << _rlsDir << " && \""
-                          << compilerPath() << "\" "
-                          << headerPaths() << " " << compilerFlags()
-                          << " " << compilerDefines() << " "
-                          << "-std=" << language() << standard()
-                          << " -c " << sourceFiles();
+    _compileCommand << "cd " << _rlsDir << " && \"" << compilerPath() << "\" "
+                    << headerPaths() << " " << compilerFlags() << " "
+                    << compilerDefines() << " "
+                    << "-std=" << language() << standard() << " -c "
+                    << sourceFiles();
   } else {
-    _compileCommand << "cd " << _dbgDir << " && \""
-                          << compilerPath() << "\" "
-                          << headerPaths() << " " << compilerFlags()
-                          << " " << compilerDefines() << " -g "
-                          << "-std=" << language() << standard()
-                          << " -c " << sourceFiles();
+    _compileCommand << "cd " << _dbgDir << " && \"" << compilerPath() << "\" "
+                    << headerPaths() << " " << compilerFlags() << " "
+                    << compilerDefines() << " -g "
+                    << "-std=" << language() << standard() << " -c "
+                    << sourceFiles();
   }
   int systemRet = system(_compileCommand.str().c_str());
   if (systemRet == -1) {
@@ -58,15 +56,13 @@ void Builder::compile() {
 
 void Builder::appLink() {
   if (_buildType == "release") {
-    _appLinkCmnd << "cd " << _rlsDir << " && \""
-                       << compilerPath() << "\" -o " << binaryName()
-                       << " " << objPath(_buildDir) << " "
-                       << rlsLibPaths() << " " << linkerFlags();
+    _appLinkCmnd << "cd " << _rlsDir << " && \"" << compilerPath() << "\" -o "
+                 << binaryName() << " " << objPath(_buildDir) << " "
+                 << rlsLibPaths() << " " << linkerFlags();
   } else {
-    _appLinkCmnd << "cd " << _dbgDir << " && \""
-                       << compilerPath() << "\" -o " << binaryName()
-                       << " " << objPath(_buildDir) << " "
-                       << dbgLibPaths() << " " << linkerFlags();
+    _appLinkCmnd << "cd " << _dbgDir << " && \"" << compilerPath() << "\" -o "
+                 << binaryName() << " " << objPath(_buildDir) << " "
+                 << dbgLibPaths() << " " << linkerFlags();
   }
   int systemRet = system(_appLinkCmnd.str().c_str());
   if (systemRet == -1) {
@@ -85,17 +81,15 @@ void Builder::dylibLink() {
   }
 
   if (_buildType == "release") {
-    _libLinkCmnd << "cd " << _rlsDir << " && \""
-                       << compilerPath() << "\"" << dylibArg << " -o "
-                       << binaryName() << dylibExt << " "
-                       << objPath(_buildDir) << " "
-                       << rlsLibPaths() << " " << linkerFlags();
+    _libLinkCmnd << "cd " << _rlsDir << " && \"" << compilerPath() << "\""
+                 << dylibArg << " -o " << binaryName() << dylibExt << " "
+                 << objPath(_buildDir) << " " << rlsLibPaths() << " "
+                 << linkerFlags();
   } else {
-    _libLinkCmnd << "cd " << _dbgDir << " && \""
-                       << compilerPath() << "\"" << dylibArg << " -o "
-                       << binaryName() << dylibExt << " "
-                       << objPath(_buildDir) << " "
-                       << dbgLibPaths() << " " << linkerFlags();
+    _libLinkCmnd << "cd " << _dbgDir << " && \"" << compilerPath() << "\""
+                 << dylibArg << " -o " << binaryName() << dylibExt << " "
+                 << objPath(_buildDir) << " " << dbgLibPaths() << " "
+                 << linkerFlags();
   }
   int systemRet = system(_libLinkCmnd.str().c_str());
   if (systemRet == -1) {
@@ -105,15 +99,13 @@ void Builder::dylibLink() {
 
 void Builder::archive() {
   if (_buildType == "release") {
-    _archiveCmnd << "cd " << _rlsDir << " && \""
-                       << archiverPath() << "\" rcs "
-                       << binaryName() << ".a"
-                       << " " << objPath(_buildDir);
+    _archiveCmnd << "cd " << _rlsDir << " && \"" << archiverPath() << "\" rcs "
+                 << binaryName() << ".a"
+                 << " " << objPath(_buildDir);
   } else {
-    _archiveCmnd << "cd " << _dbgDir << " && \""
-                       << archiverPath() << "\" rcs "
-                       << binaryName() << ".a"
-                       << " " << objPath(_buildDir);
+    _archiveCmnd << "cd " << _dbgDir << " && \"" << archiverPath() << "\" rcs "
+                 << binaryName() << ".a"
+                 << " " << objPath(_buildDir);
   }
   int systemRet = system(_archiveCmnd.str().c_str());
   if (systemRet == -1) {
@@ -211,15 +203,14 @@ void Builder::build() {
 void Builder::copy() {
   std::string dbgLibPath = vcpkgDirPath() + "/" + "installed" + "/" +
                            architecture() + "/" + "debug/lib";
-  std::string rlsLibPath = vcpkgDirPath() + "/" + "installed" + "/" +
-                           architecture() + "/" + "lib";
+  std::string rlsLibPath =
+      vcpkgDirPath() + "/" + "installed" + "/" + architecture() + "/" + "lib";
   std::string fullName;
   if (libDirectory() != "") {
     std::string localDbgPath = libDirectory() + "/" + "debug";
     std::string localRlsPath = libDirectory() + "/" + "release";
     if (_buildType == "debug") {
-      for (std::vector<std::string>::iterator it =
-               dbgLocalLibNames().begin();
+      for (std::vector<std::string>::iterator it = dbgLocalLibNames().begin();
            it != dbgLocalLibNames().end(); ++it) {
         fullName = localDbgPath + "/" + (*it);
         if (fs::exists(fullName)) {
@@ -232,8 +223,7 @@ void Builder::copy() {
         }
       }
     } else {
-      for (std::vector<std::string>::iterator it =
-               rlsLocalLibNames().begin();
+      for (std::vector<std::string>::iterator it = rlsLocalLibNames().begin();
            it != rlsLocalLibNames().end(); ++it) {
         fullName = localRlsPath + "/" + (*it);
         if (fs::exists(fullName)) {
@@ -250,7 +240,8 @@ void Builder::copy() {
   for (std::vector<std::string>::iterator it = fullLibNames().begin();
        it != fullLibNames().end(); ++it) {
     if (_buildType == "debug") {
-      fullName = dbgLibPath + "/" + (*it);
+      fullName = dbgLibPath + "/" +
+                 fullDbgLibNames()[std::distance(fullLibNames().begin(), it)];
     } else {
       fullName = rlsLibPath + "/" + (*it);
     }

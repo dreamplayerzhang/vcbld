@@ -167,7 +167,7 @@ void cmakeGen() {
               << fs::path(prepClass.includeDirectory()).filename().string()
               << ")\n";
         }
-        if (prepClass.fullLibNames().size() != 0) {
+        if (prepClass.fullLibNames().size() != 0 && prepClass.fullDbgLibNames().size() != 0) {
           ofs << "target_link_libraries(${PROJECT_NAME} debug ${dbgLIBS})\n"
               << "target_link_libraries(${PROJECT_NAME} optimized "
                  "${rlsLIBS})\n";

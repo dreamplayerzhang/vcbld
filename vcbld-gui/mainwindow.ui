@@ -304,8 +304,11 @@
    </property>
   </action>
   <action name="actionBuild_run">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>Build + run</string>
+    <string>Build &amp;&amp; run</string>
    </property>
   </action>
   <action name="actionList_3">

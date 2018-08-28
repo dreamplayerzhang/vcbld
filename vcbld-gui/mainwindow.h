@@ -11,6 +11,8 @@
 
 #include "init.h"
 
+namespace fs = std::experimental::filesystem;
+
 namespace Ui {
 class MainWindow;
 }
@@ -19,7 +21,7 @@ class MainWindow : public QMainWindow {
   Q_OBJECT
 
 public:
-  explicit MainWindow(QWidget *parent = nullptr);
+  MainWindow(const fs::path vcbldPath, QWidget *parent = nullptr);
   ~MainWindow();
 
 private slots:
@@ -72,6 +74,7 @@ private:
   void enableMenus();
   Ui::MainWindow *ui;
   QString _dirName;
+  fs::path _vcpkgPath;
 };
 
 #endif // MAINWINDOW_H

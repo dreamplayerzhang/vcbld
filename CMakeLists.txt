@@ -18,7 +18,7 @@ if (${ENABLE_TESTS})
     add_subdirectory(tests)
 endif()
 
-option(WITH_GUI "Add vcbld-gui" OFF)
+option(WITH_GUI "Add vcbld-gui" ON)
 if (${WITH_GUI})
     add_subdirectory(vcbld-gui)
 endif()

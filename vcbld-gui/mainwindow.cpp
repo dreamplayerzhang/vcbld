@@ -24,7 +24,7 @@ namespace fs = std::experimental::filesystem;
 
 using namespace vcbld;
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
   menuBar()->setNativeMenuBar(false);
@@ -33,6 +33,15 @@ MainWindow::MainWindow(QWidget *parent)
   int screenWidth = desktop->width();
   move(screenWidth / 2 - width() / 2, 0);
   on_actionAlways_on_top_triggered(true);
+  Init init(vcbldPath);
+  if (init.vcpkgPaths().size() == 0) {
+    QMessageBox msgBox;
+    msgBox.setText("vcbld couldn't locate a vcpkg directory, please choose the vcpkg directory.");
+    msgBox.exec();
+    QString vcpkgPath = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "~",
+                                                   QFileDialog::ShowDirsOnly);
+    _vcpkgPath = vcpkgPath.toStdString();
+  }
 }
 
 MainWindow::~MainWindow() { delete ui; }
@@ -50,7 +59,7 @@ void MainWindow::on_actionNew_triggered() {
                                                QFileDialog::ShowDirsOnly);
   QDir::setCurrent(_dirName);
   if (_dirName != "") {
-    Init init(_dirName.toStdString());
+    Init init(_vcpkgPath);
     fs::path path = _dirName.toStdString();
     QString display = QString::fromStdString(path.filename().string());
     ui->label_3->setText(display);
@@ -197,7 +206,7 @@ void MainWindow::on_actionSetup_triggered() {
     msgBox.setText("Please choose a working directory.");
     msgBox.exec();
   } else {
-    Init init(_dirName.toStdString());
+    Init init(_vcpkgPath);
     QDir::setCurrent(_dirName);
     setup(init);
     init.setup();

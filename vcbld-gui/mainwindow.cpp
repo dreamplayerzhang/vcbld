@@ -25,7 +25,7 @@ namespace fs = std::experimental::filesystem;
 using namespace vcbld;
 
 MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow) {
+    : _vcpkgPath(vcbldPath), QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
   menuBar()->setNativeMenuBar(false);
   setFixedSize(size());

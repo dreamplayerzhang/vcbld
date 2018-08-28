@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
   MainWindow w(argv[0]);
 
   QFont font = a.font();
-  font.setPointSize(12);
+  font.setPointSize(font.pointSize() - 1);
   a.setFont(font);
 
   w.show();

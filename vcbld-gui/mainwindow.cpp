@@ -25,7 +25,7 @@ namespace fs = std::experimental::filesystem;
 using namespace vcbld;
 
 MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
-    : _vcpkgPath(vcbldPath), QMainWindow(parent), ui(new Ui::MainWindow) {
+    : _vcpkgPath(vcbldPath), init(vcbldPath), QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
   menuBar()->setNativeMenuBar(false);
   setFixedSize(size());
@@ -33,7 +33,6 @@ MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
   int screenWidth = desktop->width();
   move(screenWidth / 2 - width() / 2, 0);
   on_actionAlways_on_top_triggered(true);
-  Init init(vcbldPath);
   if (init.vcpkgPaths().size() == 0) {
     QMessageBox msgBox;
     msgBox.setText("vcbld couldn't locate a vcpkg directory, please choose the vcpkg directory.");
@@ -41,6 +40,7 @@ MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
     QString vcpkgPath = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "~",
                                                    QFileDialog::ShowDirsOnly);
     _vcpkgPath = vcpkgPath.toStdString();
+    init = std::move(Init(_vcpkgPath));
   }
 }
 
@@ -59,7 +59,6 @@ void MainWindow::on_actionNew_triggered() {
                                                QFileDialog::ShowDirsOnly);
   QDir::setCurrent(_dirName);
   if (_dirName != "") {
-    Init init(_vcpkgPath);
     fs::path path = _dirName.toStdString();
     QString display = QString::fromStdString(path.filename().string());
     ui->label_3->setText(display);
@@ -206,7 +205,6 @@ void MainWindow::on_actionSetup_triggered() {
     msgBox.setText("Please choose a working directory.");
     msgBox.exec();
   } else {
-    Init init(_vcpkgPath);
     QDir::setCurrent(_dirName);
     setup(init);
     init.setup();
@@ -281,18 +279,6 @@ void MainWindow::on_actionRemove_2_triggered() {
 
 void MainWindow::on_actionList_3_triggered() {
   args::list();
-  // PkgClass pkgClass;
-  // std::string list;
-  // for (std::vector<std::string>::iterator it = pkgClass.packageNames().begin();
-  //      it != pkgClass.packageNames().end(); ++it) {
-  //   list += *it;
-  //   list += "\t";
-  //   list += pkgClass.getVersion(*it);
-  //   list += "\n";
-  // }
-  // QMessageBox msgBox;
-  // msgBox.setText(QString::fromStdString(list));
-  // msgBox.exec();
 }
 
 void MainWindow::setup(Init &init) {

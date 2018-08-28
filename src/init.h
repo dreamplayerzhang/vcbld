@@ -17,8 +17,6 @@ class Init {
 public:
   Init() = delete;
   Init(const fs::path &vcbldPath);
-  Init(const int &) = delete;
-  Init &operator=(const Init &) = delete;
 
   void init(const std::string &binType);
   void setup();

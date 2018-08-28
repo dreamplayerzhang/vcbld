@@ -73,6 +73,7 @@ private:
   void setup(vcbld::Init &);
   void enableMenus();
   Ui::MainWindow *ui;
+  vcbld::Init init;
   QString _dirName;
   fs::path _vcpkgPath;
 };

@@ -1,5 +1,6 @@
 #include "args.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
 #include <errno.h>

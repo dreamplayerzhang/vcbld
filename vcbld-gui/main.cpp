@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
   vcbldPath = vcbldPath.parent_path();
 
   QApplication a(argc, argv);
-  MainWindow w(argv[0]);
+  MainWindow w(vcbldPath);
 
   QFont font = a.font();
   font.setPointSize(font.pointSize() - 1);

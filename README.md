@@ -1,5 +1,5 @@
 # vcbld
-A command-line software development kit and a minimalist build system that works with vcpkg. It works for the moment on posix systems, i.e. linux and macOS X. It has a minimal build system which works for small single hierarchy projects and allows for faster prototyping, however it has support for cmake and can be used to generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
+A command-line software development kit and a minimalist build system for C and C++ that works with vcpkg. It works for the moment on posix systems, i.e. linux and macOS X, and was tried with MinGW64 on windows. It has a minimal build system which works for small single hierarchy projects and allows for faster prototyping, however it has support for cmake and can be used to generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
 The vcbld executable is about 500kb large, and depends on the presence of vcpkg and cmake. Of course you would also need a posix C/C++ compiler such as gcc or clang.
 
 ```
@@ -36,7 +36,7 @@ $ vcbld build -r
 ```
 
 ## Getting vcbld:
-You can download a prebuilt vcbld executable [here](https://github.com/MoAlyousef/vcbld/releases). Currently there are prebuilt binaries for macOS X and debian linux. Otherwise, you can build from source.
+You can download a prebuilt vcbld executable [here](https://github.com/MoAlyousef/vcbld/releases). Currently there are prebuilt binaries for macOS X, debian linux and win32. Otherwise, you can build from source.
 
 ## Building vcbld:
 vcbld has a single external dependency, namely Nlohmann-json which is a header-only library and is included in this git repository. To build vcbld, create a directory called vcbld. Access that directory using the command line. Clone this repository and build using cmake. The command line commands would look something like this:
@@ -235,6 +235,20 @@ You can also use it to apply user-wide integration using:
 ```
 $ vcbld vcpkg integrate install
 ```
+
+## vcbld-gui
+Is still a work in progress and has to have any prebuilt binaries. It's built using Qt5 widgets. It was tried on mac OS X and linux.
+Building it you need to have Qt Creator or Kdevelop. Otherwise, you can download the libraries on debian flavors of linux using:
+```
+$ sudo apt-get install install qtbase5-dev
+```
+Also to build, you need to enable the WITH_GUI option in the top-level CMakeLists file by setting it to ON in the file itself or using the command line:
+```
+$ cd bin
+$ cmake -DWITH_GUI=ON ..
+$ make
+```
+The build output produces an app bundle along with a run script "vcbld-gui.command" on mac OS X, and an executable and a run script on linux. The application should be run using the script which launches a terminal which shows build outputs for your projects. On windows it generates a batch file and an executable. As mentioned before, the application should be run using the batch script.
 
 ## Tutorials:
 Some video tutorials will be added to my youtube channel. 

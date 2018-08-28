@@ -1,6 +1,7 @@
 #include "setupdialog.h"
 #include "ui_setupdialog.h"
 
+#include <iostream>
 #include <QDesktopWidget>
 
 SetupDialog::SetupDialog(const QString &msg, std::vector<fs::path> &vector,

@@ -65,6 +65,8 @@ private slots:
 
   void on_actionList_3_triggered();
 
+  void on_actionRestore_triggered();
+
 private:
   void setup(vcbld::Init &);
   void enableMenus();

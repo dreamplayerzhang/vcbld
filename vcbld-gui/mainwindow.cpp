@@ -9,6 +9,7 @@
 #include <QWindow>
 #include <cstdlib>
 #include <iostream>
+#include <streambuf>
 
 #include "add.h"
 #include "args.h"
@@ -137,30 +138,34 @@ void MainWindow::on_actionClean_triggered() {
 
 void MainWindow::on_actionRun_triggered() {
   if (_dirName != "") {
-    ConfClass confClass;
-    std::string config, command;
+    std::string config;
 
     if (ui->actionDebug->isChecked()) {
       config = "debug";
     } else {
       config = "release";
     }
-
-#if defined(_WIN32) || defined(_WIN32)
-    command = "start cmd.exe @cmd /k " + confClass.outputDirectory() + "/" +
-              config + "/" + confClass.binaryName();
-#elif defined(__linux__)
-    command = "xterm -hold -e " + confClass.outputDirectory() + "/" + config +
-              "/" + confClass.binaryName() + " &";
-#elif defined(__APPLE__) && defined(__MACH__)
-    command = "open -a Terminal " + confClass.outputDirectory() + "/" + config +
-              "/" + confClass.binaryName() + " &";
-#else
-    command = "xterm -hold -e " + confClass.outputDirectory() + "/" + config +
-              "/" + confClass.binaryName() + " &";
-#endif
+    // std::string command;
+    //#if defined(_WIN32) || defined(_WIN32)
+    //    command = "start cmd.exe @cmd /k " + confClass.outputDirectory() + "/"
+    //    +
+    //              config + "/" + confClass.binaryName();
+    //#elif defined(__linux__)
+    //    command = "xterm -hold -e " + confClass.outputDirectory() + "/" +
+    //    config +
+    //              "/" + confClass.binaryName() + " &";
+    //#elif defined(__APPLE__) && defined(__MACH__)
+    //    command = "open -a Terminal " + confClass.outputDirectory() + "/" +
+    //    config +
+    //              "/" + confClass.binaryName() + " &";
+    //#else
+    //    command = "xterm -hold -e " + confClass.outputDirectory() + "/" +
+    //    config +
+    //              "/" + confClass.binaryName() + " &";
+    //#endif
     QDir::setCurrent(_dirName);
-    system(command.c_str());
+    args::run(config);
+    //    system(command.c_str());
   }
 }
 
@@ -170,7 +175,7 @@ void MainWindow::on_actionRun_Cmake_triggered() {
     if (ui->actionDebug->isChecked()) {
       args::cmake(" -DCMAKE_BUILD_TYPE=Debug ");
     } else {
-      args::run(" -DCMAKE_BUILD_TYPE=Release ");
+      args::cmake(" -DCMAKE_BUILD_TYPE=Release ");
     }
   }
 }
@@ -243,10 +248,12 @@ void MainWindow::on_actionBuild_run_triggered() {
     QDir::setCurrent(_dirName);
     if (ui->actionDebug->isChecked()) {
       args::build("debug");
-      args::run("debug");
+      //      args::run("debug");
+      on_actionRun_triggered();
     } else {
       args::build("release");
-      args::run("release");
+      //      args::run("release");
+      on_actionRun_triggered();
     }
   }
 }
@@ -305,7 +312,7 @@ void MainWindow::setup(Init &init) {
           new SetupDialog(" C compiler", init.cCompilers(), this);
       setupCompiler->exec();
       try {
-        init.setCompiler(setupCompiler->choice());
+        init.setCompiler(setupCompiler->choice() + 1);
       } catch (...) {
         init.setCompiler(1);
       }
@@ -323,7 +330,7 @@ void MainWindow::setup(Init &init) {
           new SetupDialog(" C++ compiler", init.cppCompilers(), this);
       setupCppCompiler->exec();
       try {
-        init.setCppCompiler(setupCppCompiler->choice());
+        init.setCppCompiler(setupCppCompiler->choice() + 1);
       } catch (...) {
         init.setCppCompiler(1);
       }
@@ -341,7 +348,7 @@ void MainWindow::setup(Init &init) {
           new SetupDialog(" cmake executable", init.cmakePaths(), this);
       setupCmakePath->exec();
       try {
-        init.setCmake(setupCmakePath->choice());
+        init.setCmake(setupCmakePath->choice() + 1);
       } catch (...) {
         init.setCmake(1);
       }
@@ -359,7 +366,7 @@ void MainWindow::setup(Init &init) {
           new SetupDialog(" make executable", init.makePaths(), this);
       setupMakePath->exec();
       try {
-        init.setMake(setupMakePath->choice());
+        init.setMake(setupMakePath->choice() + 1);
       } catch (...) {
         init.setMake(1);
       }
@@ -377,7 +384,7 @@ void MainWindow::setup(Init &init) {
           new SetupDialog("n archiver", init.archiverPaths(), this);
       setupArchiverPath->exec();
       try {
-        init.setArchiver(setupArchiverPath->choice());
+        init.setArchiver(setupArchiverPath->choice() + 1);
       } catch (...) {
         init.setArchiver(1);
       }
@@ -395,7 +402,7 @@ void MainWindow::setup(Init &init) {
           new SetupDialog(" vcpkg instance", init.vcpkgPaths(), this);
       setupVcpkg->exec();
       try {
-        init.setVcpkg(setupVcpkg->choice());
+        init.setVcpkg(setupVcpkg->choice() + 1);
       } catch (...) {
         init.setVcpkg(1);
       }
@@ -403,3 +410,5 @@ void MainWindow::setup(Init &init) {
     }
   }
 }
+
+void MainWindow::on_actionRestore_triggered() { args::restore(); }

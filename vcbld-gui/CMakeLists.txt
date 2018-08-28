@@ -56,7 +56,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include)
 
 find_package(Qt5 COMPONENTS Core Gui Widgets CONFIG REQUIRED)
 
-add_executable(vcbld-gui ${GUI_TYPE} ${GUI_FILES})
+add_executable(vcbld-gui ${GUI_FILES})
 target_link_libraries(vcbld-gui PRIVATE vcbldlib Qt5::Core Qt5::Gui Qt5::Widgets)
 
 if(GCC)

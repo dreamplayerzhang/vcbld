@@ -119,6 +119,7 @@
     <addaction name="actionAdd"/>
     <addaction name="actionRemove_2"/>
     <addaction name="actionList_3"/>
+    <addaction name="actionRestore"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -310,6 +311,11 @@
   <action name="actionList_3">
    <property name="text">
     <string>List</string>
+   </property>
+  </action>
+  <action name="actionRestore">
+   <property name="text">
+    <string>Restore...</string>
    </property>
   </action>
  </widget>

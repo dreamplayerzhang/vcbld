@@ -237,7 +237,7 @@ $ vcbld vcpkg integrate install
 ```
 
 ## vcbld-gui
-Is still a work in progress and has to have any prebuilt binaries. It's built using Qt5 widgets. It was tried on mac OS X and linux.
+Is still a work in progress and has yet to have any prebuilt binaries. It's built using Qt5 widgets. It was tried on mac OS X and linux.
 Building it you need to have Qt Creator or Kdevelop. Otherwise, you can download the libraries on debian flavors of linux using:
 ```
 $ sudo apt-get install install qtbase5-dev

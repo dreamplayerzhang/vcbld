@@ -3,6 +3,8 @@ lib
 conf.json
 .vscode
 
+*.sh
+
 .DS_Store
 CMakeCache.txt
 CMakeFiles

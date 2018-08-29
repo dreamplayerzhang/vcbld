@@ -28,5 +28,5 @@ int SetupDialog::choice() { return _choice; }
 
 void SetupDialog::on_listWidget_doubleClicked(const QModelIndex &index) {
   _choice = index.row();
-  this->close();
+  close();
 }

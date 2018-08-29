@@ -176,7 +176,6 @@ void MainWindow::on_actionRun_triggered() {
     //#endif
     QDir::setCurrent(_dirName);
     args::run(config);
-    //    system(command.c_str());
   }
 }
 
@@ -258,11 +257,9 @@ void MainWindow::on_actionBuild_run_triggered() {
     QDir::setCurrent(_dirName);
     if (ui->actionDebug->isChecked()) {
       args::build("debug");
-      //      args::run("debug");
       on_actionRun_triggered();
     } else {
       args::build("release");
-      //      args::run("release");
       on_actionRun_triggered();
     }
   }

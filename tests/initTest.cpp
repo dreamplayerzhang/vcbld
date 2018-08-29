@@ -1,11 +1,6 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
-
-#if defined(_WIN32) || defined(_WIN64)
-#include <filesystem>
-#else
-#include <experimental/filesystem>
-#endif
+#include "pch.h"
 
 #include "args.h"
 #include "init.h"

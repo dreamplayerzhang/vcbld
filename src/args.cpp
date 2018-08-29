@@ -1,22 +1,5 @@
 #include "args.h"
 
-#include <algorithm>
-#include <cstdlib>
-#include <cstring>
-#include <errno.h>
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-#include <iterator>
-#include <sstream>
-#include <vector>
-
-#include "builder.h"
-#include "gen.h"
-#include "help.h"
-#include "init.h"
-#include "pkg.h"
-
 namespace fs = std::experimental::filesystem;
 
 namespace vcbld {
@@ -169,7 +152,8 @@ void available() {
       std::copy(fs::directory_iterator(vcpkgDirPath), fs::directory_iterator(),
                 back_inserter(dirEntry));
       std::sort(dirEntry.begin(), dirEntry.end());
-      dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()), dirEntry.end());
+      dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
+                     dirEntry.end());
 
       for (std::vector<fs::directory_entry>::const_iterator it =
                dirEntry.begin();

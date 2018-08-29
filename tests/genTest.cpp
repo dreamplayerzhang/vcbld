@@ -1,13 +1,9 @@
-#if defined(_WIN32) || defined(_WIN64)
-#include <filesystem>
-#else
-#include <experimental/filesystem>
-#endif
+#include "catch.hpp"
+#include "pch.h"
 
 #include "args.h"
 #include "conf.h"
 
-#include "catch.hpp"
 
 namespace vcbld {
 

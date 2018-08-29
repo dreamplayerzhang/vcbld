@@ -1,17 +1,3 @@
-#if defined(_WIN32) || defined(_WIN64)
-#include <filesystem>
-#else
-#include <experimental/filesystem>
-#endif
-
-#include <cstdlib>
-#include <cstring>
-#include <errno.h>
-#include <iostream>
-#include <vector>
-
-#include "args.h"
-#include "init.h"
 #include "vcbld.h"
 
 namespace fs = std::experimental::filesystem;

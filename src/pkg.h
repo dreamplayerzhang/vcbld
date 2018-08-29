@@ -1,9 +1,7 @@
 #ifndef PKG_H
 #define PKG_H
 
-#include <sstream>
-#include <string>
-#include <vector>
+#include "pch.h"
 
 #include "conf.h"
 

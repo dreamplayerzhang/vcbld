@@ -1,15 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <filesystem>
-#else
-#include <experimental/filesystem>
-#endif
+#include "qpch.h"
 
-#include <QMainWindow>
-
-#include "init.h"
+#include "add.h"
+#include "dialog.h"
+#include "remove.h"
+#include "setupdialog.h"
 
 namespace fs = std::experimental::filesystem;
 

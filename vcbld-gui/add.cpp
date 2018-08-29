@@ -1,19 +1,6 @@
 #include "add.h"
 #include "ui_add.h"
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <filesystem>
-#else
-#include <experimental/filesystem>
-#endif
-
-#include <QDesktopWidget>
-#include <algorithm>
-#include <iterator>
-#include <vector>
-
-#include "args.h"
-
 namespace fs = std::experimental::filesystem;
 
 using namespace vcbld;
@@ -26,9 +13,7 @@ Add::Add(QWidget *parent) : QMainWindow(parent), ui(new Ui::Add) {
   setFixedSize(size());
 
   try {
-    PkgClass pkgClass;
     std::vector<fs::directory_entry> dirEntry;
-
     std::string vcpkgDirPath = pkgClass.vcpkgDirPath();
     vcpkgDirPath += "/";
     vcpkgDirPath += "installed";
@@ -73,7 +58,6 @@ void Add::on_listWidget_itemDoubleClicked(QListWidgetItem *item) {
 void Add::on_lineEdit_textChanged(const QString &arg1) {
   ui->listWidget->clear();
   try {
-    PkgClass pkgClass;
     std::vector<fs::directory_entry> dirEntry;
 
     std::string vcpkgDirPath = pkgClass.vcpkgDirPath();

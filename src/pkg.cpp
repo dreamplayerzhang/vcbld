@@ -1,18 +1,5 @@
 #include "pkg.h"
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <filesystem>
-#else
-#include <experimental/filesystem>
-#endif
-
-#include <algorithm>
-#include <errno.h>
-#include <fstream>
-#include <iostream>
-#include <iterator>
-#include <nlohmann/json.hpp>
-
 using json = nlohmann::json;
 namespace fs = std::experimental::filesystem;
 

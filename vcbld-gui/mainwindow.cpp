@@ -1,25 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QDesktopWidget>
-#include <QDir>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QString>
-#include <QWindow>
-#include <cstdlib>
-#include <iostream>
-#include <streambuf>
-
-#include "add.h"
-#include "args.h"
-#include "dialog.h"
-#include "init.h"
-#include "pkg.h"
-#include "remove.h"
-#include "setupdialog.h"
-#include "vcbld.h"
-
 namespace fs = std::experimental::filesystem;
 
 using namespace vcbld;

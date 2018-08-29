@@ -1,15 +1,10 @@
 #define CATCH_CONFIG_MAIN
+#include "catch.hpp"
+#include "pch.h"
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <filesystem>
-#else
-#include <experimental/filesystem>
-#endif
 #include "args.h"
 #include "conf.h"
 #include "init.h"
-
-#include "catch.hpp"
 
 namespace fs = std::experimental::filesystem;
 

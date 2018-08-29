@@ -1,14 +1,13 @@
 #ifndef ARGS_H
 #define ARGS_H
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <filesystem>
-#else
-#include <experimental/filesystem>
-#endif
+#include "pch.h"
 
-#include <string>
-#include <vector>
+#include "builder.h"
+#include "conf.h"
+#include "gen.h"
+#include "help.h"
+#include "pkg.h"
 
 namespace fs = std::experimental::filesystem;
 

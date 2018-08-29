@@ -1,45 +1,5 @@
 #include "init.h"
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <filesystem>
-#else
-#include <experimental/filesystem>
-#endif
-
-#include <algorithm>
-#include <errno.h>
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-#include <iterator>
-#include <sstream>
-#include <typeinfo>
-#include <vector>
-
-#include "conf.h"
-
-#if defined(_WIN32)
-#define PLATFORM_NAME "x86-windows"
-#define PATHSEP "\\"
-#elif defined(_WIN64)
-#define PLATFORM_NAME "x64-windows"
-#define PATHSEP "\\"
-#elif defined(__CYGWIN__) && !defined(_WIN32)
-#define PLATFORM_NAME "x64-windows"
-#define PATHSEP "/"
-#elif defined(__linux__)
-#define PLATFORM_NAME "x64-linux"
-#define PATHSEP "/"
-#elif defined(__APPLE__) && defined(__MACH__)
-#include <TargetConditionals.h>
-#if TARGET_OS_MAC == 1
-#define PLATFORM_NAME "x64-osx" // Apple OSX
-#define PATHSEP "/"
-#endif
-#else
-#define PLATFORM_NAME NULL
-#endif
-
 namespace fs = std::experimental::filesystem;
 
 namespace vcbld {

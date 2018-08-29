@@ -1,16 +1,7 @@
 #ifndef SETUPDIALOG_H
 #define SETUPDIALOG_H
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <filesystem>
-#else
-#include <experimental/filesystem>
-#endif
-
-#include <QDialog>
-#include <QListWidgetItem>
-#include <string>
-#include <vector>
+#include "qpch.h"
 
 namespace fs = std::experimental::filesystem;
 

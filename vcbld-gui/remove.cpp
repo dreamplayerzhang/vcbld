@@ -1,11 +1,6 @@
 #include "remove.h"
 #include "ui_remove.h"
 
-#include <QDesktopWidget>
-#include <iostream>
-
-#include "args.h"
-
 using namespace vcbld;
 
 Remove::Remove(QWidget *parent) : QMainWindow(parent), ui(new Ui::Remove) {

@@ -1,14 +1,8 @@
-#if defined(_WIN32) || defined(_WIN64)
-#include <filesystem>
-#else
-#include <experimental/filesystem>
-#endif
-#include <vector>
+#include "catch.hpp"
+#include "pch.h"
 
 #include "args.h"
 #include "pkg.h"
-
-#include "catch.hpp"
 
 namespace vcbld {
 PkgClass pkgClass;

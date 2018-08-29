@@ -1,8 +1,5 @@
 #include "help.h"
 
-#include <iomanip>
-#include <iostream>
-
 namespace vcbld {
 namespace help {
 void mainHelp() {

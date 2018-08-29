@@ -1,12 +1,7 @@
-#if defined(_WIN32) || defined(_WIN64)
-#include <filesystem>
-#else
-#include <experimental/filesystem>
-#endif
+#include "catch.hpp"
+#include "pch.h"
 
 #include "prep.h"
-
-#include "catch.hpp"
 
 namespace fs = std::experimental::filesystem;
 

@@ -1,24 +1,5 @@
 #include "gen.h"
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <filesystem>
-#else
-#include <experimental/filesystem>
-#endif
-
-#include <errno.h>
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-#include <iterator>
-#include <nlohmann/json.hpp>
-#include <sstream>
-#include <string>
-#include <vector>
-
-#include "pkg.h"
-#include "prep.h"
-
 namespace fs = std::experimental::filesystem;
 using json = nlohmann::json;
 

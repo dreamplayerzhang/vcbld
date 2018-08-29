@@ -1,11 +1,4 @@
-#if defined(_WIN32) || defined(_WIN64)
-#include <filesystem>
-#else
-#include <experimental/filesystem>
-#endif
-
-#include <QApplication>
-#include <QDebug>
+#include "qpch.h"
 
 #include "mainwindow.h"
 

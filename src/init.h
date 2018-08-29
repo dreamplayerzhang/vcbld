@@ -1,14 +1,9 @@
 #ifndef INIT_H
 #define INIT_H
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <filesystem>
-#else
-#include <experimental/filesystem>
-#endif
+#include "pch.h"
 
-#include <string>
-#include <vector>
+#include "conf.h"
 
 namespace fs = std::experimental::filesystem;
 

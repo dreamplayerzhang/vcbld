@@ -1,9 +1,7 @@
 #ifndef CONF_H
 #define CONF_H
 
-#include <sstream>
-#include <string>
-#include <vector>
+#include "pch.h"
 
 namespace vcbld {
 

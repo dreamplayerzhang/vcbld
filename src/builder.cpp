@@ -1,17 +1,5 @@
 #include "builder.h"
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <filesystem>
-#else
-#include <experimental/filesystem>
-#endif
-
-#include <algorithm>
-#include <errno.h>
-#include <iostream>
-#include <iterator>
-#include <vector>
-
 namespace fs = std::experimental::filesystem;
 
 namespace vcbld {

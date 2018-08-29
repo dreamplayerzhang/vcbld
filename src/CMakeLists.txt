@@ -18,6 +18,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "[Cc]lang")
     set(CLANG 1)
     if(APPLE)
         set(CMAKE_EXE_LINKER_FLAGS -L/usr/local/opt/llvm/lib) #if clang was installed via homebrew on MacOS X
+        # set(CMAKE_SHARED_LINKER_FLAGS -L/usr/local/opt/llvm/lib)
     endif()
 elseif(MSVC)
     add_compile_options(/std:c++latest)
@@ -35,7 +36,7 @@ endif()
 
 set(SOURCE_FILES "args.cpp" "builder.cpp" "help.cpp" "conf.cpp" "init.cpp" "gen.cpp" "pkg.cpp" "prep.cpp")
 
-add_library(vcbldlib ${SOURCE_FILES})
+add_library(vcbldlib STATIC ${SOURCE_FILES})
 add_executable(${PROJECT_NAME} vcbld.cpp)
 
 target_include_directories(vcbldlib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include)

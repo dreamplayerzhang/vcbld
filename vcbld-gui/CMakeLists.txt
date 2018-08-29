@@ -3,7 +3,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_BINARY_DIR}/debug)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_BINARY_DIR}/release)
-# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ~/vcpkg)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # set(CMAKE_CXX_FLAGS "-Weverything")
 
@@ -47,8 +47,6 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 	message(FATAL_ERROR "Prevented in-tree build. Please create a build directory outside of the source directory and call cmake from there.")
 endif()
 
-# set(CMAKE_PREFIX_PATH ~/Qt/5.11.1/clang_64)
-
 set(GUI_FILES "main.cpp" "mainwindow.cpp" "mainwindow.ui" "remove.cpp" "remove.ui" "add.cpp" "add.ui" "dialog.cpp" "dialog.ui" "setupdialog.cpp" "setupdialog.ui")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
@@ -69,7 +67,7 @@ if (APPLE)
     file(WRITE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}/vcbld-gui.command "#!/bin/sh\n\n\"`dirname $0`\"/vcbld-gui.app/Contents/MacOS/vcbld-gui")
     execute_process(COMMAND chmod +x ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}/vcbld-gui.command)
 elseif(UNIX AND NOT APPLE)
-    file(WRITE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}/vcbld-gui.command "#!/bin/bash\n\n\"`dirname $0`\"/vcbld-gui")
+    file(WRITE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}/vcbld-gui.command "#!/bin/bash\n\nxterm -hold -e \"`dirname $0`\"/vcbld-gui")
     execute_process(COMMAND chmod +x ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}/vcbld-gui.command)
 elseif(WIN32)
     file(WRITE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}/vcbld-gui.bat "\"%~f0\\..\\vcbld-gui.exe\"")

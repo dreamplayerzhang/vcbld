@@ -17,3 +17,5 @@ compile_commands.json
 CTestTestfile.cmake
 build
 CMakeLists.txt.user
+.kdev4/vcbld.kdev4
+vcbld.kdev4

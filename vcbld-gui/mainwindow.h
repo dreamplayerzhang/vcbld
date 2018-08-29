@@ -72,6 +72,7 @@ private slots:
 private:
   void setup(vcbld::Init &);
   void enableMenus();
+  void clear();
   Ui::MainWindow *ui;
   vcbld::Init init;
   QString _dirName;

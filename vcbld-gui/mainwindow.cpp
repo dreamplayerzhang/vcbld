@@ -26,6 +26,7 @@ using namespace vcbld;
 
 MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
     : _vcpkgPath(vcbldPath), init(vcbldPath), QMainWindow(parent), ui(new Ui::MainWindow) {
+  clear();
   ui->setupUi(this);
   menuBar()->setNativeMenuBar(false);
   setFixedSize(size());
@@ -57,6 +58,7 @@ void MainWindow::enableMenus() {
 void MainWindow::on_actionNew_triggered() {
   _dirName = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "~",
                                                QFileDialog::ShowDirsOnly);
+  clear();
   QDir::setCurrent(_dirName);
   if (_dirName != "") {
     fs::path path = _dirName.toStdString();
@@ -77,6 +79,7 @@ void MainWindow::on_actionNew_triggered() {
 void MainWindow::on_actionOpen_triggered() {
   _dirName = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "~",
                                                QFileDialog::ShowDirsOnly);
+  clear();
   if (_dirName != "") {
     QDir::setCurrent(_dirName);
     fs::path path = _dirName.toStdString();
@@ -154,7 +157,7 @@ void MainWindow::on_actionRun_triggered() {
       config = "release";
     }
     // std::string command;
-    //#if defined(_WIN32) || defined(_WIN32)
+    //#if defined(_WIN32) || defined(_WIN64)
     //    command = "start cmd.exe @cmd /k " + confClass.outputDirectory() + "/"
     //    +
     //              config + "/" + confClass.binaryName();
@@ -407,3 +410,11 @@ void MainWindow::setup(Init &init) {
 }
 
 void MainWindow::on_actionRestore_triggered() { args::restore(); }
+
+void MainWindow::clear() {
+  #if defined (_WIN32) || defined(_WIN64)
+    system ("cls");
+  #else
+    system ("clear");
+  #endif
+}

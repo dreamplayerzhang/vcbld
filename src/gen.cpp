@@ -1,7 +1,5 @@
 #include "pch.h"
 
-using json = nlohmann::json;
-
 namespace vcbld {
 namespace gen {
 void includePathGen() {

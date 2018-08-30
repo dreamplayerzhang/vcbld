@@ -48,4 +48,6 @@
 #define PLATFORM_NAME NULL
 #endif
 
+using json = nlohmann::json;
+
 #endif // !PCH_H

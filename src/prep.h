@@ -1,7 +1,9 @@
 #ifndef PREP_H
 #define PREP_H
 
-#include "pch.h"
+#include <string>
+#include <sstream>
+#include <vector>
 
 #include "pkg.h"
 

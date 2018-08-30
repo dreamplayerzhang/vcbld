@@ -1,6 +1,4 @@
-#include "builder.h"
-
-namespace fs = std::experimental::filesystem;
+#include "pch.h"
 
 namespace vcbld {
 

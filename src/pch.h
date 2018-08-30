@@ -1,12 +1,6 @@
 #ifndef PCH_H
 #define PCH_H
 
-#if defined(_WIN32) || defined(_WIN64)
-#include <filesystem>
-#else
-#include <experimental/filesystem>
-#endif
-
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
@@ -20,6 +14,17 @@
 #include <string>
 #include <typeinfo>
 #include <vector>
+
+#include "args.h"
+#include "builder.h"
+#include "conf.h"
+#include "fs.h"
+#include "gen.h"
+#include "help.h"
+#include "init.h"
+#include "pkg.h"
+#include "prep.h"
+#include "vcbld.h"
 
 #if defined(_WIN32)
 #define PLATFORM_NAME "x86-windows"

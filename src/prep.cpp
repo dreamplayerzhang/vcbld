@@ -1,6 +1,5 @@
-#include "prep.h"
+#include "pch.h"
 
-namespace fs = std::experimental::filesystem;
 
 namespace vcbld {
 PrepClass::PrepClass() : PkgClass() {

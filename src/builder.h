@@ -1,7 +1,8 @@
 #ifndef BUILDER_H
 #define BUILDER_H
 
-#include "pch.h"
+#include <string>
+#include <sstream>
 
 #include "prep.h"
 

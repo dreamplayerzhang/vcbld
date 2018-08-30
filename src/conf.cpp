@@ -1,7 +1,6 @@
-#include "conf.h"
+#include "pch.h"
 
 using json = nlohmann::json;
-namespace fs = std::experimental::filesystem;
 
 namespace vcbld
 {

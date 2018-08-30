@@ -1,11 +1,12 @@
 #ifndef INIT_H
 #define INIT_H
 
-#include "pch.h"
+#include <string>
+#include <vector>
 
 #include "conf.h"
+#include "fs.h"
 
-namespace fs = std::experimental::filesystem;
 
 namespace vcbld {
 class Init {

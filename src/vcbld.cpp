@@ -1,6 +1,5 @@
-#include "vcbld.h"
+#include "pch.h"
 
-namespace fs = std::experimental::filesystem;
 
 using namespace vcbld;
 

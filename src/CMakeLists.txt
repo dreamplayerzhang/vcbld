@@ -34,7 +34,7 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 	message(FATAL_ERROR "Prevented in-tree build. Please create a build directory outside of the source directory and call cmake from there.")
 endif()
 
-set(SOURCE_FILES "pch.cpp" "args.cpp" "builder.cpp" "help.cpp" "conf.cpp" "init.cpp" "gen.cpp" "pkg.cpp" "prep.cpp")
+set(SOURCE_FILES "pch.cpp" "args.cpp" "builder.cpp" "help.cpp" "conf.cpp" "init.cpp" "gen.cpp" "pkg.cpp" "prep.cpp" "fs.cpp")
 
 add_library(vcbldlib STATIC ${SOURCE_FILES})
 add_executable(${PROJECT_NAME} vcbld.cpp)

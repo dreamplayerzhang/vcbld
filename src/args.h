@@ -1,15 +1,9 @@
 #ifndef ARGS_H
 #define ARGS_H
 
-#include "pch.h"
+#include <string>
 
-#include "builder.h"
-#include "conf.h"
-#include "gen.h"
-#include "help.h"
-#include "pkg.h"
-
-namespace fs = std::experimental::filesystem;
+#include "fs.h"
 
 namespace vcbld {
 namespace args {

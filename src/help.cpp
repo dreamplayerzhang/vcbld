@@ -1,4 +1,4 @@
-#include "help.h"
+#include "pch.h"
 
 namespace vcbld {
 namespace help {

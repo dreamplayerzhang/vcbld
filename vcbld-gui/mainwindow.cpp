@@ -16,10 +16,10 @@ MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
     QMessageBox msgBox;
     msgBox.setText("vcbld couldn't locate a vcpkg directory, please choose the vcpkg directory.");
     msgBox.exec();
-    QString vcpkgPath = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "~",
+    QString vcpkgPath = QFileDialog::getExistingDirectory(this, tr("Open Directory"), QString::fromLatin1(std::getenv("HOME")),
                                                    QFileDialog::ShowDirsOnly);
     _vcpkgPath = vcpkgPath.toStdString();
-    init = std::move(Init(_vcpkgPath));
+    init = Init(_vcpkgPath);
   }
 }
 

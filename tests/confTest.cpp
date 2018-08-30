@@ -2,8 +2,6 @@
 #include "catch.hpp"
 #include "pch.h"
 
-namespace fs = std::experimental::filesystem;
-
 namespace vcbld {
 
 TEST_CASE("Initialization checks", "[init]") {

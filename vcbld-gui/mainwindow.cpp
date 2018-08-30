@@ -3,7 +3,8 @@
 using namespace vcbld;
 
 MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
-    : _vcpkgPath(vcbldPath), init(vcbldPath), QMainWindow(parent), ui(new Ui::MainWindow) {
+    : QMainWindow(parent), ui(new Ui::MainWindow), init(vcbldPath),
+      _vcpkgPath(vcbldPath) {
   clear();
   ui->setupUi(this);
   menuBar()->setNativeMenuBar(false);
@@ -14,10 +15,12 @@ MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
   on_actionAlways_on_top_triggered(true);
   if (init.vcpkgPaths().size() == 0) {
     QMessageBox msgBox;
-    msgBox.setText("vcbld couldn't locate a vcpkg directory, please choose the vcpkg directory.");
+    msgBox.setText("vcbld couldn't locate a vcpkg directory, please choose the "
+                   "vcpkg directory.");
     msgBox.exec();
-    QString vcpkgPath = QFileDialog::getExistingDirectory(this, tr("Open Directory"), QString::fromLatin1(std::getenv("HOME")),
-                                                   QFileDialog::ShowDirsOnly);
+    QString vcpkgPath = QFileDialog::getExistingDirectory(
+        this, tr("Open Directory"), QString::fromLatin1(std::getenv("HOME")),
+        QFileDialog::ShowDirsOnly);
     _vcpkgPath = vcpkgPath.toStdString();
     init = Init(_vcpkgPath);
   }
@@ -255,9 +258,7 @@ void MainWindow::on_actionRemove_2_triggered() {
   rmv->raise();
 }
 
-void MainWindow::on_actionList_3_triggered() {
-  args::list();
-}
+void MainWindow::on_actionList_3_triggered() { args::list(); }
 
 void MainWindow::setup(Init &init) {
   if (fs::exists("conf.json")) {
@@ -387,9 +388,9 @@ void MainWindow::setup(Init &init) {
 void MainWindow::on_actionRestore_triggered() { args::restore(); }
 
 void MainWindow::clear() {
-  #if defined (_WIN32) || defined(_WIN64)
-    system ("cls");
-  #else
-    system ("clear");
-  #endif
+#if defined(_WIN32) || defined(_WIN64)
+  system("cls");
+#else
+  system("clear");
+#endif
 }

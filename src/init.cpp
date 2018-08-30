@@ -394,7 +394,7 @@ std::string Init::chooser(std::vector<fs::path> &vector, const int &choice) {
     temp = vector[0];
   } else {
     try {
-      if (choice <= vector.size() && choice != 0 &&
+      if (static_cast<size_t> (choice) <= vector.size() && choice != 0 &&
           typeid(choice) == typeid(int)) {
         temp = vector[choice - 1];
       } else {

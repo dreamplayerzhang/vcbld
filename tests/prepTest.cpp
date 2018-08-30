@@ -1,8 +1,6 @@
 #include "catch.hpp"
 #include "pch.h"
 
-namespace fs = std::experimental::filesystem;
-
 namespace vcbld {
 PrepClass prepClass;
 TEST_CASE("Preparation tests", "[prep]") {

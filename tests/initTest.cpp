@@ -2,8 +2,6 @@
 #include "catch.hpp"
 #include "pch.h"
 
-namespace fs = std::experimental::filesystem;
-
 using namespace vcbld;
 
 TEST_CASE("Testing Catch. Fail") { REQUIRE(1 == 2); }

@@ -1,7 +1,4 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
-
-namespace fs = std::experimental::filesystem;
+#include "qpch.h"
 
 using namespace vcbld;
 

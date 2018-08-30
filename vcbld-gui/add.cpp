@@ -1,7 +1,4 @@
-#include "add.h"
-#include "ui_add.h"
-
-namespace fs = std::experimental::filesystem;
+#include "qpch.h"
 
 using namespace vcbld;
 

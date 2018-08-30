@@ -1,7 +1,10 @@
 #ifndef ADD_H
 #define ADD_H
 
-#include "qpch.h"
+#include <QListWidgetItem>
+#include <QMainWindow>
+
+#include "pkg.h"
 
 namespace Ui {
 class Add;

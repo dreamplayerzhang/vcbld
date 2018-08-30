@@ -1,5 +1,4 @@
-#include "remove.h"
-#include "ui_remove.h"
+#include "qpch.h"
 
 using namespace vcbld;
 

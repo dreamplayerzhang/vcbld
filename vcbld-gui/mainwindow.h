@@ -1,14 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "qpch.h"
+#include <QMainWindow>
 
-#include "add.h"
-#include "dialog.h"
-#include "remove.h"
-#include "setupdialog.h"
-
-namespace fs = std::experimental::filesystem;
+#include "fs.h"
+#include "init.h"
 
 namespace Ui {
 class MainWindow;

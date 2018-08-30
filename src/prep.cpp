@@ -1,7 +1,7 @@
 #include "pch.h"
 
-
 namespace vcbld {
+
 PrepClass::PrepClass() : PkgClass() {
   std::vector<fs::directory_entry> dirEntry;
   std::string arch = "_" + architecture() + ".list";

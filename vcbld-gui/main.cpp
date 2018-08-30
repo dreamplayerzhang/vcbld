@@ -1,8 +1,6 @@
 #include "qpch.h"
 
-#include "mainwindow.h"
-
-namespace fs = std::experimental::filesystem;
+using namespace vcbld;
 
 int main(int argc, char *argv[]) {
   fs::path vcbldPath = argv[0];

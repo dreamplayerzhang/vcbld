@@ -1,9 +1,6 @@
 #include "catch.hpp"
 #include "pch.h"
 
-#include "args.h"
-#include "pkg.h"
-
 namespace vcbld {
 PkgClass pkgClass;
 TEST_CASE("package tests", "[pkg]") {

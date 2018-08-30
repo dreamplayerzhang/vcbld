@@ -1,7 +1,10 @@
 #ifndef REMOVE_H
 #define REMOVE_H
 
-#include "qpch.h"
+#include <QListWidgetItem>
+#include <QMainWindow>
+
+#include "pkg.h"
 
 namespace Ui {
 class Remove;

@@ -1,9 +1,6 @@
 #include "catch.hpp"
 #include "pch.h"
 
-#include "args.h"
-#include "conf.h"
-
 
 namespace vcbld {
 

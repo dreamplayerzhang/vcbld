@@ -1,5 +1,6 @@
-#include "dialog.h"
-#include "ui_dialog.h"
+#include "qpch.h"
+
+using namespace vcbld;
 
 Dialog::Dialog(QWidget *parent) : QDialog(parent), ui(new Ui::Dialog) {
   ui->setupUi(this);

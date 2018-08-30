@@ -1,7 +1,8 @@
 #ifndef DIALOG_H
 #define DIALOG_H
 
-#include "qpch.h"
+#include <QDialog>
+#include <string>
 
 namespace Ui {
 class Dialog;

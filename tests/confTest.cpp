@@ -2,10 +2,6 @@
 #include "catch.hpp"
 #include "pch.h"
 
-#include "args.h"
-#include "conf.h"
-#include "init.h"
-
 namespace fs = std::experimental::filesystem;
 
 namespace vcbld {

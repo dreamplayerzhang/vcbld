@@ -1,5 +1,6 @@
-#include "setupdialog.h"
-#include "ui_setupdialog.h"
+#include "qpch.h"
+
+using namespace vcbld;
 
 SetupDialog::SetupDialog(const QString &msg, std::vector<fs::path> &vector,
                          QWidget *parent)

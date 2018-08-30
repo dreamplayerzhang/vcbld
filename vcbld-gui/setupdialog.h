@@ -1,9 +1,10 @@
 #ifndef SETUPDIALOG_H
 #define SETUPDIALOG_H
 
-#include "qpch.h"
+#include <QDialog>
+#include <vector>
 
-namespace fs = std::experimental::filesystem;
+#include "fs.h"
 
 namespace Ui {
 class SetupDialog;

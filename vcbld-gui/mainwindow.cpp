@@ -388,9 +388,13 @@ void MainWindow::setup(Init &init) {
 void MainWindow::on_actionRestore_triggered() { args::restore(); }
 
 void MainWindow::clear() {
+  int systemRet;
 #if defined(_WIN32) || defined(_WIN64)
-  system("cls");
+  systemRet = system("cls");
 #else
-  system("clear");
+  systemRet = system("clear");
 #endif
+  if (systemRet == -1) {
+    std::cout << "Error clearing the terminal." << std::endl;
+  }
 }

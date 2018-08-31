@@ -44,7 +44,7 @@ void MainWindow::on_actionNew_triggered() {
   if (_dirName != "") {
     fs::path path = _dirName.toStdString();
     QString display = QString::fromStdString(path.filename().string());
-    ui->label_3->setText(display);
+    setWindowTitle("vcbld-gui\t" + display);
     Dialog *dialog = new Dialog(this);
     dialog->exec();
     if (dialog->binType() != "") {
@@ -65,7 +65,7 @@ void MainWindow::on_actionOpen_triggered() {
     QDir::setCurrent(_dirName);
     fs::path path = _dirName.toStdString();
     QString display = QString::fromStdString(path.filename().string());
-    ui->label_3->setText(display);
+    setWindowTitle("vcbld-gui\t" + display);
     if (fs::exists("vcbld.json"))
       enableMenus();
   }
@@ -205,7 +205,7 @@ void MainWindow::on_actionAbout_triggered() {
 void MainWindow::on_actionClose_triggered() {
   if (_dirName != "") {
     _dirName = "";
-    ui->label_3->setText("");
+    setWindowTitle("vcbld-gui");
     QDir::setCurrent(_dirName);
   }
 }
@@ -383,6 +383,10 @@ void MainWindow::setup(Init &init) {
       delete setupVcpkg;
     }
   }
+}
+
+void MainWindow::on_actionClear_output_triggered() {
+    clear();
 }
 
 void MainWindow::on_actionRestore_triggered() { args::restore(); }

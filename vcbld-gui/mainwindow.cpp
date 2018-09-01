@@ -4,7 +4,7 @@ using namespace vcbld;
 
 MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), init(vcbldPath),
-      _vcpkgPath(vcbldPath) {
+      _vcpkgPath(vcbldPath), _vcbldPath(vcbldPath) {
   clear();
   ui->setupUi(this);
   menuBar()->setNativeMenuBar(false);
@@ -130,33 +130,35 @@ void MainWindow::on_actionClean_triggered() {
 
 void MainWindow::on_actionRun_triggered() {
   if (_dirName != "") {
-    std::string config;
+    ConfClass confClass;
+    std::string config, command;
 
     if (ui->actionDebug->isChecked()) {
       config = "debug";
     } else {
       config = "release";
     }
-    // std::string command;
-    //#if defined(_WIN32) || defined(_WIN64)
-    //    command = "start cmd.exe @cmd /k " + confClass.outputDirectory() + "/"
-    //    +
-    //              config + "/" + confClass.binaryName();
-    //#elif defined(__linux__)
-    //    command = "xterm -hold -e " + confClass.outputDirectory() + "/" +
-    //    config +
-    //              "/" + confClass.binaryName() + " &";
-    //#elif defined(__APPLE__) && defined(__MACH__)
-    //    command = "open -a Terminal " + confClass.outputDirectory() + "/" +
-    //    config +
-    //              "/" + confClass.binaryName() + " &";
-    //#else
-    //    command = "xterm -hold -e " + confClass.outputDirectory() + "/" +
-    //    config +
-    //              "/" + confClass.binaryName() + " &";
-    //#endif
+    
+    #if defined(_WIN32) || defined(_WIN64)
+       command = "start cmd.exe @cmd /k " + confClass.outputDirectory() + "/"
+       +
+                 config + "/" + confClass.binaryName();
+    #elif defined(__linux__)
+       command = "xterm -hold -e " + confClass.outputDirectory() + "/" +
+       config +
+                 "/" + confClass.binaryName() + " &";
+    #elif defined(__APPLE__) && defined(__MACH__)
+       command = "open -a Terminal " + confClass.outputDirectory() + "/" +
+       config +
+                 "/" + confClass.binaryName();
+    #else
+       command = "xterm -hold -e " + confClass.outputDirectory() + "/" +
+       config +
+                 "/" + confClass.binaryName();
+    #endif
     QDir::setCurrent(_dirName);
-    args::run(config);
+    QProcess proc(this);
+    proc.startDetached(QString::fromStdString(command));
   }
 }
 

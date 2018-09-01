@@ -72,6 +72,7 @@ private:
   vcbld::Init init;
   QString _dirName;
   fs::path _vcpkgPath;
+  fs::path _vcbldPath;
 };
 
 #endif // MAINWINDOW_H

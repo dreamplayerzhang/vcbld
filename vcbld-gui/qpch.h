@@ -9,6 +9,7 @@
 #include <QListWidgetItem>
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QProcess>
 #include <QString>
 #include <QWindow>
 #include <streambuf>

@@ -3,7 +3,7 @@
 namespace vcbld {
 
 Builder::Builder(const std::string &buildType)
-    : _buildType(buildType), PrepClass() {
+    : PrepClass(), _buildType(buildType) {
   if (!fs::exists("vcbld.json")) {
     std::cout << "Build configuration not found!" << std::endl;
     std::exit(1);

@@ -16,15 +16,20 @@ class Remove : public QMainWindow {
 public:
   explicit Remove(QWidget *parent = nullptr);
   ~Remove();
+  QString output() const;
 
 private slots:
   void on_cancelButton_clicked();
 
   void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
 
+signals:
+    void outputChanged(const QString &);
+
 private:
   vcbld::PkgClass pkgClass;
   Ui::Remove *ui;
+  QString _output;
 };
 
 #endif // REMOVE_H

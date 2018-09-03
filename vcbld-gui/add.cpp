@@ -6,8 +6,10 @@ Add::Add(QWidget *parent) : QMainWindow(parent), ui(new Ui::Add) {
   ui->setupUi(this);
   QDesktopWidget *desktop = QApplication::desktop();
   int screenWidth = desktop->width();
-  move(screenWidth / 2 - width() / 2, 120);
+  move(screenWidth / 2 - width() / 2, 200);
   setFixedSize(size());
+
+  QObject::connect(this, SIGNAL(outputChanged(const QString &)), parent, SLOT(on_outputChanged(const QString &)));
 
   try {
     std::vector<fs::directory_entry> dirEntry;
@@ -43,13 +45,19 @@ Add::Add(QWidget *parent) : QMainWindow(parent), ui(new Ui::Add) {
 
 Add::~Add() { delete ui; }
 
+QString Add::output() const
+{
+    return _output;
+}
+
 void Add::on_pushButton_clicked() { close(); }
 
 void Add::on_listWidget_itemDoubleClicked(QListWidgetItem *item) {
   QString pkgName = item->text();
   std::vector<std::string> v;
   v.push_back(pkgName.toStdString());
-  args::add(v);
+  _output = Helper::execVec(std::bind(&args::add, v),v);
+  emit outputChanged(_output);
 }
 
 void Add::on_lineEdit_textChanged(const QString &arg1) {

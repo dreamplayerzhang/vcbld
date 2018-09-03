@@ -12,7 +12,10 @@ MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
   QDesktopWidget *desktop = QApplication::desktop();
   int screenWidth = desktop->width();
   move(screenWidth / 2 - width() / 2, 0);
-  on_actionAlways_on_top_triggered(true);
+  on_actionAlways_on_top_triggered(false);
+  ui->plainTextEdit->setReadOnly(true);
+  ui->plainTextEdit->zoomOut();
+
   if (init.vcpkgPaths().size() == 0) {
     QMessageBox msgBox;
     msgBox.setText("vcbld couldn't locate a vcpkg directory, please choose the "
@@ -27,6 +30,11 @@ MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
 }
 
 MainWindow::~MainWindow() { delete ui; }
+
+void MainWindow::on_outputChanged(const QString &output)
+{
+    ui->plainTextEdit->appendPlainText(output);
+}
 
 void MainWindow::enableMenus() {
   if (_dirName != "")
@@ -48,7 +56,7 @@ void MainWindow::on_actionNew_triggered() {
     Dialog *dialog = new Dialog(this);
     dialog->exec();
     if (dialog->binType() != "") {
-      args::New(dialog->binType());
+      ui->plainTextEdit->appendPlainText(Helper::execArgs(std::bind(&args::New, dialog->binType()), dialog->binType()));
       init.init(dialog->binType());
       enableMenus();
       setup(init);
@@ -68,6 +76,7 @@ void MainWindow::on_actionOpen_triggered() {
     setWindowTitle("vcbld-gui\t" + display);
     if (fs::exists("vcbld.json"))
       enableMenus();
+    ui->plainTextEdit->appendPlainText("Directory changed successfully");
   }
 }
 
@@ -125,12 +134,15 @@ void MainWindow::on_actionClean_triggered() {
     } else {
       args::clean("release");
     }
+    QMessageBox msgBox;
+    msgBox.setText("Cleaned build output.");
+    msgBox.exec();
   }
 }
 
 void MainWindow::on_actionRun_triggered() {
   if (_dirName != "") {
-    ConfClass confClass;
+      ConfClass confClass;
     std::string config, command;
 
     if (ui->actionDebug->isChecked()) {
@@ -164,23 +176,42 @@ void MainWindow::on_actionRun_triggered() {
 
 void MainWindow::on_actionRun_Cmake_triggered() {
   if (_dirName != "") {
+      ConfClass confClass;
     QDir::setCurrent(_dirName);
     if (ui->actionDebug->isChecked()) {
-      args::cmake(" -DCMAKE_BUILD_TYPE=Debug ");
+      QProcess proc(this);
+              proc.setWorkingDirectory(QString::fromStdString(confClass.outputDirectory()));
+      proc.start(QString::fromStdString(confClass.cmakePath()), QStringList() << "-DCMAKE_BUILD_TYPE=Debug" << "..");
+      proc.waitForFinished(-1);
+      QString err = proc.readAllStandardError();
+      QString out = proc.readAllStandardOutput();
+      ui->plainTextEdit->appendPlainText(err);
+      ui->plainTextEdit->appendPlainText(out);
     } else {
-      args::cmake(" -DCMAKE_BUILD_TYPE=Release ");
+        QProcess proc(this);
+        proc.setWorkingDirectory(QString::fromStdString(confClass.outputDirectory()));
+        proc.start(QString::fromStdString(confClass.cmakePath()), QStringList() << "-DCMAKE_BUILD_TYPE=Release" << "..");
+        proc.waitForFinished(-1);
+        QString err = proc.readAllStandardError();
+        QString out = proc.readAllStandardOutput();
+        ui->plainTextEdit->appendPlainText(err);
+        ui->plainTextEdit->appendPlainText(out);
     }
   }
 }
 
 void MainWindow::on_actionRun_make_triggered() {
   if (_dirName != "") {
+      ConfClass confClass;
     QDir::setCurrent(_dirName);
-    if (ui->actionDebug->isChecked()) {
-      args::make(" ");
-    } else {
-      args::make(" ");
-    }
+    QProcess proc(this);
+    proc.setWorkingDirectory(QString::fromStdString(confClass.outputDirectory()));
+    proc.start(QString::fromStdString(confClass.makePath()));
+    proc.waitForFinished(-1);
+    QString err = proc.readAllStandardError();
+    QString out = proc.readAllStandardOutput();
+    ui->plainTextEdit->appendPlainText(err);
+    ui->plainTextEdit->appendPlainText(out);
   }
 }
 
@@ -231,7 +262,7 @@ void MainWindow::on_actionIncludePath_triggered() {
 void MainWindow::on_actionCMakeLists_triggered() {
   if (_dirName != "") {
     QDir::setCurrent(_dirName);
-    args::generate();
+    ui->plainTextEdit->appendPlainText(Helper::exec(std::bind(&args::generate)));
   }
 }
 
@@ -387,11 +418,14 @@ void MainWindow::setup(Init &init) {
   }
 }
 
-void MainWindow::on_actionClear_output_triggered() {
-    clear();
+void MainWindow::on_actionClear_output_2_triggered()
+{
+    ui->plainTextEdit->clear();
 }
 
-void MainWindow::on_actionRestore_triggered() { args::restore(); }
+void MainWindow::on_actionRestore_triggered() {
+    ui->plainTextEdit->appendPlainText(Helper::exec(std::bind(&args::restore)));
+}
 
 void MainWindow::clear() {
   int systemRet;
@@ -404,3 +438,4 @@ void MainWindow::clear() {
     std::cout << "Error clearing the terminal." << std::endl;
   }
 }
+

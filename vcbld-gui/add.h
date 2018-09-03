@@ -16,6 +16,7 @@ class Add : public QMainWindow {
 public:
   explicit Add(QWidget *parent = nullptr);
   ~Add();
+  QString output() const;
 
 private slots:
   void on_pushButton_clicked();
@@ -24,9 +25,13 @@ private slots:
 
   void on_lineEdit_textChanged(const QString &arg1);
 
+signals:
+    void outputChanged(const QString &);
+
 private:
   vcbld::PkgClass pkgClass;
   Ui::Add *ui;
+  QString _output;
 };
 
 #endif // ADD_H

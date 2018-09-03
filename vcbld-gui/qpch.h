@@ -16,6 +16,7 @@
 
 #include "add.h"
 #include "dialog.h"
+#include "helper.h"
 #include "mainwindow.h"
 #include "pch.h"
 #include "remove.h"

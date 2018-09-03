@@ -46,7 +46,7 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 	message(FATAL_ERROR "Prevented in-tree build. Please create a build directory outside of the source directory and call cmake from there.")
 endif()
 
-set(GUI_FILES "main.cpp" "mainwindow.cpp" "mainwindow.ui" "remove.cpp" "remove.ui" "add.cpp" "add.ui" "dialog.cpp" "dialog.ui" "setupdialog.cpp" "setupdialog.ui" "qpch.cpp")
+set(GUI_FILES "main.cpp" "mainwindow.cpp" "helper.cpp" "mainwindow.ui" "remove.cpp" "remove.ui" "add.cpp" "add.ui" "dialog.cpp" "dialog.ui" "setupdialog.cpp" "setupdialog.ui" "qpch.cpp")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include)

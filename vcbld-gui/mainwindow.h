@@ -17,6 +17,9 @@ public:
   MainWindow(const fs::path vcbldPath, QWidget *parent = nullptr);
   ~MainWindow();
 
+public slots:
+  void on_outputChanged(const QString &);
+
 private slots:
   void on_actionNew_triggered();
 
@@ -62,7 +65,7 @@ private slots:
 
   void on_actionRestore_triggered();
 
-  void on_actionClear_output_triggered();
+  void on_actionClear_output_2_triggered();
 
 private:
   void setup(vcbld::Init &);
@@ -73,6 +76,8 @@ private:
   QString _dirName;
   fs::path _vcpkgPath;
   fs::path _vcbldPath;
+  void exec(std::function<void(void)>);
+  void execArgs(std::function<void(const std::string &)> func, const std::string &arg);
 };
 
 #endif // MAINWINDOW_H

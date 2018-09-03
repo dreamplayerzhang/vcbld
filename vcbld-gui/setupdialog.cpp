@@ -8,7 +8,7 @@ SetupDialog::SetupDialog(const QString &msg, std::vector<fs::path> &vector,
   ui->setupUi(this);
   QDesktopWidget *desktop = QApplication::desktop();
   int screenWidth = desktop->width();
-  move(screenWidth / 2 - width() / 2, 120);
+  move(screenWidth / 2 - width() / 2, 200);
   setFixedSize(size());
   QString labelText = "Please choose a";
   labelText += msg;

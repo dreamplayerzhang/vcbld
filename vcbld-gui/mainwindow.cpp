@@ -309,10 +309,10 @@ void MainWindow::on_actionBuild_run_triggered() {
   if (_dirName != "") {
     QDir::setCurrent(_dirName);
     if (ui->actionDebug->isChecked()) {
-      args::build("debug");
+      on_actionBuild_triggered();
       on_actionRun_triggered();
     } else {
-      args::build("release");
+      on_actionBuild_triggered();
       on_actionRun_triggered();
     }
   }

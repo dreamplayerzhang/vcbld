@@ -12,7 +12,6 @@ MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
   QDesktopWidget *desktop = QApplication::desktop();
   int screenWidth = desktop->width();
   move(screenWidth / 2 - width() / 2, 0);
-  on_actionAlways_on_top_triggered(false);
   ui->plainTextEdit->setReadOnly(true);
   ui->plainTextEdit->zoomOut();
 
@@ -44,7 +43,7 @@ void MainWindow::enableMenus() {
 }
 
 void MainWindow::on_actionNew_triggered() {
-  _dirName = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "~",
+  _dirName = QFileDialog::getExistingDirectory(this, tr("Open Directory"), QString::fromStdString(std::getenv("HOME")),
                                                QFileDialog::ShowDirsOnly);
   clear();
   QDir::setCurrent(_dirName);
@@ -66,7 +65,7 @@ void MainWindow::on_actionNew_triggered() {
 }
 
 void MainWindow::on_actionOpen_triggered() {
-  _dirName = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "~",
+  _dirName = QFileDialog::getExistingDirectory(this, tr("Open Directory"), QString::fromStdString(std::getenv("HOME")),
                                                QFileDialog::ShowDirsOnly);
   clear();
   if (_dirName != "") {
@@ -331,7 +330,9 @@ void MainWindow::on_actionRemove_2_triggered() {
   rmv->raise();
 }
 
-void MainWindow::on_actionList_3_triggered() { args::list(); }
+void MainWindow::on_actionList_3_triggered() {
+  ui->plainTextEdit->appendPlainText(Helper::exec(std::bind(&args::list)));
+}
 
 void MainWindow::setup(Init &init) {
   if (fs::exists("conf.json")) {

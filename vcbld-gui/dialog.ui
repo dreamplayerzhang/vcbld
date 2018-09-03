@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>240</width>
-    <height>140</height>
+    <height>149</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,7 +25,7 @@
    <property name="title">
     <string>Please choose a binary type:</string>
    </property>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>60</x>

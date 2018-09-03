@@ -30,10 +30,10 @@ void Remove::on_listWidget_itemDoubleClicked(QListWidgetItem *item) {
   v.push_back(pkgName.toStdString());
   _output = Helper::execVec(std::bind(&args::remove, v), v);
   emit outputChanged(_output);
-
-  ui->listWidget->clear();
-  for (std::vector<std::string>::iterator it = pkgClass.packageNames().begin();
-       it != pkgClass.packageNames().end(); ++it) {
-    ui->listWidget->addItem(QString::fromStdString(*it));
-  }
+  item->setHidden(true);
+//  ui->listWidget->clear();
+//  for (std::vector<std::string>::iterator it = pkgClass.packageNames().begin();
+//       it != pkgClass.packageNames().end(); ++it) {
+//    ui->listWidget->addItem(QString::fromStdString(*it));
+//  }
 }

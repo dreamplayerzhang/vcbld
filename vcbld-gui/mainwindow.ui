@@ -96,8 +96,8 @@
     <property name="title">
      <string>Window</string>
     </property>
-    <addaction name="actionAlways_on_top"/>
     <addaction name="actionClear_output_2"/>
+    <addaction name="actionAlways_on_top"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">

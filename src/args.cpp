@@ -226,7 +226,7 @@ void list() {
              pkgClass.packageNames().begin();
          it != pkgClass.packageNames().end(); ++it) {
       std::cout << std::setw(4) << "Package name: " << *it
-                << "\t\tPackage version: " << pkgClass.getVersion(*it)
+                << "\nPackage version: " << pkgClass.getVersion(*it)
                 << std::endl;
     }
   } catch (const std::exception &e) {

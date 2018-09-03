@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 
+#include "builder.h"
 #include "fs.h"
 #include "init.h"
 
@@ -71,13 +72,18 @@ private:
   void setup(vcbld::Init &);
   void enableMenus();
   void clear();
+  void compile(vcbld::Builder &);
+  void appLink(vcbld::Builder &);
+  void libLink(vcbld::Builder &);
+  void archive(vcbld::Builder &);
   Ui::MainWindow *ui;
   vcbld::Init init;
   QString _dirName;
   fs::path _vcpkgPath;
   fs::path _vcbldPath;
   void exec(std::function<void(void)>);
-  void execArgs(std::function<void(const std::string &)> func, const std::string &arg);
+  void execArgs(std::function<void(const std::string &)> func,
+                const std::string &arg);
 };
 
 #endif // MAINWINDOW_H

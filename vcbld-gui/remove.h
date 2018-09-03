@@ -24,7 +24,7 @@ private slots:
   void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
 
 signals:
-    void outputChanged(const QString &);
+  void outputChanged(const QString &);
 
 private:
   vcbld::PkgClass pkgClass;

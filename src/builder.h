@@ -15,6 +15,7 @@ public:
   Builder &operator=(const Builder &) = delete;
 
   void build();
+  void copy();
   std::string getBldCommands();
 
 private:
@@ -22,7 +23,6 @@ private:
   void appLink();
   void dylibLink();
   void archive();
-  void copy();
 
   std::string _buildType;
   std::string _dbgDir;

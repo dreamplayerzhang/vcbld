@@ -2,6 +2,7 @@
 #define QPCH_H
 
 #include <QApplication>
+#include <QDebug>
 #include <QDesktopWidget>
 #include <QDialog>
 #include <QDir>

@@ -26,7 +26,7 @@ private slots:
   void on_lineEdit_textChanged(const QString &arg1);
 
 signals:
-    void outputChanged(const QString &);
+  void outputChanged(const QString &);
 
 private:
   vcbld::PkgClass pkgClass;

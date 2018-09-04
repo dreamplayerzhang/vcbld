@@ -53,17 +53,3 @@ endif()
 install(TARGETS ${PROJECT_NAME} 
         CONFIGURATIONS Release
         RUNTIME DESTINATION bin)
-
-# if(WIN32)
-# include(CPack REQUIRED)
-# include(CPackIFW REQUIRED)
-
-# cpack_add_component(${PROJECT_NAME}.exe
-#     DISPLAY_NAME "vcbld"
-#     DESCRIPTION "A build system that works with vcpkg")
-# cpack_ifw_configure_component(${PROJECT_NAME}.exe
-#     VERSION "0.1.0")
-# cpack_ifw_add_repository(myrepo
-#     URL "https://github.com/MoAlyousef/vcbld"
-# 	DISPLAY_NAME "vcbld repository.")
-# endif()

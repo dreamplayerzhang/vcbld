@@ -43,8 +43,9 @@ void MainWindow::enableMenus() {
 }
 
 void MainWindow::on_actionNew_triggered() {
-  _dirName = QFileDialog::getExistingDirectory(this, tr("Open Directory"), QString::fromStdString(std::getenv("HOME")),
-                                               QFileDialog::ShowDirsOnly);
+  _dirName = QFileDialog::getExistingDirectory(
+      this, tr("Open Directory"), QString::fromStdString(std::getenv("HOME")),
+      QFileDialog::ShowDirsOnly);
   clear();
   QDir::setCurrent(_dirName);
   if (_dirName != "") {
@@ -65,8 +66,9 @@ void MainWindow::on_actionNew_triggered() {
 }
 
 void MainWindow::on_actionOpen_triggered() {
-  _dirName = QFileDialog::getExistingDirectory(this, tr("Open Directory"), QString::fromStdString(std::getenv("HOME")),
-                                               QFileDialog::ShowDirsOnly);
+  _dirName = QFileDialog::getExistingDirectory(
+      this, tr("Open Directory"), QString::fromStdString(std::getenv("HOME")),
+      QFileDialog::ShowDirsOnly);
   clear();
   if (_dirName != "") {
     QDir::setCurrent(_dirName);
@@ -208,32 +210,37 @@ void MainWindow::on_actionRun_triggered() {
 void MainWindow::on_actionRun_Cmake_triggered() {
   if (_dirName != "") {
     ConfClass confClass;
-    QDir::setCurrent(_dirName);
+    std::ostringstream cmakeCmnd, temp;
+    std::string config;
     if (ui->actionDebug->isChecked()) {
-      QProcess proc(this);
-      proc.setWorkingDirectory(
-          QString::fromStdString(confClass.outputDirectory()));
-      proc.start(QString::fromStdString(confClass.cmakePath()),
-                 QStringList() << "-DCMAKE_BUILD_TYPE=Debug"
-                               << "..");
-      proc.waitForFinished(-1);
-      QString err = proc.readAllStandardError();
-      QString out = proc.readAllStandardOutput();
-      ui->plainTextEdit->appendPlainText(err);
-      ui->plainTextEdit->appendPlainText(out);
+      config = "Debug";
     } else {
-      QProcess proc(this);
-      proc.setWorkingDirectory(
-          QString::fromStdString(confClass.outputDirectory()));
-      proc.start(QString::fromStdString(confClass.cmakePath()),
-                 QStringList() << "-DCMAKE_BUILD_TYPE=Release"
-                               << "..");
-      proc.waitForFinished(-1);
-      QString err = proc.readAllStandardError();
-      QString out = proc.readAllStandardOutput();
-      ui->plainTextEdit->appendPlainText(err);
-      ui->plainTextEdit->appendPlainText(out);
+      config = "Release";
     }
+
+    if (confClass.architecture().find("windows") == std::string::npos) {
+      temp << " -DCMAKE_C_COMPILER=\"" << confClass.cCompilerPath() << "\""
+           << " -DCMAKE_CXX_COMPILER=\"" << confClass.cppCompilerPath() << "\""
+           << " -DCMAKE_MAKE_PROGRAM=\"" << confClass.makePath() << "\" ";
+    } else {
+      temp << " ";
+    }
+    cmakeCmnd << " \"" << confClass.cmakePath() << "\""
+              << " -DCMAKE_BUILD_TYPE=" << config
+              << " -DCMAKE_TOOLCHAIN_FILE=\"" << confClass.vcpkgDirPath()
+              << "/scripts/buildsystems/vcpkg.cmake"
+              << "\"" << temp.str() << " .. ";
+
+    QDir::setCurrent(_dirName);
+    QProcess proc(this);
+    proc.setWorkingDirectory(
+        QString::fromStdString(confClass.outputDirectory()));
+    proc.start(QString::fromStdString(cmakeCmnd.str()));
+    proc.waitForFinished(-1);
+    QString err = proc.readAllStandardError();
+    QString out = proc.readAllStandardOutput();
+    ui->plainTextEdit->appendPlainText(err);
+    ui->plainTextEdit->appendPlainText(out);
   }
 }
 

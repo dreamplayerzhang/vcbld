@@ -1,6 +1,5 @@
 #include "pch.h"
 
-
 namespace vcbld {
 namespace args {
 
@@ -357,9 +356,9 @@ void cmake(const std::string &cmakeArgs) {
   }
   cmakeCmnd << "cd " << confClass.outputDirectory() << " && \""
             << confClass.cmakePath() << "\""
-            << " -DCMAKE_PREFIX_PATH=\"" << confClass.vcpkgDirPath()
-            << "/installed/" << confClass.architecture() << "\"" << temp.str()
-            << cmakeArgs << " .. ";
+            << " -DCMAKE_TOOLCHAIN_FILE=\"" << confClass.vcpkgDirPath()
+            << "/scripts/buildsystems/vcpkg.cmake"
+            << "\"" << temp.str() << cmakeArgs << " .. ";
   int systemRet = system(cmakeCmnd.str().c_str());
   if (systemRet == -1) {
     std::cout << "An error occured while running cmake." << std::endl;
@@ -370,7 +369,7 @@ void make(const std::string &makeArgs) {
   ConfClass confClass;
   std::ostringstream makeCmnd;
   makeCmnd << "cd " << confClass.outputDirectory() << " && "
-           << " " << confClass.makePath();
+           << " " << confClass.makePath() << " " << makeArgs;
   int systemRet = system(makeCmnd.str().c_str());
   if (systemRet == -1) {
     std::cout << "An error occured while running make." << std::endl;

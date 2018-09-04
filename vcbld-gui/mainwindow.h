@@ -17,6 +17,7 @@ class MainWindow : public QMainWindow {
 public:
   MainWindow(const fs::path vcbldPath, QWidget *parent = nullptr);
   ~MainWindow();
+  void runProcess(const QString &process, const QString &dir);
 
 public slots:
   void on_outputChanged(const QString &);
@@ -67,6 +68,9 @@ private slots:
   void on_actionRestore_triggered();
 
   void on_actionClear_output_2_triggered();
+
+signals:
+  void outputChanged(const QString &);
 
 private:
   void setup(vcbld::Init &);

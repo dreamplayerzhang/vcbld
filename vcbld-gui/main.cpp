@@ -20,9 +20,9 @@ int main(int argc, char *argv[]) {
   QApplication a(argc, argv);
   MainWindow w(vcbldPath);
 
-  QFont font = a.font();
-  font.setPointSize(font.pointSize() - 1);
-  a.setFont(font);
+//  QFont font = a.font();
+//  font.setPointSize(font.pointSize() - 1);
+//  a.setFont(font);
 
   w.show();
 

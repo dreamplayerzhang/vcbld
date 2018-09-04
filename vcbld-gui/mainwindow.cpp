@@ -15,6 +15,9 @@ MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
   ui->plainTextEdit->setReadOnly(true);
   ui->plainTextEdit->zoomOut();
 
+  QObject::connect(this, SIGNAL(outputChanged(const QString &)), this,
+                   SLOT(on_outputChanged(const QString &)));
+
   if (init.vcpkgPaths().size() == 0) {
     QMessageBox msgBox;
     msgBox.setText("vcbld couldn't locate a vcpkg directory, please choose the "
@@ -34,6 +37,16 @@ void MainWindow::on_outputChanged(const QString &output) {
   ui->plainTextEdit->appendPlainText(output);
 }
 
+void MainWindow::runProcess(const QString &process, const QString &dir) {
+  QProcess proc(this);
+  proc.setWorkingDirectory(dir);
+  proc.start(process);
+  proc.waitForFinished(-1);
+  ui->plainTextEdit->appendPlainText(proc.readAllStandardError());
+  ui->plainTextEdit->appendPlainText(proc.readAllStandardOutput());
+}
+
+
 void MainWindow::enableMenus() {
   if (_dirName != "")
     ui->menuBuild->setEnabled(true);
@@ -51,7 +64,7 @@ void MainWindow::on_actionNew_triggered() {
   if (_dirName != "") {
     fs::path path = _dirName.toStdString();
     QString display = QString::fromStdString(path.filename().string());
-    setWindowTitle("vcbld-gui\t" + display);
+    setWindowTitle("vcbld-gui\t--\t" + display);
     Dialog *dialog = new Dialog(this);
     dialog->exec();
     if (dialog->binType() != "") {
@@ -74,7 +87,7 @@ void MainWindow::on_actionOpen_triggered() {
     QDir::setCurrent(_dirName);
     fs::path path = _dirName.toStdString();
     QString display = QString::fromStdString(path.filename().string());
-    setWindowTitle("vcbld-gui\t" + display);
+    setWindowTitle("vcbld-gui\t--\t" + display);
     if (fs::exists("vcbld.json"))
       enableMenus();
   }
@@ -120,6 +133,10 @@ void MainWindow::on_actionBuild_triggered() {
     QDir::setCurrent(_dirName);
     if (ui->actionDebug->isChecked()) {
       Builder builder("debug");
+      if (!fs::exists(builder.outputDirectory()))
+        fs::create_directory(builder.outputDirectory());
+      if (!fs::exists(builder.outputDirectory() + "/" + "debug"))
+        fs::create_directory(builder.outputDirectory() + "/" + "debug");
       ui->plainTextEdit->appendPlainText("Compiling in debug...");
       compile(builder);
       if (builder.binaryType() == "app") {
@@ -140,6 +157,10 @@ void MainWindow::on_actionBuild_triggered() {
       }
     } else {
       Builder builder("release");
+      if (!fs::exists(builder.outputDirectory()))
+        fs::create_directory(builder.outputDirectory());
+      if (!fs::exists(builder.outputDirectory() + "/" + "release"))
+        fs::create_directory(builder.outputDirectory() + "/" + "release");
       ui->plainTextEdit->appendPlainText("Compiling in release...");
       compile(builder);
       if (builder.binaryType() == "app") {
@@ -155,7 +176,7 @@ void MainWindow::on_actionBuild_triggered() {
         archive(builder);
       } else {
         QMessageBox msgBox;
-        msgBox.setText("Unknown binary typy");
+        msgBox.setText("Unknown binary typy.");
         msgBox.exec();
       }
     }
@@ -232,15 +253,7 @@ void MainWindow::on_actionRun_Cmake_triggered() {
               << "\"" << temp.str() << " .. ";
 
     QDir::setCurrent(_dirName);
-    QProcess proc(this);
-    proc.setWorkingDirectory(
-        QString::fromStdString(confClass.outputDirectory()));
-    proc.start(QString::fromStdString(cmakeCmnd.str()));
-    proc.waitForFinished(-1);
-    QString err = proc.readAllStandardError();
-    QString out = proc.readAllStandardOutput();
-    ui->plainTextEdit->appendPlainText(err);
-    ui->plainTextEdit->appendPlainText(out);
+    runProcess(QString::fromStdString(cmakeCmnd.str()), QString::fromStdString(confClass.outputDirectory()));
   }
 }
 
@@ -248,15 +261,7 @@ void MainWindow::on_actionRun_make_triggered() {
   if (_dirName != "") {
     ConfClass confClass;
     QDir::setCurrent(_dirName);
-    QProcess proc(this);
-    proc.setWorkingDirectory(
-        QString::fromStdString(confClass.outputDirectory()));
-    proc.start(QString::fromStdString(confClass.makePath()));
-    proc.waitForFinished(-1);
-    QString err = proc.readAllStandardError();
-    QString out = proc.readAllStandardOutput();
-    ui->plainTextEdit->appendPlainText(err);
-    ui->plainTextEdit->appendPlainText(out);
+    runProcess(QString::fromStdString(confClass.makePath()), QString::fromStdString(confClass.outputDirectory()));
   }
 }
 
@@ -468,6 +473,7 @@ void MainWindow::setup(Init &init) {
 
 void MainWindow::on_actionClear_output_2_triggered() {
   ui->plainTextEdit->clear();
+  clear();
 }
 
 void MainWindow::on_actionRestore_triggered() {
@@ -494,13 +500,7 @@ void MainWindow::compile(Builder &builder) {
             << builder.compilerDefines() << " -g "
             << "-std=" << builder.language() << builder.standard() << " -c "
             << builder.sourceFiles();
-    QProcess proc(this);
-    proc.setWorkingDirectory(
-        QString::fromStdString(builder.outputDirectory() + "/debug"));
-    proc.start(QString::fromStdString(command.str()));
-    proc.waitForFinished(-1);
-    ui->plainTextEdit->appendPlainText(proc.readAllStandardError());
-    ui->plainTextEdit->appendPlainText(proc.readAllStandardOutput());
+    runProcess(QString::fromStdString(command.str()), QString::fromStdString(builder.outputDirectory() + "/debug"));
   } else {
     std::ostringstream command;
     command << "\"" << builder.compilerPath() << "\" " << builder.headerPaths()
@@ -508,13 +508,7 @@ void MainWindow::compile(Builder &builder) {
             << builder.compilerDefines() << " "
             << "-std=" << builder.language() << builder.standard() << " -c "
             << builder.sourceFiles();
-    QProcess proc(this);
-    proc.setWorkingDirectory(
-        QString::fromStdString(builder.outputDirectory() + "/release"));
-    proc.start(QString::fromStdString(command.str()));
-    proc.waitForFinished(-1);
-    ui->plainTextEdit->appendPlainText(proc.readAllStandardError());
-    ui->plainTextEdit->appendPlainText(proc.readAllStandardOutput());
+      runProcess(QString::fromStdString(command.str()), QString::fromStdString(builder.outputDirectory() + "/release"));
   }
 }
 
@@ -525,26 +519,14 @@ void MainWindow::appLink(Builder &builder) {
             << builder.binaryName() << " "
             << builder.objPath(builder.outputDirectory() + "/debug") << " "
             << builder.rlsLibPaths() << " " << builder.linkerFlags();
-    QProcess procLink(this);
-    procLink.setWorkingDirectory(
-        QString::fromStdString(builder.outputDirectory() + "/debug"));
-    procLink.start(QString::fromStdString(command.str()));
-    procLink.waitForFinished(-1);
-    ui->plainTextEdit->appendPlainText(procLink.readAllStandardError());
-    ui->plainTextEdit->appendPlainText(procLink.readAllStandardOutput());
+    runProcess(QString::fromStdString(command.str()), QString::fromStdString(builder.outputDirectory() + "/debug"));
   } else {
     std::ostringstream command;
     command << "\"" << builder.compilerPath() << "\" -o "
             << builder.binaryName() << " "
             << builder.objPath(builder.outputDirectory() + "/release") << " "
             << builder.rlsLibPaths() << " " << builder.linkerFlags();
-    QProcess procLink(this);
-    procLink.setWorkingDirectory(
-        QString::fromStdString(builder.outputDirectory() + "/release"));
-    procLink.start(QString::fromStdString(command.str()));
-    procLink.waitForFinished(-1);
-    ui->plainTextEdit->appendPlainText(procLink.readAllStandardError());
-    ui->plainTextEdit->appendPlainText(procLink.readAllStandardOutput());
+    runProcess(QString::fromStdString(command.str()), QString::fromStdString(builder.outputDirectory() + "/release"));
   }
 }
 
@@ -564,26 +546,14 @@ void MainWindow::libLink(Builder &builder) {
             << builder.binaryName() << dylibExt << " "
             << builder.objPath(builder.outputDirectory() + "/debug") << " "
             << builder.dbgLibPaths() << " " << builder.linkerFlags();
-    QProcess procLink(this);
-    procLink.setWorkingDirectory(
-        QString::fromStdString(builder.outputDirectory() + "/debug"));
-    procLink.start(QString::fromStdString(command.str()));
-    procLink.waitForFinished(-1);
-    ui->plainTextEdit->appendPlainText(procLink.readAllStandardError());
-    ui->plainTextEdit->appendPlainText(procLink.readAllStandardOutput());
+    runProcess(QString::fromStdString(command.str()), QString::fromStdString(builder.outputDirectory() + "/debug"));
   } else {
     std::ostringstream command;
     command << "\"" << builder.compilerPath() << "\"" << dylibArg << " -o "
             << builder.binaryName() << dylibExt << " "
             << builder.objPath(builder.outputDirectory() + "/release") << " "
             << builder.rlsLibPaths() << " " << builder.linkerFlags();
-    QProcess procLink(this);
-    procLink.setWorkingDirectory(
-        QString::fromStdString(builder.outputDirectory() + "/release"));
-    procLink.start(QString::fromStdString(command.str()));
-    procLink.waitForFinished(-1);
-    ui->plainTextEdit->appendPlainText(procLink.readAllStandardError());
-    ui->plainTextEdit->appendPlainText(procLink.readAllStandardOutput());
+    runProcess(QString::fromStdString(command.str()), QString::fromStdString(builder.outputDirectory() + "/release"));
   }
 }
 
@@ -593,24 +563,13 @@ void MainWindow::archive(Builder &builder) {
     command << "\"" << builder.archiverPath() << "\" rcs "
             << builder.binaryName() << ".a"
             << " " << builder.objPath(builder.outputDirectory() + "/debug");
-    QProcess procLink(this);
-    procLink.setWorkingDirectory(
-        QString::fromStdString(builder.outputDirectory() + "/debug"));
-    procLink.start(QString::fromStdString(command.str()));
-    procLink.waitForFinished(-1);
-    ui->plainTextEdit->appendPlainText(procLink.readAllStandardError());
-    ui->plainTextEdit->appendPlainText(procLink.readAllStandardOutput());
+    runProcess(QString::fromStdString(command.str()), QString::fromStdString(builder.outputDirectory() + "/debug"));
   } else {
     std::ostringstream command;
     command << "\"" << builder.archiverPath() << "\" rcs "
             << builder.binaryName() << ".a"
             << " " << builder.objPath(builder.outputDirectory() + "/release");
-    QProcess procLink(this);
-    procLink.setWorkingDirectory(
-        QString::fromStdString(builder.outputDirectory() + "/release"));
-    procLink.start(QString::fromStdString(command.str()));
-    procLink.waitForFinished(-1);
-    ui->plainTextEdit->appendPlainText(procLink.readAllStandardError());
-    ui->plainTextEdit->appendPlainText(procLink.readAllStandardOutput());
+    runProcess(QString::fromStdString(command.str()), QString::fromStdString(builder.outputDirectory() + "/release"));
   }
 }
+

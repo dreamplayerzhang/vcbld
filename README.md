@@ -237,7 +237,7 @@ $ vcbld vcpkg integrate install
 ```
 
 ## vcbld-gui
-Is still a work in progress and has yet to have any prebuilt binaries. It's built using Qt5 widgets. It was tried on mac OS X and linux.
+Is still a work in progress. It's built using Qt5 widgets. It was tried on mac OS X and linux. You can download the prebuilt versions from the release page, or you can build from source.
 Building it you need to have Qt Creator or Kdevelop. Otherwise, you can download the libraries on debian flavors of linux using:
 ```
 $ sudo apt-get install install qtbase5-dev
@@ -248,7 +248,15 @@ $ cd bin
 $ cmake -DWITH_GUI=ON ..
 $ make
 ```
-The build output produces an app bundle along with a run script "vcbld-gui.command" on mac OS X, and an executable and a run script on linux. The application should be run using the script which launches a terminal which shows build outputs for your projects. On windows it generates a batch file and an executable. As mentioned before, the application should be run using the batch script.
+The build output produces an app bundle along with a run script "vcbld-gui.command" on mac OS X, and an executable and a run script on linux. The run script launches a terminal which shows more outputs for your projects if need be. On windows it generates a batch file and an executable.
+If you're having trouble running the prebuilt application while having the Qt libraries installed, it probably means they're not installed as system libraries. You can run the deploy kit which comes with Qt (macdeployqt, windeployqt or linuxdeployqt). They're usually located in the bin directory of your Qt installation. These are command line applications and are run as the following:
+```
+$ path/to/Qt/deploy/kit path/to/vcbld/gui
+```
+In my machine it would be:
+```
+~/Qt/5.11.1/clang_64/bin/macdeployqt ~/Desktop/vcbld/bin/release/vcbld-gui.app
+```
 
 ## Tutorials:
 Some video tutorials will be added to my youtube channel. 
@@ -263,6 +271,12 @@ https://www.youtube.com/watch?v=KBeY5pgsJQo
 
 Fourth video on building vcbld using vcbld:
 https://www.youtube.com/watch?v=zY-8IX6Lnsk
+
+Fifth video on using 3rd party libraries - 2nd part:
+https://www.youtube.com/watch?v=2qpDG8DyJnI
+
+Sixth video and first video on the vcbld-gui:
+https://www.youtube.com/watch?v=dsBqfPNM-w8
 
 ## Contributing:
 All contributions are welcome!

@@ -3,8 +3,8 @@
 using namespace vcbld;
 
 MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow), init(vcbldPath),
-      _vcpkgPath(vcbldPath), _vcbldPath(vcbldPath) {
+    : QMainWindow(parent), proc(new QProcess(this)), ui(new Ui::MainWindow),
+       init(vcbldPath), _vcpkgPath(vcbldPath), _vcbldPath(vcbldPath) {
   clear();
   ui->setupUi(this);
   menuBar()->setNativeMenuBar(false);
@@ -31,19 +31,27 @@ MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
   }
 }
 
-MainWindow::~MainWindow() { delete ui; }
+MainWindow::~MainWindow() {
+  delete proc;
+  delete ui;
+}
 
 void MainWindow::on_outputChanged(const QString &output) {
   ui->plainTextEdit->appendPlainText(output);
 }
 
+void MainWindow::local_outputChanged() {
+  QString output = proc->readAllStandardOutput();
+  QString error = proc->readAllStandardError();
+  if (output != "") ui->plainTextEdit->appendPlainText(output);
+  if (error != "") ui->plainTextEdit->appendPlainText(error);
+}
+
 void MainWindow::runProcess(const QString &process, const QString &dir) {
-  QProcess proc(this);
-  proc.setWorkingDirectory(dir);
-  proc.start(process);
-  proc.waitForFinished(-1);
-  ui->plainTextEdit->appendPlainText(proc.readAllStandardError());
-  ui->plainTextEdit->appendPlainText(proc.readAllStandardOutput());
+  QObject::connect(proc, SIGNAL(readyReadStandardOutput()), this, SLOT(local_outputChanged()));
+  QObject::connect(proc, SIGNAL(readyReadStandardError()), this, SLOT(local_outputChanged()));
+  proc->setWorkingDirectory(dir);
+  proc->start(process);
 }
 
 

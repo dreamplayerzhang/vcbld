@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QProcess>
 
 #include "builder.h"
 #include "fs.h"
@@ -21,6 +22,7 @@ public:
 
 public slots:
   void on_outputChanged(const QString &);
+  void local_outputChanged();
 
 private slots:
   void on_actionNew_triggered();
@@ -80,6 +82,7 @@ private:
   void appLink(vcbld::Builder &);
   void libLink(vcbld::Builder &);
   void archive(vcbld::Builder &);
+  QProcess *proc;
   Ui::MainWindow *ui;
   vcbld::Init init;
   QString _dirName;

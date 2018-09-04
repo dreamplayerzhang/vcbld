@@ -18,6 +18,10 @@ MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
   ui->statusBar->addWidget(statusLabel, ui->statusBar->width());
   statusLabel->setText("Current directory: ");
 
+  QObject::connect(proc, SIGNAL(readyReadStandardOutput()), this,
+                   SLOT(local_outputChanged()));
+  QObject::connect(proc, SIGNAL(readyReadStandardError()), this,
+                   SLOT(local_outputChanged()));
   QObject::connect(this, SIGNAL(outputChanged(const QString &)), this,
                    SLOT(on_outputChanged(const QString &)));
 
@@ -53,10 +57,6 @@ void MainWindow::local_outputChanged() {
 }
 
 void MainWindow::runProcess(const QString &process, const QString &dir) {
-  QObject::connect(proc, SIGNAL(readyReadStandardOutput()), this,
-                   SLOT(local_outputChanged()));
-  QObject::connect(proc, SIGNAL(readyReadStandardError()), this,
-                   SLOT(local_outputChanged()));
   proc->setWorkingDirectory(dir);
   proc->start(process);
   proc->waitForFinished(-1);

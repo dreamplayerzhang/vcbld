@@ -1,0 +1,8 @@
+#ifndef VCBLDGUI_H
+#define VCBLDGUI_H
+
+#define vcbldgui_MAJOR_VERSION @vcbldgui_VERSION_MAJOR@
+#define vcbldgui_MINOR_VERSION @vcbldgui_VERSION_MINOR@
+#define vcbldgui_PATCH_VERSION @vcbldgui_VERSION_PATCH@
+
+#endif

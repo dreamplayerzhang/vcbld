@@ -27,5 +27,6 @@
 #include "ui_mainwindow.h"
 #include "ui_remove.h"
 #include "ui_setupdialog.h"
+#include "vcbldgui.h"
 
 #endif // DEBUG

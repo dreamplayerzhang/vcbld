@@ -1,3 +1,9 @@
-#define MAJOR_VERSION @vcbld_VERSION_MAJOR@
-#define MINOR_VERSION @vcbld_VERSION_MINOR@
-#define PATCH_VERSION @vcbld_VERSION_PATCH@
+#ifndef VCBLD_H
+#define VCBLD_H
+
+#define vcbld_MAJOR_VERSION @vcbld_VERSION_MAJOR@
+#define vcbld_MINOR_VERSION @vcbld_VERSION_MINOR@
+#define vcbld_PATCH_VERSION @vcbld_VERSION_PATCH@
+
+#endif
+

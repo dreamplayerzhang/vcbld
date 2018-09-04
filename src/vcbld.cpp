@@ -1,6 +1,5 @@
 #include "pch.h"
 
-
 using namespace vcbld;
 
 std::string parseQuotes(const char *arg);
@@ -112,8 +111,9 @@ int main(int argc, char *argv[]) {
     } else if (strcmp(argv[1], "list") == 0) {
       args::list();
     } else if (strcmp(argv[1], "help") == 0) {
-      std::cout << "\nvcbld command line tools, version: \t" << MAJOR_VERSION
-                << "." << MINOR_VERSION << "." << PATCH_VERSION << std::endl;
+      std::cout << "\nvcbld command line tools, version: \t"
+                << vcbld_MAJOR_VERSION << "." << vcbld_MINOR_VERSION << "."
+                << vcbld_PATCH_VERSION << std::endl;
       args::help();
     } else if (strcmp(argv[1], "install") == 0) {
       if (argc < 3) {
@@ -193,7 +193,7 @@ int main(int argc, char *argv[]) {
         args::make(makeArgs);
       }
     } else if (strcmp(argv[1], "--version") == 0) {
-      std::cout << MAJOR_VERSION << "." << MINOR_VERSION << "." << PATCH_VERSION
+      std::cout << vcbld_MAJOR_VERSION << "." << vcbld_MINOR_VERSION << "." << vcbld_PATCH_VERSION
                 << std::endl;
     } else {
       std::cout << "Unknown command!" << std::endl;

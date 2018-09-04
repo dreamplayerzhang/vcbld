@@ -15,7 +15,7 @@ ENDIF(WIN32)
 IF (APPLE)
 SET(GUI_TYPE MACOSX_BUNDLE)
 set(MACOSX_BUNDLE_BUNDLE_NAME vcbld-gui)
-set(MACOSX_BUNDLE_SHORT_VERSION_STRING ${vcbld_VERSION_MAJOR}.${vcbld_VERSION_MINOR}.${vcbld_VERSION_PATCH})
+set(MACOSX_BUNDLE_SHORT_VERSION_STRING ${vcbldgui_VERSION_MAJOR}.${vcbldgui_VERSION_MINOR}.${vcbldgui_VERSION_PATCH})
 set(MACOSX_BUNDLE_COPYRIGHT "Copyright 2018 Mohammed Alyousef")
 ENDIF (APPLE)
 
@@ -49,7 +49,7 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 	message(FATAL_ERROR "Prevented in-tree build. Please create a build directory outside of the source directory and call cmake from there.")
 endif()
 
-set(GUI_FILES "main.cpp" "mainwindow.cpp" "helper.cpp" "mainwindow.ui" "remove.cpp" "remove.ui" "add.cpp" "add.ui" "dialog.cpp" "dialog.ui" "setupdialog.cpp" "setupdialog.ui" "qpch.cpp")
+set(GUI_FILES "vcbldgui.cpp" "mainwindow.cpp" "helper.cpp" "mainwindow.ui" "remove.cpp" "remove.ui" "add.cpp" "add.ui" "dialog.cpp" "dialog.ui" "setupdialog.cpp" "setupdialog.ui" "qpch.cpp")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include)

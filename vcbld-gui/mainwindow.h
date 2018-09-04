@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QLabel>
 #include <QMainWindow>
 #include <QProcess>
 
@@ -82,6 +83,7 @@ private:
   void appLink(vcbld::Builder &);
   void libLink(vcbld::Builder &);
   void archive(vcbld::Builder &);
+  QLabel *statusLabel;
   QProcess *proc;
   Ui::MainWindow *ui;
   vcbld::Init init;

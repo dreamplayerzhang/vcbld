@@ -4,7 +4,7 @@ using namespace vcbld;
 
 MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
     : QMainWindow(parent), proc(new QProcess(this)), ui(new Ui::MainWindow),
-       init(vcbldPath), _vcpkgPath(vcbldPath), _vcbldPath(vcbldPath) {
+      init(vcbldPath), _vcpkgPath(vcbldPath), _vcbldPath(vcbldPath) {
   clear();
   ui->setupUi(this);
   menuBar()->setNativeMenuBar(false);
@@ -13,7 +13,10 @@ MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
   int screenWidth = desktop->width();
   move(screenWidth / 2 - width() / 2, 0);
   ui->plainTextEdit->setReadOnly(true);
-  ui->plainTextEdit->zoomOut();
+  ui->plainTextEdit->zoomOut(1);
+  statusLabel = new QLabel(this);
+  ui->statusBar->addWidget(statusLabel, ui->statusBar->width());
+  statusLabel->setText("Current directory: ");
 
   QObject::connect(this, SIGNAL(outputChanged(const QString &)), this,
                    SLOT(on_outputChanged(const QString &)));
@@ -43,17 +46,21 @@ void MainWindow::on_outputChanged(const QString &output) {
 void MainWindow::local_outputChanged() {
   QString output = proc->readAllStandardOutput();
   QString error = proc->readAllStandardError();
-  if (output != "") ui->plainTextEdit->appendPlainText(output);
-  if (error != "") ui->plainTextEdit->appendPlainText(error);
+  if (output != "")
+    ui->plainTextEdit->appendPlainText(output);
+  if (error != "")
+    ui->plainTextEdit->appendPlainText(error);
 }
 
 void MainWindow::runProcess(const QString &process, const QString &dir) {
-  QObject::connect(proc, SIGNAL(readyReadStandardOutput()), this, SLOT(local_outputChanged()));
-  QObject::connect(proc, SIGNAL(readyReadStandardError()), this, SLOT(local_outputChanged()));
+  QObject::connect(proc, SIGNAL(readyReadStandardOutput()), this,
+                   SLOT(local_outputChanged()));
+  QObject::connect(proc, SIGNAL(readyReadStandardError()), this,
+                   SLOT(local_outputChanged()));
   proc->setWorkingDirectory(dir);
   proc->start(process);
+  proc->waitForFinished(-1);
 }
-
 
 void MainWindow::enableMenus() {
   if (_dirName != "")
@@ -71,8 +78,8 @@ void MainWindow::on_actionNew_triggered() {
   QDir::setCurrent(_dirName);
   if (_dirName != "") {
     fs::path path = _dirName.toStdString();
-    QString display = QString::fromStdString(path.filename().string());
-    setWindowTitle("vcbld-gui\t--\t" + display);
+    QString display = QString::fromStdString(path.string());
+    statusLabel->setText(statusLabel->text() + display);
     Dialog *dialog = new Dialog(this);
     dialog->exec();
     if (dialog->binType() != "") {
@@ -94,8 +101,8 @@ void MainWindow::on_actionOpen_triggered() {
   if (_dirName != "") {
     QDir::setCurrent(_dirName);
     fs::path path = _dirName.toStdString();
-    QString display = QString::fromStdString(path.filename().string());
-    setWindowTitle("vcbld-gui\t--\t" + display);
+    QString display = QString::fromStdString(path.string());
+    statusLabel->setText(statusLabel->text() + display);
     if (fs::exists("vcbld.json"))
       enableMenus();
   }
@@ -261,7 +268,8 @@ void MainWindow::on_actionRun_Cmake_triggered() {
               << "\"" << temp.str() << " .. ";
 
     QDir::setCurrent(_dirName);
-    runProcess(QString::fromStdString(cmakeCmnd.str()), QString::fromStdString(confClass.outputDirectory()));
+    runProcess(QString::fromStdString(cmakeCmnd.str()),
+               QString::fromStdString(confClass.outputDirectory()));
   }
 }
 
@@ -269,7 +277,8 @@ void MainWindow::on_actionRun_make_triggered() {
   if (_dirName != "") {
     ConfClass confClass;
     QDir::setCurrent(_dirName);
-    runProcess(QString::fromStdString(confClass.makePath()), QString::fromStdString(confClass.outputDirectory()));
+    runProcess(QString::fromStdString(confClass.makePath()),
+               QString::fromStdString(confClass.outputDirectory()));
   }
 }
 
@@ -287,9 +296,10 @@ void MainWindow::on_actionSetup_triggered() {
 
 void MainWindow::on_actionAbout_triggered() {
   QMessageBox msgBox;
-  msgBox.setText("vcbld-gui version " + QString::number(MAJOR_VERSION) + "." +
-                 QString::number(MINOR_VERSION) + "." +
-                 QString::number(PATCH_VERSION) + "\nBuilt using Qt5.");
+  msgBox.setText(
+      "vcbld-gui version " + QString::number(vcbldgui_MAJOR_VERSION) + "." +
+      QString::number(vcbldgui_MINOR_VERSION) + "." +
+      QString::number(vcbldgui_PATCH_VERSION) + ".\nBuilt using Qt5.");
   msgBox.exec();
 }
 
@@ -508,7 +518,8 @@ void MainWindow::compile(Builder &builder) {
             << builder.compilerDefines() << " -g "
             << "-std=" << builder.language() << builder.standard() << " -c "
             << builder.sourceFiles();
-    runProcess(QString::fromStdString(command.str()), QString::fromStdString(builder.outputDirectory() + "/debug"));
+    runProcess(QString::fromStdString(command.str()),
+               QString::fromStdString(builder.outputDirectory() + "/debug"));
   } else {
     std::ostringstream command;
     command << "\"" << builder.compilerPath() << "\" " << builder.headerPaths()
@@ -516,7 +527,8 @@ void MainWindow::compile(Builder &builder) {
             << builder.compilerDefines() << " "
             << "-std=" << builder.language() << builder.standard() << " -c "
             << builder.sourceFiles();
-      runProcess(QString::fromStdString(command.str()), QString::fromStdString(builder.outputDirectory() + "/release"));
+    runProcess(QString::fromStdString(command.str()),
+               QString::fromStdString(builder.outputDirectory() + "/release"));
   }
 }
 
@@ -527,14 +539,16 @@ void MainWindow::appLink(Builder &builder) {
             << builder.binaryName() << " "
             << builder.objPath(builder.outputDirectory() + "/debug") << " "
             << builder.rlsLibPaths() << " " << builder.linkerFlags();
-    runProcess(QString::fromStdString(command.str()), QString::fromStdString(builder.outputDirectory() + "/debug"));
+    runProcess(QString::fromStdString(command.str()),
+               QString::fromStdString(builder.outputDirectory() + "/debug"));
   } else {
     std::ostringstream command;
     command << "\"" << builder.compilerPath() << "\" -o "
             << builder.binaryName() << " "
             << builder.objPath(builder.outputDirectory() + "/release") << " "
             << builder.rlsLibPaths() << " " << builder.linkerFlags();
-    runProcess(QString::fromStdString(command.str()), QString::fromStdString(builder.outputDirectory() + "/release"));
+    runProcess(QString::fromStdString(command.str()),
+               QString::fromStdString(builder.outputDirectory() + "/release"));
   }
 }
 
@@ -554,14 +568,16 @@ void MainWindow::libLink(Builder &builder) {
             << builder.binaryName() << dylibExt << " "
             << builder.objPath(builder.outputDirectory() + "/debug") << " "
             << builder.dbgLibPaths() << " " << builder.linkerFlags();
-    runProcess(QString::fromStdString(command.str()), QString::fromStdString(builder.outputDirectory() + "/debug"));
+    runProcess(QString::fromStdString(command.str()),
+               QString::fromStdString(builder.outputDirectory() + "/debug"));
   } else {
     std::ostringstream command;
     command << "\"" << builder.compilerPath() << "\"" << dylibArg << " -o "
             << builder.binaryName() << dylibExt << " "
             << builder.objPath(builder.outputDirectory() + "/release") << " "
             << builder.rlsLibPaths() << " " << builder.linkerFlags();
-    runProcess(QString::fromStdString(command.str()), QString::fromStdString(builder.outputDirectory() + "/release"));
+    runProcess(QString::fromStdString(command.str()),
+               QString::fromStdString(builder.outputDirectory() + "/release"));
   }
 }
 
@@ -571,13 +587,14 @@ void MainWindow::archive(Builder &builder) {
     command << "\"" << builder.archiverPath() << "\" rcs "
             << builder.binaryName() << ".a"
             << " " << builder.objPath(builder.outputDirectory() + "/debug");
-    runProcess(QString::fromStdString(command.str()), QString::fromStdString(builder.outputDirectory() + "/debug"));
+    runProcess(QString::fromStdString(command.str()),
+               QString::fromStdString(builder.outputDirectory() + "/debug"));
   } else {
     std::ostringstream command;
     command << "\"" << builder.archiverPath() << "\" rcs "
             << builder.binaryName() << ".a"
             << " " << builder.objPath(builder.outputDirectory() + "/release");
-    runProcess(QString::fromStdString(command.str()), QString::fromStdString(builder.outputDirectory() + "/release"));
+    runProcess(QString::fromStdString(command.str()),
+               QString::fromStdString(builder.outputDirectory() + "/release"));
   }
 }
-

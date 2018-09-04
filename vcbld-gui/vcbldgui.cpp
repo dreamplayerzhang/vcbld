@@ -17,14 +17,14 @@ int main(int argc, char *argv[]) {
   ::ShowWindow(::GetConsoleWindow(), SW_SHOW);
 #endif
 
-  QApplication a(argc, argv);
-  MainWindow w(vcbldPath);
+  QApplication app(argc, argv);
+  MainWindow window(vcbldPath);
 
-//  QFont font = a.font();
-//  font.setPointSize(font.pointSize() - 1);
-//  a.setFont(font);
+ QFont font = app.font();
+ font.setPointSize(font.pointSize() - 0.5);
+ app.setFont(font);
 
-  w.show();
+  window.show();
 
-  return a.exec();
+  return app.exec();
 }

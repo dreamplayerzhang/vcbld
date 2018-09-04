@@ -8,7 +8,7 @@ set (vcbld_VERSION_PATCH 0)
 configure_file (
   "${PROJECT_SOURCE_DIR}/src/vcbld.h.in"
   "${PROJECT_SOURCE_DIR}/src/vcbld.h"
-  )
+)
 
 add_subdirectory(src)
 
@@ -20,6 +20,14 @@ endif()
 
 option(WITH_GUI "Add vcbld-gui" OFF)
 if (${WITH_GUI})
+    set (vcbldgui_VERSION_MAJOR 0)
+    set (vcbldgui_VERSION_MINOR 1)
+    set (vcbldgui_VERSION_PATCH 0)
+
+    configure_file (
+  "${PROJECT_SOURCE_DIR}/vcbld-gui/vcbldgui.h.in"
+  "${PROJECT_SOURCE_DIR}/vcbld-gui/vcbldgui.h"
+    )
     add_subdirectory(vcbld-gui)
 endif()
 

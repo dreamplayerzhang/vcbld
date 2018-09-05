@@ -6,6 +6,7 @@
 #include <QDesktopWidget>
 #include <QDialog>
 #include <QDir>
+#include <QEventLoop>
 #include <QFileDialog>
 #include <QListWidgetItem>
 #include <QMainWindow>

@@ -24,7 +24,7 @@ MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
   QObject::connect(proc, SIGNAL(readyReadStandardError()), this,
                    SLOT(local_outputChanged()));
   QObject::connect(proc, SIGNAL(finished(int)), this,
-                   SLOT(on_procFinished(int)));                 
+                   SLOT(on_procFinished(int)));
   QObject::connect(this, SIGNAL(outputChanged(const QString &)), this,
                    SLOT(on_outputChanged(const QString &)));
 
@@ -63,7 +63,10 @@ void MainWindow::runProcess(const QString &process, const QString &dir) {
   proc->setWorkingDirectory(dir);
   proc->start(process);
   enableMenus(false);
-  proc->waitForFinished(-1);
+  QEventLoop loop;
+  QObject::connect(proc, SIGNAL(finished(int)), &loop,
+                   SLOT(quit()));
+  loop.exec();
 }
 
 void MainWindow::on_procFinished(int) {

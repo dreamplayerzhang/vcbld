@@ -79,7 +79,8 @@ void MainWindow::on_actionNew_triggered() {
   if (_dirName != "") {
     fs::path path = _dirName.toStdString();
     QString display = QString::fromStdString(path.string());
-    statusLabel->setText(statusLabel->text() + display);
+    statusLabel->setText("Current directory: " + _dirName);
+    this->setWindowTitle("vcbld-gui\t--\t" + display);
     Dialog *dialog = new Dialog(this);
     dialog->exec();
     if (dialog->binType() != "") {
@@ -101,8 +102,9 @@ void MainWindow::on_actionOpen_triggered() {
   if (_dirName != "") {
     QDir::setCurrent(_dirName);
     fs::path path = _dirName.toStdString();
-    QString display = QString::fromStdString(path.string());
-    statusLabel->setText(statusLabel->text() + display);
+    QString display = QString::fromStdString(path.filename().string());
+    statusLabel->setText("Current directory: " + _dirName);
+    this->setWindowTitle("vcbld-gui\t--\t" + display);
     if (fs::exists("vcbld.json"))
       enableMenus();
   }

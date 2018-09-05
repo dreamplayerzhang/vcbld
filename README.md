@@ -259,7 +259,7 @@ $ path/to/Qt/deploy/kit path/to/vcbld-gui
 ```
 In my machine it would be:
 ```
-~/Qt/5.11.1/clang_64/bin/macdeployqt ~/Desktop/vcbld/bin/release/vcbld-gui.app
+$ ~/Qt/5.11.1/clang_64/bin/macdeployqt ~/Desktop/vcbld/bin/release/vcbld-gui.app
 ```
 
 ## Tutorials:

@@ -17,11 +17,14 @@ MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
   statusLabel = new QLabel(this);
   ui->statusBar->addWidget(statusLabel, ui->statusBar->width());
   statusLabel->setText("Current directory: ");
+  proc->isSequential();
 
   QObject::connect(proc, SIGNAL(readyReadStandardOutput()), this,
                    SLOT(local_outputChanged()));
   QObject::connect(proc, SIGNAL(readyReadStandardError()), this,
                    SLOT(local_outputChanged()));
+  QObject::connect(proc, SIGNAL(finished(int)), this,
+                   SLOT(on_procFinished(int)));                 
   QObject::connect(this, SIGNAL(outputChanged(const QString &)), this,
                    SLOT(on_outputChanged(const QString &)));
 
@@ -39,7 +42,7 @@ MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
 }
 
 MainWindow::~MainWindow() {
-  delete proc;
+  proc->deleteLater();
   delete ui;
 }
 
@@ -59,15 +62,19 @@ void MainWindow::local_outputChanged() {
 void MainWindow::runProcess(const QString &process, const QString &dir) {
   proc->setWorkingDirectory(dir);
   proc->start(process);
+  enableMenus(false);
   proc->waitForFinished(-1);
 }
 
-void MainWindow::enableMenus() {
-  if (_dirName != "")
-    ui->menuBuild->setEnabled(true);
-  ui->menuConfig->setEnabled(true);
-  ui->menuGenerate->setEnabled(true);
-  ui->menuPackages->setEnabled(true);
+void MainWindow::on_procFinished(int) {
+  enableMenus(true);
+}
+
+void MainWindow::enableMenus(bool val) {
+  ui->menuBuild->setEnabled(val);
+  ui->menuConfig->setEnabled(val);
+  ui->menuGenerate->setEnabled(val);
+  ui->menuPackages->setEnabled(val);
 }
 
 void MainWindow::on_actionNew_triggered() {
@@ -87,7 +94,7 @@ void MainWindow::on_actionNew_triggered() {
       ui->plainTextEdit->appendPlainText(Helper::execArgs(
           std::bind(&args::New, dialog->binType()), dialog->binType()));
       init.init(dialog->binType());
-      enableMenus();
+      enableMenus(true);
       setup(init);
       init.setup();
     }
@@ -106,7 +113,7 @@ void MainWindow::on_actionOpen_triggered() {
     statusLabel->setText("Current directory: " + _dirName);
     this->setWindowTitle("vcbld-gui\t--\t" + display);
     if (fs::exists("vcbld.json"))
-      enableMenus();
+      enableMenus(true);
   }
 }
 
@@ -340,13 +347,8 @@ void MainWindow::on_actionCMakeLists_triggered() {
 void MainWindow::on_actionBuild_run_triggered() {
   if (_dirName != "") {
     QDir::setCurrent(_dirName);
-    if (ui->actionDebug->isChecked()) {
-      on_actionBuild_triggered();
-      on_actionRun_triggered();
-    } else {
-      on_actionBuild_triggered();
-      on_actionRun_triggered();
-    }
+    on_actionBuild_triggered();
+    on_actionRun_triggered();
   }
 }
 

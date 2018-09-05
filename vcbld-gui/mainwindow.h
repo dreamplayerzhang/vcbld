@@ -72,12 +72,14 @@ private slots:
 
   void on_actionClear_output_2_triggered();
 
+  void on_procFinished(int);
+
 signals:
   void outputChanged(const QString &);
 
 private:
   void setup(vcbld::Init &);
-  void enableMenus();
+  void enableMenus(bool);
   void clear();
   void compile(vcbld::Builder &);
   void appLink(vcbld::Builder &);

@@ -12,10 +12,10 @@ int main(int argc, char *argv[]) {
   }
 #endif
 
-#if defined(Q_OS_WIN)
-#include <windows.h>
-  ::ShowWindow(::GetConsoleWindow(), SW_SHOW);
-#endif
+// #if defined(Q_OS_WIN)
+// #include <windows.h>
+//   ::ShowWindow(::GetConsoleWindow(), SW_SHOW);
+// #endif
 
   QApplication app(argc, argv);
   MainWindow window(vcbldPath);

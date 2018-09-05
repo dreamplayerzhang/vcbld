@@ -8,6 +8,7 @@
 #include <QDir>
 #include <QEventLoop>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QListWidgetItem>
 #include <QMainWindow>
 #include <QMessageBox>

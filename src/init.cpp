@@ -5,12 +5,18 @@ namespace vcbld {
 Init::Init(const fs::path &vcbldPath) : _vcbldPath(vcbldPath) {
   std::string PATH = std::getenv("PATH");
   std::string brewLLVM = "/usr/local/opt/llvm/bin";
+  std::string localBin = "/usr/local/bin";
 
   findPathDirs(PATH, _paths);
 
   if (fs::exists(brewLLVM)) {
     _paths.emplace_back(brewLLVM);
   }
+
+  if (fs::exists(localBin)) {
+    _paths.emplace_back(localBin);
+  }
+
   if (fs::exists(_vcbldPath)) {
     _paths.emplace_back(fs::canonical(_vcbldPath));
     _paths.emplace_back(

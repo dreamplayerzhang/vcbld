@@ -297,6 +297,11 @@ void MainWindow::on_actionRun_triggered() {
 
 void MainWindow::on_actionRun_Cmake_triggered() {
   if (_dirName != "") {
+
+    QInputDialog inDlg;
+    inDlg.setLabelText("Please enter any cmake arguments (optional):");
+    QString args = inDlg.getText(this, tr("CMake Arguments"), tr("Please enter any CMake arguments:"), QLineEdit::Normal);
+
     ConfClass confClass;
     std::ostringstream cmakeCmnd, temp;
     std::string config;
@@ -317,7 +322,7 @@ void MainWindow::on_actionRun_Cmake_triggered() {
               << " -DCMAKE_BUILD_TYPE=" << config
               << " -DCMAKE_TOOLCHAIN_FILE=\"" << confClass.vcpkgDirPath()
               << "/scripts/buildsystems/vcpkg.cmake"
-              << "\"" << temp.str() << " .. ";
+              << "\"" << temp.str() << " " << args.toStdString() << " .. ";
 
     QDir::setCurrent(_dirName);
     runProcess(QString::fromStdString(cmakeCmnd.str()),

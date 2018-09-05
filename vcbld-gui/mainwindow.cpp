@@ -8,10 +8,10 @@ MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
   clear();
   ui->setupUi(this);
   menuBar()->setNativeMenuBar(false);
-  setFixedSize(size());
   QDesktopWidget *desktop = QApplication::desktop();
   int screenWidth = desktop->width();
   move(screenWidth / 2 - width() / 2, 0);
+
   ui->plainTextEdit->setReadOnly(true);
   ui->plainTextEdit->zoomOut(1);
   statusLabel = new QLabel(this);
@@ -46,6 +46,10 @@ MainWindow::~MainWindow() {
   delete ui;
 }
 
+void MainWindow::resizeEvent(QResizeEvent *) {
+  ui->plainTextEdit->resize(width(), height() - 60);
+}
+
 void MainWindow::on_outputChanged(const QString &output) {
   ui->plainTextEdit->appendPlainText(output);
 }
@@ -71,6 +75,44 @@ void MainWindow::runProcess(const QString &process, const QString &dir) {
 
 void MainWindow::on_procFinished(int) {
   enableMenus(true);
+}
+
+void MainWindow::on_actionToolbar_triggered()
+{
+  QFont font = ui->menuBar->font();
+  font.setPointSize(font.pointSize() + 1);
+  ui->menuBar->setFont(font);
+  ui->menuBuild->setFont(font);
+  ui->menuConfig->setFont(font);
+  ui->menuGenerate->setFont(font);
+  ui->menuHelp->setFont(font);
+  ui->menuOpen->setFont(font);
+  ui->menuPackages->setFont(font);
+  ui->menuView->setFont(font);
+}
+
+void MainWindow::on_actionToolbar_2_triggered()
+{
+  QFont font = ui->menuBar->font();
+  font.setPointSize(font.pointSize() - 1);
+  ui->menuBar->setFont(font);
+  ui->menuBuild->setFont(font);
+  ui->menuConfig->setFont(font);
+  ui->menuGenerate->setFont(font);
+  ui->menuHelp->setFont(font);
+  ui->menuOpen->setFont(font);
+  ui->menuPackages->setFont(font);
+  ui->menuView->setFont(font);
+}
+
+void MainWindow::on_actionOutput_triggered()
+{
+  ui->plainTextEdit->zoomIn(1);
+}
+
+void MainWindow::on_actionOutput_2_triggered()
+{
+  ui->plainTextEdit->zoomOut(1);
 }
 
 void MainWindow::enableMenus(bool val) {
@@ -219,9 +261,7 @@ void MainWindow::on_actionClean_triggered() {
     } else {
       args::clean("release");
     }
-    QMessageBox msgBox;
-    msgBox.setText("Cleaned build output.");
-    msgBox.exec();
+    ui->plainTextEdit->appendPlainText("Build output cleaned.");
   }
 }
 
@@ -335,7 +375,8 @@ void MainWindow::on_actionHelp_triggered() {
 void MainWindow::on_actionIncludePath_triggered() {
   if (_dirName != "") {
     QDir::setCurrent(_dirName);
-    args::includes();
+    ui->plainTextEdit->appendPlainText(
+        Helper::exec(std::bind(&args::includes)));
   }
 }
 

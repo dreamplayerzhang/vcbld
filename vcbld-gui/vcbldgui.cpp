@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
   MainWindow window(vcbldPath);
 
  QFont font = app.font();
- font.setPointSize(font.pointSize() - 0.5);
+ font.setPointSize(font.pointSize() - 1);
  app.setFont(font);
 
   window.show();

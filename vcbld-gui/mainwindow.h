@@ -74,8 +74,19 @@ private slots:
 
   void on_procFinished(int);
 
+  void on_actionToolbar_triggered();
+
+  void on_actionToolbar_2_triggered();
+
+  void on_actionOutput_triggered();
+
+  void on_actionOutput_2_triggered();
+
 signals:
   void outputChanged(const QString &);
+
+protected:
+  void resizeEvent(QResizeEvent *);
 
 private:
   void setup(vcbld::Init &);

@@ -98,6 +98,10 @@
     </property>
     <addaction name="actionClear_output_2"/>
     <addaction name="actionAlways_on_top"/>
+    <addaction name="actionToolbar"/>
+    <addaction name="actionToolbar_2"/>
+    <addaction name="actionOutput"/>
+    <addaction name="actionOutput_2"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -302,6 +306,26 @@
   <action name="actionClear_output_2">
    <property name="text">
     <string>Clear output</string>
+   </property>
+  </action>
+  <action name="actionToolbar">
+   <property name="text">
+    <string>Toolbar +</string>
+   </property>
+  </action>
+  <action name="actionToolbar_2">
+   <property name="text">
+    <string>Toolbar -</string>
+   </property>
+  </action>
+  <action name="actionOutput">
+   <property name="text">
+    <string>Output +</string>
+   </property>
+  </action>
+  <action name="actionOutput_2">
+   <property name="text">
+    <string>Output -</string>
    </property>
   </action>
  </widget>

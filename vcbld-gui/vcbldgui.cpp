@@ -15,9 +15,11 @@ int main(int argc, char *argv[]) {
   QApplication app(argc, argv);
   MainWindow window(vcbldPath);
 
+#if defined(Q_OS_MACOS) || defined(Q_OS_LINUX)
   QFont font = app.font();
   font.setPointSize(font.pointSize() - 1);
   app.setFont(font);
+#endif
 
   window.show();
 

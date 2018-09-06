@@ -5,7 +5,6 @@ using namespace vcbld;
 MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
     : QMainWindow(parent), proc(new QProcess(this)), ui(new Ui::MainWindow),
       init(vcbldPath), _vcpkgPath(vcbldPath), _vcbldPath(vcbldPath) {
-  clear();
   ui->setupUi(this);
   menuBar()->setNativeMenuBar(false);
   QDesktopWidget *desktop = QApplication::desktop();
@@ -13,7 +12,7 @@ MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
   move(screenWidth / 2 - width() / 2, 0);
 
   ui->plainTextEdit->setReadOnly(true);
-  ui->plainTextEdit->zoomOut(1);
+//  ui->plainTextEdit->zoomOut(1);
   statusLabel = new QLabel(this);
   ui->statusBar->addWidget(statusLabel, ui->statusBar->width());
   statusLabel->setText("Current directory: ");
@@ -124,9 +123,8 @@ void MainWindow::enableMenus(bool val) {
 
 void MainWindow::on_actionNew_triggered() {
   _dirName = QFileDialog::getExistingDirectory(
-      this, tr("Open Directory"), QString::fromStdString(std::getenv("HOME")),
+      this, tr("Open Directory"), QString::fromLatin1(std::getenv("HOME")),
       QFileDialog::ShowDirsOnly);
-  clear();
   QDir::setCurrent(_dirName);
   if (_dirName != "") {
     fs::path path = _dirName.toStdString();
@@ -148,9 +146,8 @@ void MainWindow::on_actionNew_triggered() {
 
 void MainWindow::on_actionOpen_triggered() {
   _dirName = QFileDialog::getExistingDirectory(
-      this, tr("Open Directory"), QString::fromStdString(std::getenv("HOME")),
+      this, tr("Open Directory"), QString::fromLatin1(std::getenv("HOME")),
       QFileDialog::ShowDirsOnly);
-  clear();
   if (_dirName != "") {
     QDir::setCurrent(_dirName);
     fs::path path = _dirName.toStdString();
@@ -533,7 +530,6 @@ void MainWindow::setup(Init &init) {
 
 void MainWindow::on_actionClear_output_2_triggered() {
   ui->plainTextEdit->clear();
-  clear();
 }
 
 void MainWindow::on_actionRestore_triggered() {

@@ -237,7 +237,15 @@ $ vcbld vcpkg integrate install
 ```
 
 ## vcbld-gui
-Is still a work in progress. It's built using Qt5 widgets. It was tried on mac OS X and linux. You can download the prebuilt versions from the release page, or you can build from source.
+Is still a work in progress. It's built using Qt5 widgets. It was tried on mac OS X and linux. You can download the prebuilt versions from the release page, or you can build from source. There are 2 versions of the gui, a standalone version which can run without having the prebuilt Qt libraries installed, and the stripped versions which run if you already have the Qt libraries installed. If you're having trouble running the stripped versions while having the Qt libraries installed, it probably means they're not installed as system libraries. Note that on kde flavors of linux, such as kubuntu or kde neon, the Qt libraries are already installed as system libraries, as such no further installation of Qt is needed. In that case, you can download the standalone versions or you can run the deploy kit which comes with Qt (macdeployqt or windeployqt). Note that the linuxdeployqt can be downloaded from the release page [here](https://github.com/probonopd/linuxdeployqt/releases/tag/continuous). Otherwise the deploy kits are usually located in the bin directory of your Qt installation. These are command line applications and are run as follows:
+```
+$ path/to/Qt/deploy/kit path/to/vcbld-gui
+```
+In my machine it would be:
+```
+$ ~/Qt/5.11.1/clang_64/bin/macdeployqt ~/Desktop/vcbld/bin/release/vcbld-gui.app
+```
+
 Building it you need to have Qt Creator or Kdevelop. Otherwise, you can download the libraries on debian flavors of linux using:
 ```
 $ sudo apt-get install install qtbase5-dev
@@ -248,18 +256,9 @@ $ cd bin
 $ cmake -DWITH_GUI=ON ..
 $ make
 ```
-The build output produces an app bundle along with a run script "vcbld-gui.command" on mac OS X, and an executable and a run script on linux. On windows it generates a batch file and an executable. Since Qt gui applications don't have access to your full PATH variable, running the application through the run script would be better. If you're downloading the script from the release page, you'd have to change the permission on the app using the command:
+The build output produces an app bundle along with a run script "vcbld-gui.command" on mac OS X, and an executable and a run script on linux. On windows it generates a batch file and an executable. Since Qt gui applications don't have access to your full PATH variable, running the application through the run script would be better. If you're downloading the script from the release page, you'd have to change the permission on the app using the following command:
 ```
-$ chmod +x path/to/vcbld-gui.command
-```
-
-If you're having trouble running the prebuilt application while having the Qt libraries installed, it probably means they're not installed as system libraries. Note that on kde flavors of linux, such as kubuntu or kde neon, the Qt libraries are already installed as system libraries, as such no further installation of Qt is needed. Otherwise, you can run the deploy kit which comes with Qt (macdeployqt, windeployqt or linuxdeployqt). They're usually located in the bin directory of your Qt installation. These are command line applications and are run as the following:
-```
-$ path/to/Qt/deploy/kit path/to/vcbld-gui
-```
-In my machine it would be:
-```
-$ ~/Qt/5.11.1/clang_64/bin/macdeployqt ~/Desktop/vcbld/bin/release/vcbld-gui.app
+$ chmod a+x path/to/vcbld-gui.command
 ```
 
 ## Tutorials:
@@ -281,6 +280,9 @@ https://www.youtube.com/watch?v=2qpDG8DyJnI
 
 Sixth video and first video on the vcbld-gui:
 https://www.youtube.com/watch?v=dsBqfPNM-w8
+
+Seventh and second video on the usage of the gui:
+https://www.youtube.com/watch?v=l5v3Bl8U-GI
 
 ## Contributing:
 All contributions are welcome!

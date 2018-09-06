@@ -1,6 +1,6 @@
 # vcbld
-A command-line software development kit and a minimalist build system for C and C++ that works with vcpkg. It works for the moment on posix systems, i.e. linux and macOS X, and was tried with MinGW64 on windows. It has a minimal build system which works for small single hierarchy projects and allows for faster prototyping, however it has support for cmake and can be used to generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
-The vcbld executable is about 500kb large, and depends on the presence of vcpkg and cmake. Of course you would also need a posix C/C++ compiler such as gcc or clang.
+A command-line software development kit and a minimalist build system for C and C++ that works with vcpkg. It works for the moment on posix systems, i.e. linux and macOS X, and was tried with MinGW64 on windows for header only libraries. It has a minimal build system which works for small single hierarchy projects and allows for faster prototyping, however it has support for cmake and can be used to generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
+The vcbld executable is about 500kb large, and depends on the presence of vcpkg and cmake. Of course you would also need a posix C/C++ compiler such as gcc or clang. For more information regarding the vcbld-gui, check the vcbld-gui section below.
 
 ```
 SDK commands:

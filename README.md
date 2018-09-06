@@ -245,8 +245,10 @@ In my machine it would be:
 ```
 $ ~/Qt/5.11.1/clang_64/bin/macdeployqt ~/Desktop/vcbld/bin/release/vcbld-gui.app
 ```
+Using the linuxdeployqt, you can also generate an AppImage using the option -appimage.
 
-Building it you need to have Qt Creator or Kdevelop. Otherwise, you can download the libraries on debian flavors of linux using:
+
+Building the gui, you need to have Qt Creator or Kdevelop. Otherwise, you can download the libraries on debian flavors of linux using:
 ```
 $ sudo apt-get install install qtbase5-dev
 ```

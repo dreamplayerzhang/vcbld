@@ -229,9 +229,9 @@ std::string PrepClass::stripLibName(const std::string &lib) {
 }
 
 std::string PrepClass::dbgLibPaths() {
+  std::ostringstream temp;  
   if (libDirectory() != "" &&
       fs::exists(libDirectory() + "/" + "debug")) {
-    std::ostringstream temp;
     std::string localDbgLibs = libDirectory() + "/" + "debug";
     for (std::vector<std::string>::iterator jt =
              _dbgLocalLibNames.begin();
@@ -239,7 +239,7 @@ std::string PrepClass::dbgLibPaths() {
       temp << " -L\"" << localDbgLibs << "\" "
            << "-l" << stripLibName(*jt);
     }
-
+  }
     std::string dbgLibPath = vcpkgDirPath() + "/" + "installed" + "/" +
                              architecture() + "/" + "debug" + "/" + "lib";
     for (std::vector<std::string>::iterator it = _fullDbgLibNames.begin();
@@ -247,16 +247,13 @@ std::string PrepClass::dbgLibPaths() {
       temp << " -L\"" << dbgLibPath << "\" "
            << "-l" << stripLibName(*it);
     }
-    return temp.str();
-  } else {
-    return "";
-  }
+  return temp.str();
 }
 
 std::string PrepClass::rlsLibPaths() {
+  std::ostringstream temp;
   if (libDirectory() != "" &&
       fs::exists(libDirectory() + "/release")) {
-    std::ostringstream temp;
     std::string localRlsLibs = libDirectory() + "/" + "release";
     for (std::vector<std::string>::iterator jt =
              _rlsLocalLibNames.begin();
@@ -264,7 +261,7 @@ std::string PrepClass::rlsLibPaths() {
       temp << " -L\"" << localRlsLibs << "\" "
            << "-l" << stripLibName(*jt);
     }
-
+  }
     std::string rlsLibPath = vcpkgDirPath() + "/" + "installed" + "/" +
                              architecture() + "/" + "lib";
     for (std::vector<std::string>::iterator it = _fullLibNames.begin();
@@ -272,10 +269,7 @@ std::string PrepClass::rlsLibPaths() {
       temp << " -L\"" << rlsLibPath << "\" "
            << "-l" << stripLibName(*it);
     }
-    return temp.str();
-  } else {
-    return "";
-  }
+  return temp.str();
 }
 
 bool PrepClass::hasComponents(const std::string &libName) {

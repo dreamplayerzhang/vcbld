@@ -263,8 +263,8 @@ void MainWindow::on_actionRun_triggered() {
     }
 
 #if defined(_WIN32) || defined(_WIN64)
-    command = "start cmd.exe @cmd /k " + confClass.outputDirectory() + "/" +
-              config + "/" + confClass.binaryName();
+    command = "cmd.exe /C " + fs::canonical(confClass.outputDirectory()).string() + "\\" +
+              config + "\\" + confClass.binaryName() + ".exe";
 #elif defined(__linux__)
     command = "xterm -hold -e " + confClass.outputDirectory() + "/" + config +
               "/" + confClass.binaryName() + " &";
@@ -275,9 +275,8 @@ void MainWindow::on_actionRun_triggered() {
     command = "xterm -hold -e " + confClass.outputDirectory() + "/" + config +
               "/" + confClass.binaryName();
 #endif
-    QDir::setCurrent(_dirName);
-    QProcess proc(this);
-    proc.startDetached(QString::fromStdString(command));
+
+    system(command.c_str());
   }
 }
 

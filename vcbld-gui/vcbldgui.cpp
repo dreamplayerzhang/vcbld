@@ -12,17 +12,12 @@ int main(int argc, char *argv[]) {
   }
 #endif
 
-// #if defined(Q_OS_WIN)
-// #include <windows.h>
-//   ::ShowWindow(::GetConsoleWindow(), SW_SHOW);
-// #endif
-
   QApplication app(argc, argv);
   MainWindow window(vcbldPath);
 
- QFont font = app.font();
- font.setPointSize(font.pointSize() - 1);
- app.setFont(font);
+  QFont font = app.font();
+  font.setPointSize(font.pointSize() - 1);
+  app.setFont(font);
 
   window.show();
 

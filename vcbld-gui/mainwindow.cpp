@@ -163,16 +163,6 @@ void MainWindow::on_actionOpen_triggered() {
 }
 
 void MainWindow::on_actionAlways_on_top_triggered(bool checked) {
-#ifdef Q_OS_WIN
-  // #include <windows.h>
-  if (checked) {
-    SetWindowPos(winId(), HWND_TOPMOST, 0, 0, 0, 0,
-                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-  } else {
-    SetWindowPos(winId(), HWND_NOTOPMOST, 0, 0, 0, 0,
-                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-  }
-#else
   Qt::WindowFlags flags = windowFlags();
   if (checked) {
     setWindowFlags(flags | Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint);
@@ -182,7 +172,6 @@ void MainWindow::on_actionAlways_on_top_triggered(bool checked) {
                    (Qt::CustomizeWindowHint | Qt::WindowStaysOnTopHint));
     show();
   }
-#endif
 }
 
 void MainWindow::on_actionDebug_triggered(bool checked) {

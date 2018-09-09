@@ -25,7 +25,7 @@ SDK commands:
     make       [make arguments]     Runs make in the output directory.
     help                            Show help.
 
-    --version                         Current vcbld version in use.
+    --version                       Current vcbld version in use.
 ```
 
 #### Some shortcut flags:

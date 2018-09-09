@@ -12,7 +12,7 @@ MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
   move(screenWidth / 2 - width() / 2, 0);
 
   ui->plainTextEdit->setReadOnly(true);
-//  ui->plainTextEdit->zoomOut(1);
+  //  ui->plainTextEdit->zoomOut(1);
   statusLabel = new QLabel(this);
   ui->statusBar->addWidget(statusLabel, ui->statusBar->width());
   statusLabel->setText("Current directory: ");
@@ -67,17 +67,13 @@ void MainWindow::runProcess(const QString &process, const QString &dir) {
   proc->start(process);
   enableMenus(false);
   QEventLoop loop;
-  QObject::connect(proc, SIGNAL(finished(int)), &loop,
-                   SLOT(quit()));
+  QObject::connect(proc, SIGNAL(finished(int)), &loop, SLOT(quit()));
   loop.exec();
 }
 
-void MainWindow::on_procFinished(int) {
-  enableMenus(true);
-}
+void MainWindow::on_procFinished(int) { enableMenus(true); }
 
-void MainWindow::on_actionToolbar_triggered()
-{
+void MainWindow::on_actionToolbar_triggered() {
   QFont font = ui->menuBar->font();
   font.setPointSize(font.pointSize() + 1);
   ui->menuBar->setFont(font);
@@ -90,8 +86,7 @@ void MainWindow::on_actionToolbar_triggered()
   ui->menuView->setFont(font);
 }
 
-void MainWindow::on_actionToolbar_2_triggered()
-{
+void MainWindow::on_actionToolbar_2_triggered() {
   QFont font = ui->menuBar->font();
   font.setPointSize(font.pointSize() - 1);
   ui->menuBar->setFont(font);
@@ -104,13 +99,9 @@ void MainWindow::on_actionToolbar_2_triggered()
   ui->menuView->setFont(font);
 }
 
-void MainWindow::on_actionOutput_triggered()
-{
-  ui->plainTextEdit->zoomIn(1);
-}
+void MainWindow::on_actionOutput_triggered() { ui->plainTextEdit->zoomIn(1); }
 
-void MainWindow::on_actionOutput_2_triggered()
-{
+void MainWindow::on_actionOutput_2_triggered() {
   ui->plainTextEdit->zoomOut(1);
 }
 
@@ -263,7 +254,8 @@ void MainWindow::on_actionRun_triggered() {
     }
 
 #if defined(_WIN32) || defined(_WIN64)
-    command = "cmd.exe /C " + fs::canonical(confClass.outputDirectory()).string() + "\\" +
+    command = "cmd.exe /C " +
+              fs::canonical(confClass.outputDirectory()).string() + "\\" +
               config + "\\" + confClass.binaryName() + ".exe";
 #elif defined(__linux__)
     command = "xterm -hold -e " + confClass.outputDirectory() + "/" + config +
@@ -285,7 +277,9 @@ void MainWindow::on_actionRun_Cmake_triggered() {
 
     QInputDialog inDlg;
     inDlg.setLabelText("Please enter any cmake arguments (optional):");
-    QString args = inDlg.getText(this, tr("CMake Arguments"), tr("Please enter any CMake arguments:"), QLineEdit::Normal);
+    QString args = inDlg.getText(this, tr("CMake Arguments"),
+                                 tr("Please enter any CMake arguments:"),
+                                 QLineEdit::Normal);
 
     ConfClass confClass;
     std::ostringstream cmakeCmnd, temp;

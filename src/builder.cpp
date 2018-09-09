@@ -1,13 +1,10 @@
 #include "pch.h"
 
-namespace vcbld
-{
+namespace vcbld {
 
 Builder::Builder(const std::string &buildType)
-    : PrepClass(), _buildType(buildType)
-{
-  if (!fs::exists("vcbld.json"))
-  {
+    : PrepClass(), _buildType(buildType) {
+  if (!fs::exists("vcbld.json")) {
     std::cout << "Build configuration not found!" << std::endl;
     std::exit(1);
   }
@@ -15,12 +12,9 @@ Builder::Builder(const std::string &buildType)
   _dbgDir = outputDirectory() + "/" + "debug";
   _rlsDir = outputDirectory() + "/" + "release";
 
-  if (_buildType == "debug")
-  {
+  if (_buildType == "debug") {
     _buildDir = _dbgDir;
-  }
-  else
-  {
+  } else {
     _buildDir = _rlsDir;
   }
   compile();
@@ -29,168 +23,124 @@ Builder::Builder(const std::string &buildType)
   archive();
 }
 
-void Builder::compile()
-{
+void Builder::compile() {
   std::string debugFlag, keepFlag, stdFlag;
-  if (compilerPath().find("cl.exe") != std::string::npos)
-  {
+  if (compilerPath().find("cl.exe") != std::string::npos) {
     debugFlag = " -DEBUG ";
     keepFlag = " -c -EHsc ";
     stdFlag = "/std:";
-  }
-  else
-  {
+  } else {
     debugFlag = " -g ";
     keepFlag = " -c ";
     stdFlag = "-std=";
   }
 
-  if (_buildType == "release")
-  {
-    _compileCommand << "\"" << compilerPath() << "\" "
-                    << headerPaths() << " " << compilerFlags() << " "
-                    << compilerDefines() << " "
+  if (_buildType == "release") {
+    _compileCommand << "\"" << compilerPath() << "\" " << headerPaths() << " "
+                    << compilerFlags() << " " << compilerDefines() << " "
                     << stdFlag << language() << standard() << keepFlag
                     << sourceFiles();
-  }
-  else
-  {
-    _compileCommand << "\"" << compilerPath() << "\" "
-                    << headerPaths() << " " << compilerFlags() << " "
-                    << compilerDefines() << debugFlag
+  } else {
+    _compileCommand << "\"" << compilerPath() << "\" " << headerPaths() << " "
+                    << compilerFlags() << " " << compilerDefines() << debugFlag
                     << stdFlag << language() << standard() << keepFlag
                     << sourceFiles();
   }
 }
 
-void Builder::appLink()
-{
+void Builder::appLink() {
   std::string linker, outFlag, ext;
   std::string debugFlag, keepFlag, stdFlag;
-  if (compilerPath().find("cl.exe") != std::string::npos)
-  {
-    linker = (fs::canonical(compilerPath()).parent_path() / "link.exe ").string();
+  if (compilerPath().find("cl.exe") != std::string::npos) {
+    linker =
+        (fs::canonical(compilerPath()).parent_path() / "link.exe ").string();
     outFlag = " -OUT:";
     ext = ".exe";
-  }
-  else
-  {
+  } else {
     linker = compilerPath();
     outFlag = " -o ";
   }
 
-  if (_buildType == "release")
-  {
-    _appLinkCmnd << "\"" << linker << "\"" << outFlag
-                 << binaryName() << ext << " " << objPath(_buildDir) << " "
-                 << rlsLibPaths() << " " << linkerFlags();
-  }
-  else
-  {
-    _appLinkCmnd << "\"" << linker << "\"" << outFlag
-                 << binaryName() << ext << " " << objPath(_buildDir) << " "
-                 << dbgLibPaths() << " " << linkerFlags();
+  if (_buildType == "release") {
+    _appLinkCmnd << "\"" << linker << "\"" << outFlag << binaryName() << ext
+                 << " " << objPath(_buildDir) << " " << rlsLibPaths() << " "
+                 << linkerFlags();
+  } else {
+    _appLinkCmnd << "\"" << linker << "\"" << outFlag << binaryName() << ext
+                 << " " << objPath(_buildDir) << " " << dbgLibPaths() << " "
+                 << linkerFlags();
   }
 }
 
-void Builder::dylibLink()
-{
+void Builder::dylibLink() {
   std::string linker, outFlag, dylibArg, dylibExt;
-  if (compilerPath().find("clang") != std::string::npos)
-  {
+  if (compilerPath().find("clang") != std::string::npos) {
     linker = compilerPath();
     outFlag = " -o ";
     dylibArg = " -dynamiclib ";
     dylibExt = ".dylib";
-  }
-  else if (compilerPath().find("cl.exe") != std::string::npos)
-  {
-    linker = (fs::canonical(compilerPath()).parent_path() / "link.exe ").string();
+  } else if (compilerPath().find("cl.exe") != std::string::npos) {
+    linker =
+        (fs::canonical(compilerPath()).parent_path() / "link.exe ").string();
     outFlag = " -OUT:";
     dylibArg = " -DLL ";
     dylibExt = ".dll";
-  }
-  else
-  {
+  } else {
     linker = compilerPath();
     outFlag = " -o ";
     dylibArg = " -shared ";
     dylibExt = ".so";
   }
 
-  if (_buildType == "release")
-  {
-    _libLinkCmnd << "\"" << linker << "\""
-                 << dylibArg << outFlag << binaryName() << dylibExt << " "
-                 << objPath(_buildDir) << " " << rlsLibPaths() << " "
-                 << linkerFlags();
-  }
-  else
-  {
-    _libLinkCmnd << "\"" << linker << "\""
-                 << dylibArg << outFlag << binaryName() << dylibExt << " "
-                 << objPath(_buildDir) << " " << dbgLibPaths() << " "
-                 << linkerFlags();
+  if (_buildType == "release") {
+    _libLinkCmnd << "\"" << linker << "\"" << dylibArg << outFlag
+                 << binaryName() << dylibExt << " " << objPath(_buildDir) << " "
+                 << rlsLibPaths() << " " << linkerFlags();
+  } else {
+    _libLinkCmnd << "\"" << linker << "\"" << dylibArg << outFlag
+                 << binaryName() << dylibExt << " " << objPath(_buildDir) << " "
+                 << dbgLibPaths() << " " << linkerFlags();
   }
 }
 
-void Builder::archive()
-{
+void Builder::archive() {
   std::string archiver, ext;
-  if (compilerPath().find("cl.exe") != std::string::npos)
-  {
-    archiver = (fs::canonical(compilerPath()).parent_path() / "lib.exe ").string() + "\" -OUT:";
+  if (compilerPath().find("cl.exe") != std::string::npos) {
+    archiver =
+        (fs::canonical(compilerPath()).parent_path() / "lib.exe ").string() +
+        "\" -OUT:";
     ext = ".lib";
-  }
-  else
-  {
+  } else {
     archiver = archiverPath() + "\" rcs ";
     ext = ".a";
   }
-  if (_buildType == "release")
-  {
-    _archiveCmnd << "\"" << archiverPath() << "\" rcs "
-                 << binaryName() << ext
+  if (_buildType == "release") {
+    _archiveCmnd << "\"" << archiverPath() << "\" rcs " << binaryName() << ext
                  << " " << objPath(_buildDir);
-  }
-  else
-  {
-    _archiveCmnd << "\"" << archiverPath() << "\" rcs "
-                 << binaryName() << ext
+  } else {
+    _archiveCmnd << "\"" << archiverPath() << "\" rcs " << binaryName() << ext
                  << " " << objPath(_buildDir);
   }
 }
 
-std::string Builder::getBldCommands()
-{
-  if (binaryType() == "app")
-  {
+std::string Builder::getBldCommands() {
+  if (binaryType() == "app") {
     return _compileCommand.str() + "\n" + _appLinkCmnd.str();
-  }
-  else if (binaryType() == "staticLibrary")
-  {
+  } else if (binaryType() == "staticLibrary") {
     return _compileCommand.str() + "\n" + _archiveCmnd.str();
-  }
-  else if (binaryType() == "dynamicLibrary")
-  {
+  } else if (binaryType() == "dynamicLibrary") {
     return _compileCommand.str() + "\n" + _libLinkCmnd.str();
-  }
-  else
-  {
+  } else {
     std::cout << "Unknown binary type defined in vcbld.json." << std::endl;
     return "";
   }
 }
 
-void Builder::build()
-{
+void Builder::build() {
   std::string buildDir;
-  if (_buildType == "debug")
-  {
+  if (_buildType == "debug") {
     buildDir = _dbgDir;
-  }
-  else
-  {
+  } else {
     buildDir = _rlsDir;
   }
   if (!fs::exists(outputDirectory()))
@@ -200,145 +150,101 @@ void Builder::build()
   if (!fs::exists(outputDirectory() + "/" + "debug"))
     fs::create_directory(_dbgDir);
 
-  if (binaryType() == "app")
-  {
-    try
-    {
+  if (binaryType() == "app") {
+    try {
       std::cout << "Compiling in " << _buildType << "...\n";
       exec("cd \"" + buildDir + "\" && " + compileCommand());
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception &e) {
       std::cout << "Compilation failed!" << std::endl;
       std::cerr << e.what() << " " << errno << std::endl;
     }
-    try
-    {
+    try {
       std::cout << "Linking...\n";
       exec("cd \"" + buildDir + "\" && " + appLinkCmnd());
       std::cout << "Done\n";
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception &e) {
       std::cout << "Linking failed!" << std::endl;
       std::cerr << e.what() << " " << errno << std::endl;
     }
-    try
-    {
+    try {
       copy();
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception &e) {
       std::cout << "Libraries exist in output directory." << std::endl;
       std::cerr << e.what() << " " << errno << std::endl;
     }
-  }
-  else if (binaryType() == "staticLibrary")
-  {
-    try
-    {
+  } else if (binaryType() == "staticLibrary") {
+    try {
       std::cout << "Compiling in " << _buildType << "...\n";
       exec("cd \"" + buildDir + "\" && " + compileCommand());
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception &e) {
       std::cout << "Compilation failed!" << std::endl;
       std::cerr << e.what() << " " << errno << std::endl;
     }
-    try
-    {
+    try {
       std::cout << "Archiving...\n";
       exec("cd \"" + buildDir + "\" && " + archiveCmnd());
       std::cout << "Done\n";
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception &e) {
       std::cout << "Archiving failed!" << std::endl;
       std::cerr << e.what() << errno << std::endl;
     }
-  }
-  else if (binaryType() == "dynamicLibrary")
-  {
-    try
-    {
+  } else if (binaryType() == "dynamicLibrary") {
+    try {
       std::cout << "Compiling in " << _buildType << "...\n";
       exec("cd \"" + buildDir + "\" && " + compileCommand());
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception &e) {
       std::cout << "Compilation failed!" << std::endl;
       std::cerr << e.what() << " " << errno << std::endl;
     }
-    try
-    {
+    try {
       std::cout << "Linking...\n";
       exec("cd \"" + buildDir + "\" && " + libLinkCmnd());
       std::cout << "Done\n";
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception &e) {
       std::cout << "Linking failed!" << std::endl;
       std::cerr << e.what() << errno << std::endl;
     }
-    try
-    {
+    try {
       copy();
-    }
-    catch (const std::exception &e)
-    {
+    } catch (const std::exception &e) {
       std::cout << "Libraries exist in output directory." << std::endl;
       std::cerr << e.what() << " " << errno << std::endl;
     }
-  }
-  else
-  {
+  } else {
     std::cout << "Unknown binary type defined in vcbld.json." << std::endl;
   }
 }
 
-void Builder::copy()
-{
+void Builder::copy() {
   std::string dbgLibPath = vcpkgDirPath() + "/" + "installed" + "/" +
                            architecture() + "/" + "debug/lib";
   std::string rlsLibPath =
       vcpkgDirPath() + "/" + "installed" + "/" + architecture() + "/" + "lib";
   std::string fullName;
-  if (libDirectory() != "")
-  {
+  if (libDirectory() != "") {
     std::string localDbgPath = libDirectory() + "/" + "debug";
     std::string localRlsPath = libDirectory() + "/" + "release";
-    if (_buildType == "debug")
-    {
+    if (_buildType == "debug") {
       for (std::vector<std::string>::iterator it = dbgLocalLibNames().begin();
-           it != dbgLocalLibNames().end(); ++it)
-      {
+           it != dbgLocalLibNames().end(); ++it) {
         fullName = localDbgPath + "/" + (*it);
-        if (fs::exists(fullName))
-        {
+        if (fs::exists(fullName)) {
           if (it->find(".a") == std::string::npos &&
-              it->find(".lib") == std::string::npos)
-          {
-            if (!fs::exists(_dbgDir + "/" + (*it)))
-            {
+              it->find(".lib") == std::string::npos) {
+            if (!fs::exists(_dbgDir + "/" + (*it))) {
               fs::copy(fullName, _dbgDir);
             }
           }
         }
       }
-    }
-    else
-    {
+    } else {
       for (std::vector<std::string>::iterator it = rlsLocalLibNames().begin();
-           it != rlsLocalLibNames().end(); ++it)
-      {
+           it != rlsLocalLibNames().end(); ++it) {
         fullName = localRlsPath + "/" + (*it);
-        if (fs::exists(fullName))
-        {
+        if (fs::exists(fullName)) {
           if (it->find(".a") == std::string::npos &&
-              it->find(".lib") == std::string::npos)
-          {
-            if (!fs::exists(_rlsDir + "/" + (*it)))
-            {
+              it->find(".lib") == std::string::npos) {
+            if (!fs::exists(_rlsDir + "/" + (*it))) {
               fs::copy(fullName, _rlsDir);
             }
           }
@@ -347,37 +253,25 @@ void Builder::copy()
     }
   }
   for (std::vector<std::string>::iterator it = fullLibNames().begin();
-       it != fullLibNames().end(); ++it)
-  {
-    if (_buildType == "debug")
-    {
+       it != fullLibNames().end(); ++it) {
+    if (_buildType == "debug") {
       fullName = dbgLibPath + "/" +
                  fullDbgLibNames()[std::distance(fullLibNames().begin(), it)];
-    }
-    else
-    {
+    } else {
       fullName = rlsLibPath + "/" + (*it);
     }
-    if (fs::exists(fullName))
-    {
-      if (_buildType == "debug")
-      {
+    if (fs::exists(fullName)) {
+      if (_buildType == "debug") {
         if (it->find(".a") == std::string::npos &&
-            it->find(".lib") == std::string::npos)
-        {
-          if (!fs::exists(_dbgDir + "/" + (*it)))
-          {
+            it->find(".lib") == std::string::npos) {
+          if (!fs::exists(_dbgDir + "/" + (*it))) {
             fs::copy(fullName, _dbgDir);
           }
         }
-      }
-      else
-      {
+      } else {
         if (it->find(".a") == std::string::npos &&
-            it->find(".lib") == std::string::npos)
-        {
-          if (!fs::exists(_rlsDir + "/" + (*it)))
-          {
+            it->find(".lib") == std::string::npos) {
+          if (!fs::exists(_rlsDir + "/" + (*it))) {
             fs::copy(fullName, _rlsDir);
           }
         }
@@ -386,37 +280,20 @@ void Builder::copy()
   }
 }
 
-std::string Builder::compileCommand() const
-{
-  return _compileCommand.str();
-}
-std::string Builder::appLinkCmnd() const
-{
-  return _appLinkCmnd.str();
-}
+std::string Builder::compileCommand() const { return _compileCommand.str(); }
+std::string Builder::appLinkCmnd() const { return _appLinkCmnd.str(); }
 
-std::string Builder::libLinkCmnd() const
-{
-  return _libLinkCmnd.str();
-}
+std::string Builder::libLinkCmnd() const { return _libLinkCmnd.str(); }
 
-std::string Builder::archiveCmnd() const
-{
-  return _archiveCmnd.str();
-}
+std::string Builder::archiveCmnd() const { return _archiveCmnd.str(); }
 
-void Builder::exec(const std::string &command)
-{
-  try
-  {
+void Builder::exec(const std::string &command) {
+  try {
     int systemRet = system(command.c_str());
-    if (systemRet == -1)
-    {
+    if (systemRet == -1) {
       std::cout << "An error occured." << std::endl;
     }
-  }
-  catch (const std::exception &e)
-  {
+  } catch (const std::exception &e) {
     std::cout << "An error occured." << std::endl;
     std::cerr << e.what() << std::endl;
   }

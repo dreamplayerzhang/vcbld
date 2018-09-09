@@ -549,89 +549,40 @@ void MainWindow::clear() {
 
 void MainWindow::compile(Builder &builder) {
   if (ui->actionDebug->isChecked()) {
-    std::ostringstream command;
-    command << "\"" << builder.compilerPath() << "\" " << builder.headerPaths()
-            << " " << builder.compilerFlags() << " "
-            << builder.compilerDefines() << " -g "
-            << "-std=" << builder.language() << builder.standard() << " -c "
-            << builder.sourceFiles();
-    runProcess(QString::fromStdString(command.str()),
+    runProcess(QString::fromStdString(builder.compileCommand()),
                QString::fromStdString(builder.outputDirectory() + "/debug"));
   } else {
-    std::ostringstream command;
-    command << "\"" << builder.compilerPath() << "\" " << builder.headerPaths()
-            << " " << builder.compilerFlags() << " "
-            << builder.compilerDefines() << " "
-            << "-std=" << builder.language() << builder.standard() << " -c "
-            << builder.sourceFiles();
-    runProcess(QString::fromStdString(command.str()),
+    runProcess(QString::fromStdString(builder.compileCommand()),
                QString::fromStdString(builder.outputDirectory() + "/release"));
   }
 }
 
 void MainWindow::appLink(Builder &builder) {
   if (ui->actionDebug->isChecked()) {
-    std::ostringstream command;
-    command << "\"" << builder.compilerPath() << "\" -o "
-            << builder.binaryName() << " "
-            << builder.objPath(builder.outputDirectory() + "/debug") << " "
-            << builder.rlsLibPaths() << " " << builder.linkerFlags();
-    runProcess(QString::fromStdString(command.str()),
+    runProcess(QString::fromStdString(builder.appLinkCmnd()),
                QString::fromStdString(builder.outputDirectory() + "/debug"));
   } else {
-    std::ostringstream command;
-    command << "\"" << builder.compilerPath() << "\" -o "
-            << builder.binaryName() << " "
-            << builder.objPath(builder.outputDirectory() + "/release") << " "
-            << builder.rlsLibPaths() << " " << builder.linkerFlags();
-    runProcess(QString::fromStdString(command.str()),
+    runProcess(QString::fromStdString(builder.appLinkCmnd()),
                QString::fromStdString(builder.outputDirectory() + "/release"));
   }
 }
 
 void MainWindow::libLink(Builder &builder) {
-  std::string dylibArg, dylibExt;
-  if (builder.compilerPath().find("clang") != std::string::npos) {
-    dylibArg = " -dynamiclib ";
-    dylibExt = ".dylib";
-  } else {
-    dylibArg = " -shared ";
-    dylibExt = ".so";
-  }
-
   if (ui->actionDebug->isChecked()) {
-    std::ostringstream command;
-    command << "\"" << builder.compilerPath() << "\"" << dylibArg << " -o "
-            << builder.binaryName() << dylibExt << " "
-            << builder.objPath(builder.outputDirectory() + "/debug") << " "
-            << builder.dbgLibPaths() << " " << builder.linkerFlags();
-    runProcess(QString::fromStdString(command.str()),
+    runProcess(QString::fromStdString(builder.libLinkCmnd()),
                QString::fromStdString(builder.outputDirectory() + "/debug"));
   } else {
-    std::ostringstream command;
-    command << "\"" << builder.compilerPath() << "\"" << dylibArg << " -o "
-            << builder.binaryName() << dylibExt << " "
-            << builder.objPath(builder.outputDirectory() + "/release") << " "
-            << builder.rlsLibPaths() << " " << builder.linkerFlags();
-    runProcess(QString::fromStdString(command.str()),
+    runProcess(QString::fromStdString(builder.libLinkCmnd()),
                QString::fromStdString(builder.outputDirectory() + "/release"));
   }
 }
 
 void MainWindow::archive(Builder &builder) {
   if (ui->actionDebug->isChecked()) {
-    std::ostringstream command;
-    command << "\"" << builder.archiverPath() << "\" rcs "
-            << builder.binaryName() << ".a"
-            << " " << builder.objPath(builder.outputDirectory() + "/debug");
-    runProcess(QString::fromStdString(command.str()),
+    runProcess(QString::fromStdString(builder.archiveCmnd()),
                QString::fromStdString(builder.outputDirectory() + "/debug"));
   } else {
-    std::ostringstream command;
-    command << "\"" << builder.archiverPath() << "\" rcs "
-            << builder.binaryName() << ".a"
-            << " " << builder.objPath(builder.outputDirectory() + "/release");
-    runProcess(QString::fromStdString(command.str()),
+    runProcess(QString::fromStdString(builder.archiveCmnd()),
                QString::fromStdString(builder.outputDirectory() + "/release"));
   }
 }

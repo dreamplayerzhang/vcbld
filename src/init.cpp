@@ -113,6 +113,9 @@ Init::Init(const fs::path &vcbldPath) : _vcbldPath(vcbldPath) {
     if (fs::exists((*it) / "clang-4.0")) {
       _cCompilers.emplace_back((*it) / "clang-4.0");
     }
+    if (fs::exists((*it) / "cl.exe")) {
+      _cCompilers.emplace_back((*it) / "cl.exe");
+    }
     if (fs::exists((*it) / "g++")) {
       _cppCompilers.emplace_back((*it) / "g++");
     }
@@ -137,6 +140,9 @@ Init::Init(const fs::path &vcbldPath) : _vcbldPath(vcbldPath) {
     if (fs::exists((*it) / "clang++.exe")) {
       _cppCompilers.emplace_back((*it) / "clang++.exe");
     }
+    if (fs::exists((*it) / "cl.exe")) {
+      _cppCompilers.emplace_back((*it) / "cl.exe");
+    }
     if (fs::exists((*it) / "cmake") && !fs::is_directory((*it) / "cmake")) {
       _cmakePaths.emplace_back((*it) / "cmake");
     }
@@ -157,6 +163,9 @@ Init::Init(const fs::path &vcbldPath) : _vcbldPath(vcbldPath) {
     }
     if (fs::exists((*it) / "ar.exe")) {
       _archiverPaths.emplace_back((*it) / "ar.exe");
+    }
+    if (fs::exists((*it) / "lib.exe")) {
+      _archiverPaths.emplace_back((*it) / "lib.exe");
     }
     if (fs::exists((*it) / "vcpkg") && !fs::is_directory((*it) / "vcpkg")) {
       _vcpkgPaths.emplace_back((*it) / "vcpkg");

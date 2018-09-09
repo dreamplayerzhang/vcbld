@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>363</width>
+    <width>360</width>
     <height>240</height>
    </rect>
   </property>
@@ -16,14 +16,14 @@
   <widget class="QListWidget" name="listWidget">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>0</x>
      <y>50</y>
-     <width>341</width>
+     <width>361</width>
      <height>181</height>
     </rect>
    </property>
    <property name="horizontalScrollBarPolicy">
-    <enum>Qt::ScrollBarAlwaysOn</enum>
+    <enum>Qt::ScrollBarAlwaysOff</enum>
    </property>
    <property name="sizeAdjustPolicy">
     <enum>QAbstractScrollArea::AdjustToContents</enum>

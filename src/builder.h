@@ -16,6 +16,10 @@ public:
 
   void build();
   void copy();
+  std::string compileCommand() const;
+  std::string appLinkCmnd() const;
+  std::string libLinkCmnd() const;
+  std::string archiveCmnd() const;
   std::string getBldCommands();
 
 private:
@@ -32,6 +36,7 @@ private:
   std::ostringstream _appLinkCmnd;
   std::ostringstream _libLinkCmnd;
   std::ostringstream _archiveCmnd;
+  void exec(const std::string &);
 };
 } // namespace vcbld
 #endif // !BUILDER_H

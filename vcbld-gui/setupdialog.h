@@ -25,6 +25,7 @@ private slots:
   void on_listWidget_doubleClicked(const QModelIndex &index);
 
 private:
+  void resizeEvent(QResizeEvent *);
   Ui::SetupDialog *ui;
   QString _msg;
   std::vector<fs::path> _vector;

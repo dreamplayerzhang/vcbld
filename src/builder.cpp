@@ -120,10 +120,10 @@ void Builder::archive() {
     ext = ".a";
   }
   if (_buildType == "release") {
-    _archiveCmnd << archiverPath() << binaryName() << ext << " "
+    _archiveCmnd << archiver << binaryName() << ext << " "
                  << objPath(_buildDir);
   } else {
-    _archiveCmnd << archiverPath() << binaryName() << ext << " "
+    _archiveCmnd << archiver << binaryName() << ext << " "
                  << objPath(_buildDir);
   }
 }
@@ -280,6 +280,22 @@ void Builder::copy() {
             fs::copy(fullName, _rlsDir);
           }
         }
+      }
+    }
+  } if (_buildType == "debug") {
+    for (std::vector<std::string>::iterator iter = winDbgDlls().begin(); iter != winDbgDlls().end(); ++iter) {
+      try {
+         fs::copy(vcpkgDirPath() + "/" + "installed" + "/" + *iter, _dbgDir);
+      } catch (...) {
+         // fail quietly
+      }
+    }
+  } else {
+    for (std::vector<std::string>::iterator iter = winRlsDlls().begin(); iter != winRlsDlls().end(); ++iter) {
+      try {
+         fs::copy(vcpkgDirPath() + "/" + "installed" + "/" + *iter, _rlsDir);
+      } catch (...) {
+         // fail quietly
       }
     }
   }

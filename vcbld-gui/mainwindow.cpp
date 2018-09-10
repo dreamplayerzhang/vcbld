@@ -290,13 +290,10 @@ void MainWindow::on_actionRun_Cmake_triggered() {
       config = "Release";
     }
 
-    if (confClass.architecture().find("windows") == std::string::npos) {
       temp << " -DCMAKE_C_COMPILER=\"" << confClass.cCompilerPath() << "\""
            << " -DCMAKE_CXX_COMPILER=\"" << confClass.cppCompilerPath() << "\""
            << " -DCMAKE_MAKE_PROGRAM=\"" << confClass.makePath() << "\" ";
-    } else {
-      temp << " ";
-    }
+
     cmakeCmnd << " \"" << confClass.cmakePath() << "\""
               << " -DCMAKE_BUILD_TYPE=" << config
               << " -DCMAKE_TOOLCHAIN_FILE=\"" << confClass.vcpkgDirPath()
@@ -313,7 +310,7 @@ void MainWindow::on_actionRun_make_triggered() {
   if (_dirName != "") {
     ConfClass confClass;
     QDir::setCurrent(_dirName);
-    runProcess(QString::fromStdString(confClass.makePath()),
+    runProcess(QString::fromStdString("\"" + confClass.makePath()+ "\""),
                QString::fromStdString(confClass.outputDirectory()));
   }
 }

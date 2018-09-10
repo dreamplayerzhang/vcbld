@@ -345,14 +345,12 @@ void restore() {
 void cmake(const std::string &cmakeArgs) {
   ConfClass confClass;
   std::ostringstream cmakeCmnd, temp;
-  if (confClass.architecture().find("windows") == std::string::npos) {
-    temp << " -DCMAKE_C_COMPILER=\"" << confClass.cCompilerPath() << "\""
-         << " -DCMAKE_CXX_COMPILER=\"" << confClass.cppCompilerPath() << "\""
-         << " -DCMAKE_MAKE_PROGRAM=\"" << confClass.makePath() << "\" ";
-  } else {
-    temp << " ";
-  }
-  cmakeCmnd << "cd " << confClass.outputDirectory() << " && \""
+
+  temp << " -DCMAKE_C_COMPILER=\"" << confClass.cCompilerPath() << "\""
+       << " -DCMAKE_CXX_COMPILER=\"" << confClass.cppCompilerPath() << "\""
+       << " -DCMAKE_MAKE_PROGRAM=\"" << confClass.makePath() << "\" ";
+
+  cmakeCmnd << "cd \"" << confClass.outputDirectory() << "\" && \""
             << confClass.cmakePath() << "\""
             << " -DCMAKE_TOOLCHAIN_FILE=\"" << confClass.vcpkgDirPath()
             << "/scripts/buildsystems/vcpkg.cmake"
@@ -366,8 +364,8 @@ void cmake(const std::string &cmakeArgs) {
 void make(const std::string &makeArgs) {
   ConfClass confClass;
   std::ostringstream makeCmnd;
-  makeCmnd << "cd " << confClass.outputDirectory() << " && "
-           << " " << confClass.makePath() << " " << makeArgs;
+  makeCmnd << "cd \"" << confClass.outputDirectory() << "\" && \""
+           << confClass.makePath() << "\" " << makeArgs;
   int systemRet = system(makeCmnd.str().c_str());
   if (systemRet == -1) {
     std::cout << "An error occured while running make." << std::endl;

@@ -27,11 +27,15 @@ public:
   std::vector<std::string> &fullDbgLibNames();
   std::vector<std::string> &dbgLocalLibNames();
   std::vector<std::string> &rlsLocalLibNames();
+  std::vector<std::string> &winDbgDlls();
+  std::vector<std::string> &winRlsDlls();
 
 private:
   bool hasComponents(const std::string &libName);
   std::string findDbgLib(const std::string &line);
   std::string findRlsLib(const std::string &line);
+  std::string findWinDbgDll(const std::string &line);
+  std::string findWinRlsDll(const std::string &line);
 
   std::ostringstream _cmakeOutput;
   std::vector<std::string> _boostComponents;
@@ -40,6 +44,8 @@ private:
   std::vector<std::string> _fullDbgLibNames;
   std::vector<std::string> _dbgLocalLibNames;
   std::vector<std::string> _rlsLocalLibNames;
+  std::vector<std::string> _windDbgDlls;
+  std::vector<std::string> _winRlsDlls;
 };
 } // namespace vcbld
 #endif // !PREP_H

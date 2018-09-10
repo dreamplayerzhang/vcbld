@@ -9,7 +9,6 @@ SetupDialog::SetupDialog(const QString &msg, std::vector<fs::path> &vector,
   QDesktopWidget *desktop = QApplication::desktop();
   int screenWidth = desktop->width();
   move(screenWidth / 2 - width() / 2, 200);
-  setFixedSize(size());
   QString labelText = "Please choose a";
   labelText += msg;
   ui->label->setText(labelText);
@@ -27,4 +26,8 @@ int SetupDialog::choice() { return _choice; }
 void SetupDialog::on_listWidget_doubleClicked(const QModelIndex &index) {
   _choice = index.row();
   close();
+}
+
+void SetupDialog::resizeEvent(QResizeEvent *) {
+  ui->listWidget->resize(width(), height() - 60);
 }

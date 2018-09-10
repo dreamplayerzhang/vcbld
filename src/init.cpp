@@ -154,6 +154,9 @@ Init::Init(const fs::path &vcbldPath) : _vcbldPath(vcbldPath) {
     }
     if (fs::exists((*it) / "make.exe")) {
       _makePaths.emplace_back((*it) / "make.exe");
+    }  
+    if (fs::exists((*it) / "nmake.exe")) {
+      _makePaths.emplace_back((*it) / "nmake.exe");
     }
     if (fs::exists((*it) / "mingw32-make.exe")) {
       _makePaths.emplace_back((*it) / "mingw32-make.exe");

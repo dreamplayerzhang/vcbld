@@ -35,6 +35,12 @@ PrepClass::PrepClass() : PkgClass() {
                 if (findRlsLib(line) != "") {
                   _fullLibNames.push_back(findRlsLib(line));
                 }
+                if (findWinDbgDll(line) != "") {
+                  _windDbgDlls.push_back(findWinDbgDll(line));
+                }
+                if (findWinRlsDll(line) != "") {
+                  _winRlsDlls.push_back(findWinRlsDll(line));
+                }
               }
             }
           } catch (...) {
@@ -50,6 +56,16 @@ PrepClass::PrepClass() : PkgClass() {
         _fullLibNames.erase(
             std::unique(_fullLibNames.begin(), _fullLibNames.end()),
             _fullLibNames.end());
+
+        std::sort(_windDbgDlls.begin(), _windDbgDlls.end());
+        _windDbgDlls.erase(
+            std::unique(_windDbgDlls.begin(), _windDbgDlls.end()),
+            _windDbgDlls.end());
+
+        std::sort(_winRlsDlls.begin(), _winRlsDlls.end());
+        _winRlsDlls.erase(
+            std::unique(_winRlsDlls.begin(), _winRlsDlls.end()),
+            _winRlsDlls.end());
       }
     }
   }
@@ -414,6 +430,14 @@ std::vector<std::string> &PrepClass::rlsLocalLibNames() {
   return _rlsLocalLibNames;
 }
 
+std::vector<std::string> &PrepClass::winDbgDlls() {
+  return _windDbgDlls;
+}
+
+std::vector<std::string> &PrepClass::winRlsDlls() {
+  return _winRlsDlls;
+}
+
 std::string PrepClass::findDbgLib(const std::string &line) {
   std::string libName;
   size_t found;
@@ -433,6 +457,26 @@ std::string PrepClass::findRlsLib(const std::string &line) {
     libName = line.substr(found + toFind.length(), line.length());
   }
   return libName;
+}
+
+std::string PrepClass::findWinDbgDll(const std::string &line) {
+  std::string dllPath;
+  size_t found;
+  found = line.find("debug/bin/");
+  if (found != std::string::npos && line.find(".dll") != std::string::npos) {
+    dllPath = line.substr(0, line.length());
+  }
+  return dllPath;
+}
+
+std::string PrepClass::findWinRlsDll(const std::string &line) {
+  std::string dllPath;
+  size_t found;
+  found = line.find(architecture() + "/bin/");
+  if (found != std::string::npos && line.find(".dll") != std::string::npos) {
+    dllPath = line.substr(0, line.length());
+  }
+  return dllPath;
 }
 
 void PrepClass::posixify(std::string &path) {

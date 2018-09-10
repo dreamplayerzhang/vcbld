@@ -24,27 +24,27 @@ Builder::Builder(const std::string &buildType)
 }
 
 void Builder::compile() {
-  std::string debugFlag, keepFlag, stdFlag;
+  std::string debugFlag, keepFlag, stdFlag, compiler;
   if (compilerPath().find("cl.exe") != std::string::npos) {
-    debugFlag = " -DEBUG ";
-    keepFlag = " -c -EHsc ";
+    compiler = "\"" + compilerPath() + "\" /c /EHsc ";
+    debugFlag = " /DEBUG ";
     stdFlag = "/std:";
+    keepFlag = " ";
   } else {
+    compiler = "\"" + compilerPath() + "\" ";
     debugFlag = " -g ";
     keepFlag = " -c ";
     stdFlag = "-std=";
   }
 
   if (_buildType == "release") {
-    _compileCommand << "\"" << compilerPath() << "\" " << headerPaths() << " "
-                    << compilerFlags() << " " << compilerDefines() << " "
-                    << stdFlag << language() << standard() << keepFlag
-                    << sourceFiles();
+    _compileCommand << compiler << headerPaths() << " " << compilerFlags()
+                    << " " << compilerDefines() << " " << stdFlag << language()
+                    << standard() << keepFlag << sourceFiles();
   } else {
-    _compileCommand << "\"" << compilerPath() << "\" " << headerPaths() << " "
-                    << compilerFlags() << " " << compilerDefines() << debugFlag
-                    << stdFlag << language() << standard() << keepFlag
-                    << sourceFiles();
+    _compileCommand << compiler << headerPaths() << " " << compilerFlags()
+                    << " " << compilerDefines() << debugFlag << stdFlag
+                    << language() << standard() << keepFlag << sourceFiles();
   }
 }
 
@@ -53,21 +53,23 @@ void Builder::appLink() {
   std::string debugFlag, keepFlag, stdFlag;
   if (compilerPath().find("cl.exe") != std::string::npos) {
     linker =
-        (fs::canonical(compilerPath()).parent_path() / "link.exe ").string();
-    outFlag = " -OUT:";
+        "\"" +
+        (fs::canonical(compilerPath()).parent_path() / "link.exe ").string() +
+        +"\"";
+    outFlag = " /OUT:";
     ext = ".exe";
   } else {
-    linker = compilerPath();
+    linker = "\"" + compilerPath() + "\"";
     outFlag = " -o ";
   }
 
   if (_buildType == "release") {
-    _appLinkCmnd << "\"" << linker << "\"" << outFlag << binaryName() << ext
-                 << " " << objPath(_buildDir) << " " << rlsLibPaths() << " "
+    _appLinkCmnd << linker << outFlag << binaryName() << ext << " "
+                 << objPath(_buildDir) << " " << rlsLibPaths() << " "
                  << linkerFlags();
   } else {
-    _appLinkCmnd << "\"" << linker << "\"" << outFlag << binaryName() << ext
-                 << " " << objPath(_buildDir) << " " << dbgLibPaths() << " "
+    _appLinkCmnd << linker << outFlag << binaryName() << ext << " "
+                 << objPath(_buildDir) << " " << dbgLibPaths() << " "
                  << linkerFlags();
   }
 }
@@ -75,31 +77,33 @@ void Builder::appLink() {
 void Builder::dylibLink() {
   std::string linker, outFlag, dylibArg, dylibExt;
   if (compilerPath().find("clang") != std::string::npos) {
-    linker = compilerPath();
+    linker = "\"" + compilerPath() + "\"";
     outFlag = " -o ";
     dylibArg = " -dynamiclib ";
     dylibExt = ".dylib";
   } else if (compilerPath().find("cl.exe") != std::string::npos) {
     linker =
-        (fs::canonical(compilerPath()).parent_path() / "link.exe ").string();
-    outFlag = " -OUT:";
-    dylibArg = " -DLL ";
+        "\"" +
+        (fs::canonical(compilerPath()).parent_path() / "link.exe ").string() +
+        "\"";
+    outFlag = " /OUT:";
+    dylibArg = " /DLL ";
     dylibExt = ".dll";
   } else {
-    linker = compilerPath();
+    linker = "\"" + compilerPath() + "\"";
     outFlag = " -o ";
     dylibArg = " -shared ";
     dylibExt = ".so";
   }
 
   if (_buildType == "release") {
-    _libLinkCmnd << "\"" << linker << "\"" << dylibArg << outFlag
-                 << binaryName() << dylibExt << " " << objPath(_buildDir) << " "
-                 << rlsLibPaths() << " " << linkerFlags();
+    _libLinkCmnd << linker << dylibArg << outFlag << binaryName() << dylibExt
+                 << " " << objPath(_buildDir) << " " << rlsLibPaths() << " "
+                 << linkerFlags();
   } else {
-    _libLinkCmnd << "\"" << linker << "\"" << dylibArg << outFlag
-                 << binaryName() << dylibExt << " " << objPath(_buildDir) << " "
-                 << dbgLibPaths() << " " << linkerFlags();
+    _libLinkCmnd << linker << dylibArg << outFlag << binaryName() << dylibExt
+                 << " " << objPath(_buildDir) << " " << dbgLibPaths() << " "
+                 << linkerFlags();
   }
 }
 
@@ -107,19 +111,20 @@ void Builder::archive() {
   std::string archiver, ext;
   if (compilerPath().find("cl.exe") != std::string::npos) {
     archiver =
+        "\"" +
         (fs::canonical(compilerPath()).parent_path() / "lib.exe ").string() +
-        "\" -OUT:";
+        "\" /OUT:";
     ext = ".lib";
   } else {
-    archiver = archiverPath() + "\" rcs ";
+    archiver = "\"" + archiverPath() + "\" rcs ";
     ext = ".a";
   }
   if (_buildType == "release") {
-    _archiveCmnd << "\"" << archiverPath() << "\" rcs " << binaryName() << ext
-                 << " " << objPath(_buildDir);
+    _archiveCmnd << archiverPath() << binaryName() << ext << " "
+                 << objPath(_buildDir);
   } else {
-    _archiveCmnd << "\"" << archiverPath() << "\" rcs " << binaryName() << ext
-                 << " " << objPath(_buildDir);
+    _archiveCmnd << archiverPath() << binaryName() << ext << " "
+                 << objPath(_buildDir);
   }
 }
 
@@ -282,14 +287,13 @@ void Builder::copy() {
 
 std::string Builder::compileCommand() const { return _compileCommand.str(); }
 std::string Builder::appLinkCmnd() const { return _appLinkCmnd.str(); }
-
 std::string Builder::libLinkCmnd() const { return _libLinkCmnd.str(); }
-
 std::string Builder::archiveCmnd() const { return _archiveCmnd.str(); }
 
 void Builder::exec(const std::string &command) {
+  int systemRet;
   try {
-    int systemRet = system(command.c_str());
+    systemRet = system(command.c_str());
     if (systemRet == -1) {
       std::cout << "An error occured." << std::endl;
     }

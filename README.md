@@ -286,6 +286,9 @@ https://www.youtube.com/watch?v=dsBqfPNM-w8
 Seventh and second video on the usage of the gui:
 https://www.youtube.com/watch?v=l5v3Bl8U-GI
 
+Using vcbld and vcbld-gui in a windows environment:
+https://www.youtube.com/watch?v=6lYCwM-UlNE
+
 ## Contributing:
 All contributions are welcome!
 

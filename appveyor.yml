@@ -1,5 +1,22 @@
 version: 0.1.{build}
-image: Visual Studio 2017
+
+image: 
+    - Visual Studio 2017
+    - Ubuntu
+
+for:
+    - matrix:
+        only:
+            -image: Visual Studio 2017
+        environment:
+            clone_folder: C:\projects\vcbld
+    
+    - matrix:
+        only:
+            - image: Ubuntu
+        environment:
+            clone_folder: ~/projects/vcbld
+
 build_script:
 - cmd: >-
     call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
@@ -15,7 +32,37 @@ build_script:
     nmake.exe
 
     C:\Qt\5.10.1\msvc2017_64\bin\windeployqt.exe C:\projects\vcbld\bin\release\vcbld-gui.exe
+
+- sh: >-
+    wget -P ~/linuxdeployqt https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
+
+    cd ~/linuxdeployqt
+
+    chmod a+x linuxdeployqt-continuous-x86_64.AppImage
+
+    sudo apt-get --yes install qtbase5-dev qt5-qmake
+
+    export QT_SELECT=qt5
+
+    cd ~/projects/vcbld
+
+    mkdir bin
+
+    cd bin
+
+    cmake -DCMAKE_CXX_COMPILER=/usr/bin/g++-8 -DWITH_GUI=ON -DCMAKE_BUILD_TYPE=Release ..
+
+    make -j$(nproc)
+
+    ~/linuxdeployqt/linuxdeployqt-continuous-x86_64.AppImage ~/projects/vcbld/bin/release/vcbld-gui -appimage
+
+    mv ~/projects/vcbld/bin/Application-x86_64.AppImage ~/projects/vcbld/bin/release/vcbld-gui.AppImage
+
 artifacts:
 - path: bin\release\*.exe
 - path: bin\release\*.bat
 - path: bin\release
+- path: bin/release/vcbld
+- path: bin/release/vcbld-gui
+- path: bin/release/vcbld-gui.command
+- path: bin/release/vcbld-gui.AppImage

@@ -18,7 +18,7 @@ build_script:
 
     nmake.exe
 
-    C:\Qt\5.10.1\msvc2017_64\bin\windeployqt.exe C:\projects\vcbld\bin\release\vcbld-gui.exe
+    C:\Qt\5.11.1\msvc2017_64\bin\windeployqt.exe C:\projects\vcbld\bin\release\vcbld-gui.exe
 
 - sh: >-
     wget -P ~/linuxdeployqt https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage

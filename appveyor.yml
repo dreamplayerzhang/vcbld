@@ -1,0 +1,21 @@
+version: 0.1.{build}
+image: Visual Studio 2017
+build_script:
+- cmd: >-
+    call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+
+    cd C:\projects\vcbld
+
+    mkdir bin
+
+    cd bin
+
+    cmake -G "NMake Makefiles" -DCMAKE_PREFIX_PATH=C:\Qt\5.11.1\msvc2017_64 -DWITH_GUI=ON -DCMAKE_BUILD_TYPE=Release ..
+
+    nmake.exe
+
+    C:\Qt\5.10.1\msvc2017_64\bin\windeployqt.exe C:\projects\vcbld\bin\release\vcbld-gui.exe
+artifacts:
+- path: bin\release\*.exe
+- path: bin\release\*.bat
+- path: bin\release

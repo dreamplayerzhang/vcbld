@@ -50,13 +50,22 @@ build_script:
     mv ~/projects/vcbld/bin/Application-x86_64.AppImage ~/projects/vcbld/bin/release/vcbld-gui.AppImage
 
 artifacts:
-- path: bin\release\*.exe
-- path: bin\release\*.bat
+- path: bin\release\vcbld.exe
+  name: vcbld_win64
+- path: bin\release\vcbld-gui.exe
+  name: vcbld-gui_win64
+- path: bin\release\vcbld-gui.bat
+  name: vcbld-gui-bat_win64
 - path: bin\release
+  name: release-folder
 - path: bin/release/vcbld
+  name: vcbld_linux64
 - path: bin/release/vcbld-gui
+  name: vcbld-gui_linux64
 - path: bin/release/vcbld-gui.command
+  name: vcbld-gui-command_linux64
 - path: bin/release/vcbld-gui.AppImage
+  name: vcbld-gui-appimage_linux64
 
 deploy:
 - provider: GitHub
@@ -66,7 +75,7 @@ deploy:
   auth_token:
     secure: ta1sqN8ALHgB+6BHHv3dqO7Q9DyB6oJNLIHu9EhQzmD3PqVFri0Q80GMcnA4t6ZU
   repository: MoAlyousef/vcbld
-  artifact: vcbld.exe, vcbld-gui.exe, release.zip, vcbld-gui.bat
+  artifact: vcbld_win64, vcbld-gui_win64, release-folder, vcbld-gui-bat_win64
   prerelease: true
 - provider: GitHub
   tag: vcbld-v0.1-alpha-linux64
@@ -75,5 +84,5 @@ deploy:
   auth_token:
     secure: ta1sqN8ALHgB+6BHHv3dqO7Q9DyB6oJNLIHu9EhQzmD3PqVFri0Q80GMcnA4t6ZU
   repository: MoAlyousef/vcbld
-  artifact: vcbld, vcbld-gui, vcbld-gui.AppImage, vcbld-gui.command
+  artifact: vcbld_linux64, vcbld-gui_linux64, vcbld-gui-appimage_linux64, vcbld-gui-command_linux64
   prerelease: true

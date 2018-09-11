@@ -4,19 +4,6 @@ image:
     - Visual Studio 2017
     - Ubuntu
 
-for:
-    - matrix:
-        only:
-            -image: Visual Studio 2017
-        environment:
-            clone_folder: C:\projects\vcbld
-    
-    - matrix:
-        only:
-            - image: Ubuntu
-        environment:
-            clone_folder: ~/projects/vcbld
-
 build_script:
 - cmd: >-
     call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"

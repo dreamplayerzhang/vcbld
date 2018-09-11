@@ -53,3 +53,23 @@ artifacts:
 - path: bin/release/vcbld-gui
 - path: bin/release/vcbld-gui.command
 - path: bin/release/vcbld-gui.AppImage
+
+deploy:
+- provider: GitHub
+  tag: vcbld-v0.1-alpha-win64
+  release: vcbld-win64-av
+  description: "Tried with mingw64 and for header only libraries. Tried with the msvc compiler (cl.exe) and it works, however, vcbld needs to be run from the developer command prompt. As for the gui, the bat file also needs to be started from the dev command prompt to access the development environment variables also used by your installation of the vs build tools or visual studio. Otherwise, the bat file can be modified like in the vcbld-gui tutorial here: https://www.youtube.com/watch?v=6lYCwM-UlNE  Only download the release folder if you're missing OpenGL dependencies. Note that running the vcbld cmake command on windows generates a visual studio solution by default."
+  auth_token:
+    secure: ta1sqN8ALHgB+6BHHv3dqO7Q9DyB6oJNLIHu9EhQzmD3PqVFri0Q80GMcnA4t6ZU
+  repository: MoAlyousef/vcbld
+  artifact: vcbld.exe; vcbld-gui.exe; release.zip; vcbld-gui.bat
+  prerelease: true
+- provider: GitHub
+  tag: vcbld-v0.1-alpha-linux64
+  release: vcbld-linux64-av
+  description: "vcbld and vcbld-gui for linux debian distros"
+  auth_token:
+    secure: ta1sqN8ALHgB+6BHHv3dqO7Q9DyB6oJNLIHu9EhQzmD3PqVFri0Q80GMcnA4t6ZU
+  repository: MoAlyousef/vcbld
+  artifact: vcbld; vcbld-gui; vcbld-gui.AppImage; vcbld-gui.command
+  prerelease: true

@@ -1,5 +1,9 @@
 version: 0.1.{build}
 
+branches:
+    only:
+        - master
+
 image: 
     - Visual Studio 2017
     - Ubuntu
@@ -62,7 +66,7 @@ deploy:
   auth_token:
     secure: ta1sqN8ALHgB+6BHHv3dqO7Q9DyB6oJNLIHu9EhQzmD3PqVFri0Q80GMcnA4t6ZU
   repository: MoAlyousef/vcbld
-  artifact: vcbld.exe; vcbld-gui.exe; release.zip; vcbld-gui.bat
+  artifact: vcbld.exe, vcbld-gui.exe, release.zip, vcbld-gui.bat
   prerelease: true
 - provider: GitHub
   tag: vcbld-v0.1-alpha-linux64
@@ -71,5 +75,5 @@ deploy:
   auth_token:
     secure: ta1sqN8ALHgB+6BHHv3dqO7Q9DyB6oJNLIHu9EhQzmD3PqVFri0Q80GMcnA4t6ZU
   repository: MoAlyousef/vcbld
-  artifact: vcbld; vcbld-gui; vcbld-gui.AppImage; vcbld-gui.command
+  artifact: vcbld, vcbld-gui, vcbld-gui.AppImage, vcbld-gui.command
   prerelease: true

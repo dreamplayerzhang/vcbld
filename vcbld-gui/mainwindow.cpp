@@ -268,7 +268,11 @@ void MainWindow::on_actionRun_triggered() {
               "/" + confClass.binaryName();
 #endif
 
-    system(command.c_str());
+    int systemRet = system(command.c_str());
+    if (systemRet == -1) {
+      std::cout << "An error occured while getting missing dependencies."
+                << std::endl;
+    }
   }
 }
 

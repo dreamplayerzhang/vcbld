@@ -216,7 +216,7 @@ void commands() {
 void list() {
   try {
     PkgClass pkgClass;
-    if (pkgClass.packageNames().size() == 0) {
+    if (pkgClass.packageNames().empty()) {
       std::cout << "No packages were added to your project!" << std::endl;
     }
     for (std::vector<std::string>::iterator it =
@@ -249,11 +249,11 @@ void add(const std::vector<std::string> &pkg) {
           std::cout << "Package already exists." << std::endl;
           isExist = true;
           break;
-        } else {
+        } 
           isExist = false;
-        }
+        
       }
-      if (isExist != true) {
+      if (!isExist) {
         pkgClass.include(*it);
         pkgClass.write();
       }
@@ -275,8 +275,8 @@ void remove(const std::vector<std::string> &pkg) {
         pkgClass.remove(*it);
         pkgClass.write();
         break;
-      } else {
-      }
+      } 
+      
     }
   }
 }
@@ -323,7 +323,7 @@ void uninstall(const std::string &packages) {
 
 void restore() {
   PkgClass pkgClass;
-  if (pkgClass.packageNames().size() != 0) {
+  if (!pkgClass.packageNames().empty()) {
     std::ostringstream pkg;
     for (std::vector<std::string>::iterator it =
              pkgClass.packageNames().begin();
@@ -376,7 +376,7 @@ void help() { help::mainHelp(); }
 std::string sinTriplet(const std::string &pkg) {
   std::size_t found;
   std::string stripTrip;
-  found = pkg.find("_");
+  found = pkg.find('_');
   if (found != std::string::npos) {
     stripTrip = pkg.substr(0, found);
   }

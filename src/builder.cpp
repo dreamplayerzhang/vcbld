@@ -3,7 +3,7 @@
 namespace vcbld {
 
 Builder::Builder(const std::string &buildType)
-    : PrepClass(), _buildType(buildType) {
+    : _buildType(buildType) {
   if (!fs::exists("vcbld.json")) {
     std::cout << "Build configuration not found!" << std::endl;
     std::exit(1);
@@ -226,7 +226,7 @@ void Builder::copy() {
   std::string rlsLibPath =
       vcpkgDirPath() + "/" + "installed" + "/" + architecture() + "/" + "lib";
   std::string fullName;
-  if (libDirectory() != "") {
+  if (!libDirectory().empty()) {
     std::string localDbgPath = libDirectory() + "/" + "debug";
     std::string localRlsPath = libDirectory() + "/" + "release";
     if (_buildType == "debug") {

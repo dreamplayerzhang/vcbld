@@ -10,11 +10,11 @@ TEST_CASE("Testing Catch. Pass") {
   args::New("app");
   Init init(fs::current_path().parent_path());
   init.init("app");
-  CHECK(init.cCompilers().size() > 0);
-  CHECK(init.cppCompilers().size() > 0);
-  CHECK(init.cmakePaths().size() > 0);
-  CHECK(init.makePaths().size() > 0);
-  CHECK(init.archiverPaths().size() > 0);
+  CHECK(!init.cCompilers().empty());
+  CHECK(!init.cppCompilers().empty());
+  CHECK(!init.cmakePaths().empty());
+  CHECK(!init.makePaths().empty());
+  CHECK(!init.archiverPaths().empty());
   init.setCompiler(1);
   init.setCppCompiler(1);
   init.setCmake(1);

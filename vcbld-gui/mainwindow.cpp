@@ -2,7 +2,7 @@
 
 using namespace vcbld;
 
-MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
+MainWindow::MainWindow(const fs::path &vcbldPath, QWidget *parent)
     : QMainWindow(parent), proc(new QProcess(this)), ui(new Ui::MainWindow),
       init(vcbldPath), _vcpkgPath(vcbldPath), _vcbldPath(vcbldPath) {
   ui->setupUi(this);
@@ -27,7 +27,7 @@ MainWindow::MainWindow(const fs::path vcbldPath, QWidget *parent)
   QObject::connect(this, SIGNAL(outputChanged(const QString &)), this,
                    SLOT(on_outputChanged(const QString &)));
 
-  if (init.vcpkgPaths().size() == 0) {
+  if (init.vcpkgPaths().empty()) {
     QMessageBox msgBox;
     msgBox.setText("vcbld couldn't locate a vcpkg directory, please choose the "
                    "vcpkg directory.");
@@ -124,7 +124,7 @@ void MainWindow::on_actionNew_triggered() {
     this->setWindowTitle("vcbld-gui\t--\t" + display);
     Dialog *dialog = new Dialog(this);
     dialog->exec();
-    if (dialog->binType() != "") {
+    if (!dialog->binType().empty()) {
       ui->plainTextEdit->appendPlainText(Helper::execArgs(
           std::bind(&args::New, dialog->binType()), dialog->binType()));
       init.init(dialog->binType());
@@ -163,13 +163,13 @@ void MainWindow::on_actionAlways_on_top_triggered(bool checked) {
 }
 
 void MainWindow::on_actionDebug_triggered(bool checked) {
-  if (checked == true) {
+  if (checked) {
     ui->actionRelease->setChecked(false);
   }
 }
 
 void MainWindow::on_actionRelease_triggered(bool checked) {
-  if (checked == true) {
+  if (checked) {
     ui->actionDebug->setChecked(false);
   }
 }
@@ -275,11 +275,9 @@ void MainWindow::on_actionRun_triggered() {
 void MainWindow::on_actionRun_Cmake_triggered() {
   if (_dirName != "") {
 
-    QInputDialog inDlg;
-    inDlg.setLabelText("Please enter any cmake arguments (optional):");
-    QString args = inDlg.getText(this, tr("CMake Arguments"),
-                                 tr("Please enter any CMake arguments:"),
-                                 QLineEdit::Normal);
+    QString args = QInputDialog::getText(
+        this, tr("CMake Arguments"), tr("Please enter any CMake arguments:"),
+        QLineEdit::Normal);
 
     ConfClass confClass;
     std::ostringstream cmakeCmnd, temp;
@@ -290,9 +288,9 @@ void MainWindow::on_actionRun_Cmake_triggered() {
       config = "Release";
     }
 
-      temp << " -DCMAKE_C_COMPILER=\"" << confClass.cCompilerPath() << "\""
-           << " -DCMAKE_CXX_COMPILER=\"" << confClass.cppCompilerPath() << "\""
-           << " -DCMAKE_MAKE_PROGRAM=\"" << confClass.makePath() << "\" ";
+    temp << " -DCMAKE_C_COMPILER=\"" << confClass.cCompilerPath() << "\""
+         << " -DCMAKE_CXX_COMPILER=\"" << confClass.cppCompilerPath() << "\""
+         << " -DCMAKE_MAKE_PROGRAM=\"" << confClass.makePath() << "\" ";
 
     cmakeCmnd << " \"" << confClass.cmakePath() << "\""
               << " -DCMAKE_BUILD_TYPE=" << config
@@ -310,7 +308,7 @@ void MainWindow::on_actionRun_make_triggered() {
   if (_dirName != "") {
     ConfClass confClass;
     QDir::setCurrent(_dirName);
-    runProcess(QString::fromStdString("\"" + confClass.makePath()+ "\""),
+    runProcess(QString::fromStdString("\"" + confClass.makePath() + "\""),
                QString::fromStdString(confClass.outputDirectory()));
   }
 }
@@ -407,9 +405,9 @@ void MainWindow::setup(Init &init) {
       return;
     }
   } else {
-    if (init.cCompilers().size() == 0) {
+    if (init.cCompilers().empty()) {
       QMessageBox msgBox;
-      msgBox.setText("Couldn't locate a C compiler.");
+      msgBox.setText("vcbld couldn't locate a C compiler.");
       msgBox.exec();
       init.setCompiler();
     } else if (init.cCompilers().size() == 1) {
@@ -425,9 +423,9 @@ void MainWindow::setup(Init &init) {
       }
       delete setupCompiler;
     }
-    if (init.cppCompilers().size() == 0) {
+    if (init.cppCompilers().empty()) {
       QMessageBox msgBox;
-      msgBox.setText("Couldn't locate a C++ compiler.");
+      msgBox.setText("vcbld couldn't locate a C++ compiler.");
       msgBox.exec();
       init.setCppCompiler();
     } else if (init.cppCompilers().size() == 1) {
@@ -443,9 +441,9 @@ void MainWindow::setup(Init &init) {
       }
       delete setupCppCompiler;
     }
-    if (init.cmakePaths().size() == 0) {
+    if (init.cmakePaths().empty()) {
       QMessageBox msgBox;
-      msgBox.setText("Couldn't locate a cmake executable.");
+      msgBox.setText("vcbld couldn't locate a cmake executable.");
       msgBox.exec();
       init.setCmake();
     } else if (init.cmakePaths().size() == 1) {
@@ -461,9 +459,9 @@ void MainWindow::setup(Init &init) {
       }
       delete setupCmakePath;
     }
-    if (init.makePaths().size() == 0) {
+    if (init.makePaths().empty()) {
       QMessageBox msgBox;
-      msgBox.setText("Couldn't locate a make executable.");
+      msgBox.setText("vcbld couldn't locate a a make executable.");
       msgBox.exec();
       init.setMake();
     } else if (init.makePaths().size() == 1) {
@@ -479,9 +477,9 @@ void MainWindow::setup(Init &init) {
       }
       delete setupMakePath;
     }
-    if (init.archiverPaths().size() == 0) {
+    if (init.archiverPaths().empty()) {
       QMessageBox msgBox;
-      msgBox.setText("Couldn't locate an archiver.");
+      msgBox.setText("vcbld couldn't locate an archiver.");
       msgBox.exec();
       init.setArchiver();
     } else if (init.archiverPaths().size() == 1) {
@@ -497,9 +495,9 @@ void MainWindow::setup(Init &init) {
       }
       delete setupArchiverPath;
     }
-    if (init.vcpkgPaths().size() == 0) {
+    if (init.vcpkgPaths().empty()) {
       QMessageBox msgBox;
-      msgBox.setText("Couldn't locate a vcpkg instance.");
+      msgBox.setText("vcbld couldn't locate a vcpkg instance.");
       msgBox.exec();
       init.setVcpkg();
     } else if (init.vcpkgPaths().size() == 1) {

@@ -2,7 +2,7 @@
 
 namespace vcbld {
 
-PrepClass::PrepClass() : PkgClass() {
+PrepClass::PrepClass() {
   std::vector<fs::directory_entry> dirEntry;
   std::string arch = "_" + architecture() + ".list";
   std::string temp, temp2;
@@ -29,16 +29,16 @@ PrepClass::PrepClass() : PkgClass() {
             if (ifs.is_open()) {
               while (!ifs.eof()) {
                 getline(ifs, line);
-                if (findDbgLib(line) != "") {
+                if (!findDbgLib(line).empty()) {
                   _fullDbgLibNames.push_back(findDbgLib(line));
                 }
-                if (findRlsLib(line) != "") {
+                if (!findRlsLib(line).empty()) {
                   _fullLibNames.push_back(findRlsLib(line));
                 }
-                if (findWinDbgDll(line) != "") {
+                if (!findWinDbgDll(line).empty()) {
                   _windDbgDlls.push_back(findWinDbgDll(line));
                 }
-                if (findWinRlsDll(line) != "") {
+                if (!findWinRlsDll(line).empty()) {
                   _winRlsDlls.push_back(findWinRlsDll(line));
                 }
               }
@@ -70,7 +70,7 @@ PrepClass::PrepClass() : PkgClass() {
     }
   }
 
-  if (libDirectory() != "") {
+  if (!libDirectory().empty()) {
     std::string localDbgLibs = libDirectory() + "/" + "debug";
     std::vector<fs::directory_entry> localDbgDirEntry;
 
@@ -200,7 +200,7 @@ std::string PrepClass::headerPaths() {
   std::ostringstream temp;
   temp << " -I\"" << sourceDirectory() << "\" -I\"" << outputDirectory()
        << "\"";
-  if (includeDirectory() != "" && fs::exists(includeDirectory())) {
+  if (!includeDirectory().empty() && fs::exists(includeDirectory())) {
     temp << " -I\"" << includeDirectory() << "\"";
   }
   temp << " -I\"" << vcpkgDirPath() << "/"
@@ -246,7 +246,7 @@ std::string PrepClass::stripLibName(const std::string &lib) {
 
 std::string PrepClass::dbgLibPaths() {
   std::ostringstream temp;
-  if (libDirectory() != "" && fs::exists(libDirectory() + "/" + "debug")) {
+  if (!libDirectory().empty() && fs::exists(libDirectory() + "/" + "debug")) {
     std::string localDbgLibs = libDirectory() + "/" + "debug";
     for (std::vector<std::string>::iterator jt = _dbgLocalLibNames.begin();
          jt != _dbgLocalLibNames.end(); ++jt) {
@@ -276,7 +276,7 @@ std::string PrepClass::dbgLibPaths() {
 
 std::string PrepClass::rlsLibPaths() {
   std::ostringstream temp;
-  if (libDirectory() != "" && fs::exists(libDirectory() + "/release")) {
+  if (!libDirectory().empty() && fs::exists(libDirectory() + "/release")) {
     std::string localRlsLibs = libDirectory() + "/" + "release";
     for (std::vector<std::string>::iterator jt = _rlsLocalLibNames.begin();
          jt != _rlsLocalLibNames.end(); ++jt) {
@@ -480,8 +480,8 @@ std::string PrepClass::findWinRlsDll(const std::string &line) {
 }
 
 void PrepClass::posixify(std::string &path) {
-  if (path.find("\\") != std::string::npos) {
-    path.replace(path.find("\\"), 1, "/");
+  if (path.find('\\') != std::string::npos) {
+    path.replace(path.find('\\'), 1, "/");
     posixify(path);
   }
 }

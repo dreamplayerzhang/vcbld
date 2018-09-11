@@ -14,21 +14,21 @@ TEST_CASE("Initialization checks", "[init]") {
 
 TEST_CASE("Conf.json reading test", "[conf]") {
   ConfClass confClass;
-  CHECK(confClass.projPath() != "");
-  CHECK(confClass.cCompilerPath() != "");
-  CHECK(confClass.cppCompilerPath() != "");
-  CHECK(confClass.vcpkgDirPath() != "");
-  CHECK(confClass.cmakePath() != "");
-  CHECK(confClass.makePath() != "");
-  CHECK(confClass.archiverPath() != "");
-  CHECK(confClass.architecture() != "");
-  CHECK(confClass.architecture() != "");
-  CHECK(confClass.projectName() != "");
+  CHECK(!confClass.projPath().empty());
+  CHECK(!confClass.cCompilerPath().empty());
+  CHECK(!confClass.cppCompilerPath().empty());
+  CHECK(!confClass.vcpkgDirPath().empty());
+  CHECK(!confClass.cmakePath().empty());
+  CHECK(!confClass.makePath().empty());
+  CHECK(!confClass.archiverPath().empty());
+  CHECK(!confClass.architecture().empty());
+  CHECK(!confClass.architecture().empty());
+  CHECK(!confClass.projectName().empty());
   CHECK(confClass.language() == "c++");
-  CHECK(confClass.standard() != "");
-  CHECK(confClass.binaryName() != "");
+  CHECK(!confClass.standard().empty());
+  CHECK(!confClass.binaryName().empty());
   CHECK(confClass.binaryType() == "app");
-  CHECK(confClass.outputDirectory() != "");
-  CHECK(confClass.sourceDirectory() != "");
+  CHECK(!confClass.outputDirectory().empty());
+  CHECK(!confClass.sourceDirectory().empty());
 }
 } // namespace vcbld

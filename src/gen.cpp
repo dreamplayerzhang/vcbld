@@ -6,7 +6,7 @@ void includePathGen() {
   json incJson;
   PkgClass pkgClass;
   incJson.push_back(pkgClass.sourceDirectory());
-  if (pkgClass.includeDirectory() != "") {
+  if (!pkgClass.includeDirectory().empty()) {
     incJson.push_back(pkgClass.includeDirectory());
   }
   incJson.push_back(pkgClass.outputDirectory());
@@ -109,7 +109,7 @@ void cmakeGen() {
                "code and call cmake from there. Thank you.\")\nendif()\n\n"
             << "set(SOURCE_FILES " << prepClass.sourceFilesSinPath() << ")\n\n";
 
-        if (prepClass.libDirectory() != "" &&
+        if (!prepClass.libDirectory().empty() &&
             fs::exists(prepClass.libDirectory())) {
           ofs << "set(LOCAL_DBG_LIB_PATH "
                  "${CMAKE_CURRENT_SOURCE_DIR}/../"
@@ -138,14 +138,14 @@ void cmakeGen() {
         ofs << "target_include_directories(${PROJECT_NAME} PUBLIC "
                "${CMAKE_PREFIX_PATH}"
             << "/include)\n";
-        if (prepClass.includeDirectory() != "" &&
+        if (!prepClass.includeDirectory().empty() &&
             fs::exists(prepClass.includeDirectory())) {
           ofs << "target_include_directories(${PROJECT_NAME} PUBLIC "
                  "${CMAKE_CURRENT_SOURCE_DIR}/../"
               << fs::path(prepClass.includeDirectory()).filename().string()
               << ")\n";
         }
-        if (prepClass.fullLibNames().size() != 0 && prepClass.fullDbgLibNames().size() != 0) {
+        if (!prepClass.fullLibNames().empty() && !prepClass.fullDbgLibNames().empty()) {
           ofs << "target_link_libraries(${PROJECT_NAME} debug ${dbgLIBS})\n"
               << "target_link_libraries(${PROJECT_NAME} optimized "
                  "${rlsLIBS})\n";

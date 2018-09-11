@@ -201,13 +201,13 @@ void Init::setup() {
       if (confOutput.is_open()) {
         confOutput << std::setw(4) << "{\n\t\"cCompilerPath\" : \""
                    << _cCompilerPath << "\",\n\t"
-                   << "\"cppCompilerPath\" : \"" << _cppCompilerPath
+                   << R"("cppCompilerPath" : ")" << _cppCompilerPath
                    << "\",\n\t"
-                   << "\"vcpkgPath\" : \"" << _vcpkgPath << "\",\n\t"
-                   << "\"architecture\" : \"" << PLATFORM_NAME << "\",\n\t"
-                   << "\"cmakePath\" : \"" << _cmakePath << "\",\n\t"
-                   << "\"makePath\" : \"" << _makePath << "\",\n\t"
-                   << "\"archiverPath\" : \"" << _archiverPath << "\"\n}";
+                   << R"("vcpkgPath" : ")" << _vcpkgPath << "\",\n\t"
+                   << R"("architecture" : ")" << PLATFORM_NAME << "\",\n\t"
+                   << R"("cmakePath" : ")" << _cmakePath << "\",\n\t"
+                   << R"("makePath" : ")" << _makePath << "\",\n\t"
+                   << R"("archiverPath" : ")" << _archiverPath << "\"\n}";
         confOutput.flush();
         confOutput.close();
         std::cout << "conf.json written successfully." << std::endl;
@@ -277,13 +277,13 @@ void Init::init(const std::string &binType) {
           std::cout << "output directory created successfully." << std::endl;
         }
 
-        if (confClass.includeDirectory() != "" &&
+        if (!confClass.includeDirectory().empty() &&
             !fs::exists(confClass.includeDirectory())) {
           fs::create_directory(confClass.includeDirectory());
           std::cout << "include directory created successfully." << std::endl;
         }
 
-        if (confClass.libDirectory() != "" &&
+        if (!confClass.libDirectory().empty() &&
             !fs::exists(confClass.libDirectory())) {
           fs::create_directory(confClass.libDirectory());
           fs::create_directory(confClass.libDirectory() + "/debug");
@@ -317,7 +317,7 @@ void Init::findPathDirs(std::string &PATH, std::vector<fs::path> &dirs) {
   std::string rem = PATH;
   size_t foundSep;
   std::string sep;
-  if (rem.find(";") != std::string::npos) {
+  if (rem.find(';') != std::string::npos) {
     sep = ";";
     foundSep = rem.find_first_of(sep);
   } else {
@@ -363,8 +363,8 @@ fs::path Init::findCmake(const fs::path &dir) {
 }
 
 void Init::posixify(std::string &path) {
-  if (path.find("\\") != std::string::npos) {
-    path.replace(path.find("\\"), 1, "/");
+  if (path.find('\\') != std::string::npos) {
+    path.replace(path.find('\\'), 1, "/");
     posixify(path);
   }
 }
@@ -406,7 +406,7 @@ void Init::lister(std::vector<fs::path> &vector) {
 
 std::string Init::chooser(std::vector<fs::path> &vector, const int &choice) {
   fs::path temp;
-  if (vector.size() == 0) {
+  if (vector.empty()) {
     temp = "";
   } else if (vector.size() == 1) {
     temp = vector[0];
@@ -433,32 +433,32 @@ std::string Init::chooser(std::vector<fs::path> &vector, const int &choice) {
 }
 
 void Init::setCompiler(const int &i) {
-  if (_cCompilers.size() > 0) {
+  if (!_cCompilers.empty()) {
     _cCompilerPath = chooser(_cCompilers, i);
   }
 }
 void Init::setCppCompiler(const int &i) {
-  if (_cppCompilers.size() > 0) {
+  if (!_cppCompilers.empty()) {
     _cppCompilerPath = chooser(_cppCompilers, i);
   }
 }
 void Init::setCmake(const int &i) {
-  if (_cmakePaths.size() > 0) {
+  if (!_cmakePaths.empty()) {
     _cmakePath = chooser(_cmakePaths, i);
   }
 }
 void Init::setMake(const int &i) {
-  if (_makePaths.size() > 0) {
+  if (!_makePaths.empty()) {
     _makePath = chooser(_makePaths, i);
   }
 }
 void Init::setArchiver(const int &i) {
-  if (_archiverPaths.size() > 0) {
+  if (!_archiverPaths.empty()) {
     _archiverPath = chooser(_archiverPaths, i);
   }
 }
 void Init::setVcpkg(const int &i) {
-  if (_vcpkgPaths.size() > 0) {
+  if (!_vcpkgPaths.empty()) {
     _vcpkgPath = chooser(_vcpkgPaths, i);
   }
 }

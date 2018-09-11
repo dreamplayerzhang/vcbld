@@ -63,7 +63,7 @@ ConfClass::ConfClass() {
     }
 
     try {
-      if (vcbldJson["includeDirectory"].get<std::string>() != "" &&
+      if (!vcbldJson["includeDirectory"].get<std::string>().empty() &&
           fs::exists(vcbldJson["includeDirectory"].get<std::string>())) {
         _includeDirectory =
             fs::canonical(vcbldJson["includeDirectory"].get<std::string>())
@@ -77,7 +77,7 @@ ConfClass::ConfClass() {
     }
 
     try {
-      if (vcbldJson["libDirectory"].get<std::string>() != "" &&
+      if (!vcbldJson["libDirectory"].get<std::string>().empty() &&
           fs::exists(vcbldJson["libDirectory"].get<std::string>())) {
         _libDirectory =
             fs::canonical(vcbldJson["libDirectory"].get<std::string>())
@@ -122,7 +122,7 @@ ConfClass::ConfClass() {
 
   _architecture = confJson["architecture"].get<std::string>();
 
-  if (confJson["vcpkgPath"].get<std::string>() != "" &&
+  if (!confJson["vcpkgPath"].get<std::string>().empty() &&
       fs::exists(confJson["vcpkgPath"].get<std::string>())) {
     _vcpkgDirectory = fs::canonical(confJson["vcpkgPath"].get<std::string>())
                           .parent_path()
@@ -130,34 +130,34 @@ ConfClass::ConfClass() {
     posixify(_vcpkgDirectory);
   }
 
-  if (confJson["cCompilerPath"].get<std::string>() != "" &&
+  if (!confJson["cCompilerPath"].get<std::string>().empty() &&
       fs::exists(confJson["cCompilerPath"].get<std::string>())) {
     _cCompilerPath =
         fs::canonical(confJson["cCompilerPath"].get<std::string>()).string();
     posixify(_cCompilerPath);
   }
 
-  if (confJson["cppCompilerPath"].get<std::string>() != "" &&
+  if (!confJson["cppCompilerPath"].get<std::string>().empty() &&
       fs::exists(confJson["cppCompilerPath"].get<std::string>())) {
     _cppCompilerPath =
         fs::canonical(confJson["cppCompilerPath"].get<std::string>()).string();
     posixify(_cppCompilerPath);
   }
 
-  if (confJson["cmakePath"].get<std::string>() != "" &&
+  if (!confJson["cmakePath"].get<std::string>().empty() &&
       fs::exists(confJson["cmakePath"].get<std::string>())) {
     _cmakePath =
         fs::canonical(confJson["cmakePath"].get<std::string>()).string();
     posixify(_cmakePath);
   }
 
-  if (confJson["makePath"].get<std::string>() != "" &&
+  if (!confJson["makePath"].get<std::string>().empty() &&
       fs::exists(confJson["makePath"].get<std::string>())) {
     _makePath = fs::canonical(confJson["makePath"].get<std::string>()).string();
     posixify(_makePath);
   }
 
-  if (confJson["archiverPath"].get<std::string>() != "" &&
+  if (!confJson["archiverPath"].get<std::string>().empty() &&
       fs::exists(confJson["archiverPath"].get<std::string>())) {
     _archiverPath =
         fs::canonical(confJson["archiverPath"].get<std::string>()).string();
@@ -202,8 +202,8 @@ std::string ConfClass::libDirectory() const { return _libDirectory; }
 std::string ConfClass::architecture() const { return _architecture; }
 
 void ConfClass::posixify(std::string &path) {
-  if (path.find("\\") != std::string::npos) {
-    path.replace(path.find("\\"), 1, "/");
+  if (path.find('\\') != std::string::npos) {
+    path.replace(path.find('\\'), 1, "/");
     posixify(path);
   }
 }

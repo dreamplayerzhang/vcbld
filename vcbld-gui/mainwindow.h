@@ -17,7 +17,7 @@ class MainWindow : public QMainWindow {
   Q_OBJECT
 
 public:
-  MainWindow(const fs::path vcbldPath, QWidget *parent = nullptr);
+  MainWindow(const fs::path &vcbldPath, QWidget *parent = nullptr);
   ~MainWindow();
   void runProcess(const QString &process, const QString &dir);
 

@@ -15,6 +15,6 @@ TEST_CASE("Preparation tests", "[prep]") {
       "\"" +
           path +
           "\" ");
-  CHECK(prepClass.cmakeOutput() == "");
+  CHECK(prepClass.cmakeOutput().empty());
 }
 } // namespace vcbld

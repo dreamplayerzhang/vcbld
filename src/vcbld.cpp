@@ -161,7 +161,7 @@ int main(int argc, char *argv[]) {
         args::vcpkg(vcpkgArgs);
       }
     } else if (strcmp(argv[1], "cmake") == 0) {
-      std::string cmakeArgs = "";
+      std::string cmakeArgs;
       if (argc < 3) {
         args::cmake(cmakeArgs);
       } else {
@@ -219,7 +219,7 @@ void setup(Init &init) {
       setup(init);
     }
   } else {
-    if (init.cCompilers().size() == 0) {
+    if (init.cCompilers().empty()) {
       std::cout << "vcbld couldn't locate a C compiler." << std::endl;
       init.setCompiler();
     } else if (init.cCompilers().size() == 1) {
@@ -235,7 +235,7 @@ void setup(Init &init) {
         init.setCompiler(1);
       }
     }
-    if (init.cppCompilers().size() == 0) {
+    if (init.cppCompilers().empty()) {
       std::cout << "vcbld couldn't locate a C++ compiler." << std::endl;
       init.setCppCompiler();
     } else if (init.cppCompilers().size() == 1) {
@@ -251,7 +251,7 @@ void setup(Init &init) {
         init.setCppCompiler(1);
       }
     }
-    if (init.cmakePaths().size() == 0) {
+    if (init.cmakePaths().empty()) {
       std::cout << "vcbld couldn't locate a cmake executable." << std::endl;
       init.setCmake();
     } else if (init.cmakePaths().size() == 1) {
@@ -267,7 +267,7 @@ void setup(Init &init) {
         init.setCmake(1);
       }
     }
-    if (init.makePaths().size() == 0) {
+    if (init.makePaths().empty()) {
       std::cout << "vcbld couldn't locate a make executable." << std::endl;
       init.setMake();
     } else if (init.makePaths().size() == 1) {
@@ -283,7 +283,7 @@ void setup(Init &init) {
         init.setMake(1);
       }
     }
-    if (init.archiverPaths().size() == 0) {
+    if (init.archiverPaths().empty()) {
       std::cout << "vcbld couldn't locate an archiver." << std::endl;
       init.setArchiver();
     } else if (init.archiverPaths().size() == 1) {
@@ -299,7 +299,7 @@ void setup(Init &init) {
         init.setArchiver(1);
       }
     }
-    if (init.vcpkgPaths().size() == 0) {
+    if (init.vcpkgPaths().empty()) {
       std::cout << "vcbld couldn't locate a vcpkg instance." << std::endl;
       init.setVcpkg();
     } else if (init.vcpkgPaths().size() == 1) {
@@ -321,7 +321,7 @@ void setup(Init &init) {
 
 std::string parseQuotes(const char *arg) {
   std::string temp = static_cast<std::string>(arg);
-  if (temp.find(" ") != std::string::npos) {
+  if (temp.find(' ') != std::string::npos) {
     return "\"" + temp + "\"";
   } else {
     return temp;

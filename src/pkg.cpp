@@ -2,7 +2,7 @@
 
 namespace vcbld {
 
-PkgClass::PkgClass() : ConfClass() {
+PkgClass::PkgClass() {
   json pkgsJson;
   try {
     std::ifstream pkgsInput("package.json");
@@ -59,7 +59,7 @@ void PkgClass::write() {
     std::cerr << "Failed to open file : " << e.what() << " " << errno
               << std::endl;
   }
-  if (isEmpty == true) {
+  if (isEmpty) {
     fs::remove("package.json");
     try {
       std::ofstream pkgsOutput("package.json");

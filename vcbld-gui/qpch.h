@@ -1,6 +1,7 @@
 #ifndef QPCH_H
 #define QPCH_H
 
+#include <functional>
 #include <QApplication>
 #include <QDebug>
 #include <QDesktopWidget>

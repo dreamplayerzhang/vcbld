@@ -4,14 +4,36 @@ branches:
     only:
         - master
 
-image: 
-    - Visual Studio 2017
-    - Ubuntu
+environment:
+  matrix:
+    - fast_finish: true
+    - id: linux-64
+      APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+    - id: win64
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    - id: win32
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
 
-build_script:
-- cmd: build-w64.bat
-- cmd: build-w32.bat
-- sh: build-linux.sh
+for: 
+  - matrix:
+      only:
+      - id: linux-64
+  build_script:
+    - sh: build-linux.sh
+
+for: 
+  - matrix:
+      only:
+      - id: win64
+  build_script:
+    - cmd: build-w64.bat
+
+for: 
+  - matrix:
+      only:
+      - id: win32
+  build_script:
+    - cmd: build-w32.bat
 
 artifacts:
 - path: bin_w64\release\vcbld.exe

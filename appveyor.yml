@@ -18,6 +18,8 @@ for:
     matrix:
       only:
         - id: linux-64
+    init: 
+      - sh: chmod a+x build-linux.sh 
     build_script:
       - sh: ./build-linux.sh
 

@@ -22,4 +22,4 @@ make -j$(nproc)
 
 ~/linuxdeployqt/linuxdeployqt-continuous-x86_64.AppImage ~/projects/vcbld/bin_linux/release/vcbld-gui -appimage -no-copy-copyright-files -no-translations
 
-mv ~/projects/vcbld/bin_linux/Application-x86_64.AppImage ~/projects/vcbld/bin_linux/release/vcbld-gui.AppImage
+mv ~/projects/vcbld/bin_linux/vcbld-gui-x86_64.AppImage ~/projects/vcbld/bin_linux/release/vcbld-gui.AppImage

@@ -22,15 +22,13 @@ for:
   build_script:
     - sh: build-linux.sh
 
-for: 
   - 
     matrix:
       only:
       - id: win64
   build_script:
     - cmd: build-w64.bat
-
-for: 
+    
   - 
     matrix:
       only:

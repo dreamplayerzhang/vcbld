@@ -15,21 +15,24 @@ environment:
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
 
 for: 
-  - matrix:
+  - 
+    matrix:
       only:
       - id: linux-64
   build_script:
     - sh: build-linux.sh
 
 for: 
-  - matrix:
+  - 
+    matrix:
       only:
       - id: win64
   build_script:
     - cmd: build-w64.bat
 
 for: 
-  - matrix:
+  - 
+    matrix:
       only:
       - id: win32
   build_script:

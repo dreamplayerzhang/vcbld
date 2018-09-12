@@ -6,7 +6,6 @@ branches:
 
 environment:
   matrix:
-    - fast_finish: true
     - id: linux-64
       APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
     - id: win64

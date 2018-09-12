@@ -19,22 +19,22 @@ for:
     matrix:
       only:
         - id: linux-64
-  build_script:
-    - sh: build-linux.sh
+    build_script:
+      - sh: build-linux.sh
 
   - 
     matrix:
       only:
         - id: win64
-  build_script:
-    - cmd: build-w64.bat
+    build_script:
+      - cmd: build-w64.bat
 
   - 
     matrix:
       only:
         - id: win32
-  build_script:
-    - cmd: build-w32.bat
+    build_script:
+      - cmd: build-w32.bat
 
 artifacts:
 - path: bin_w64\release\vcbld.exe

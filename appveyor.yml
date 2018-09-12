@@ -9,74 +9,59 @@ image:
     - Ubuntu
 
 build_script:
-- cmd: >-
-    call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
-
-    cd C:\projects\vcbld
-
-    mkdir bin
-
-    cd bin
-
-    cmake -G "NMake Makefiles" -DCMAKE_PREFIX_PATH=C:\Qt\5.11.1\msvc2017_64 -DWITH_GUI=ON -DCMAKE_BUILD_TYPE=Release ..
-
-    nmake.exe
-
-    C:\Qt\5.11.1\msvc2017_64\bin\windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler C:\projects\vcbld\bin\release\vcbld-gui.exe
-
-- sh: >-
-    wget -P ~/linuxdeployqt https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
-
-    cd ~/linuxdeployqt
-
-    chmod a+x linuxdeployqt-continuous-x86_64.AppImage
-
-    sudo apt-get --yes install qtbase5-dev qt5-qmake
-
-    export QT_SELECT=qt5
-
-    cd ~/projects/vcbld
-
-    mkdir bin
-
-    cd bin
-
-    cmake -DCMAKE_CXX_COMPILER=/usr/bin/g++-8 -DWITH_GUI=ON -DCMAKE_BUILD_TYPE=Release ..
-
-    make -j$(nproc)
-
-    ~/linuxdeployqt/linuxdeployqt-continuous-x86_64.AppImage ~/projects/vcbld/bin/release/vcbld-gui -appimage -no-copy-copyright-files -no-translations
-
-    mv ~/projects/vcbld/bin/Application-x86_64.AppImage ~/projects/vcbld/bin/release/vcbld-gui.AppImage
+- cmd: build-w64.bat
+- cmd: build-w32.bat
+- sh: build-linux.sh
 
 artifacts:
-- path: bin\release\vcbld.exe
+- path: bin_w64\release\vcbld.exe
   name: vcbld_win64
-- path: bin\release\vcbld-gui.exe
+- path: bin_w64\release\vcbld-gui.exe
   name: vcbld-gui_win64
-- path: bin\release\vcbld-gui.bat
+- path: bin_w64\release\vcbld-gui.bat
   name: vcbld-gui-bat_win64
-- path: bin\release
-  name: release-folder
-- path: bin/release/vcbld
+- path: bin_w64\release
+  name: release-w64
+- path: bin_w32\release\vcbld.exe
+  name: vcbld_win32
+- path: bin_w32\release\vcbld-gui.exe
+  name: vcbld-gui_win32
+- path: bin_w32\release\vcbld-gui.bat
+  name: vcbld-gui-bat_win32
+- path: bin_w32\release
+  name: release-w32
+- path: bin_linux/release/vcbld
   name: vcbld_linux64
-- path: bin/release/vcbld-gui
+- path: bin_linux/release/vcbld-gui
   name: vcbld-gui_linux64
-- path: bin/release/vcbld-gui.command
+- path: bin_linux/release/vcbld-gui.command
   name: vcbld-gui-command_linux64
-- path: bin/release/vcbld-gui.AppImage
+- path: bin_linux/release/vcbld-gui.AppImage
   name: vcbld-gui-appimage_linux64
 
 deploy:
 - provider: GitHub
   tag: vcbld-v0.1-alpha-win64
   release: vcbld-win64-av
-  description: "Tried with mingw64 and for header only libraries. Tried with the msvc compiler (cl.exe) and it works, however, vcbld needs to be run from the developer command prompt. As for the gui, the bat file also needs to be started from the dev command prompt to access the development environment variables also used by your installation of the vs build tools or visual studio. Otherwise, the bat file can be modified like in the vcbld-gui tutorial here: https://www.youtube.com/watch?v=6lYCwM-UlNE  Only download the release folder if you're missing OpenGL dependencies. Note that running the vcbld cmake command on windows generates a visual studio solution by default."
+  description: "Tried with mingw64 and for header only libraries. Tried with the msvc compiler (cl.exe) and it works, however, vcbld needs to be run from the developer command prompt. As for the gui, the bat file also needs to be started from the dev command prompt to access the development environment variables also used by your installation of the vs build tools or visual studio. Otherwise, the bat file can be modified like in the vcbld-gui tutorial here: https://www.youtube.com/watch?v=6lYCwM-UlNE  
+  Only download the release folder if you're missing OpenGL dependencies. Note that running the vcbld cmake command on windows generates a visual studio solution by default."
   auth_token:
     secure: ta1sqN8ALHgB+6BHHv3dqO7Q9DyB6oJNLIHu9EhQzmD3PqVFri0Q80GMcnA4t6ZU
   repository: MoAlyousef/vcbld
-  artifact: vcbld_win64, vcbld-gui_win64, release-folder, vcbld-gui-bat_win64
+  artifact: vcbld_win64, vcbld-gui_win64, release-w64, vcbld-gui-bat_win64
   prerelease: true
+
+- provider: GitHub
+  tag: vcbld-v0.1-alpha-win32
+  release: vcbld-win32-av
+  description: "Tried with mingw64 and for header only libraries. Tried with the msvc compiler (cl.exe) and it works, however, vcbld needs to be run from the developer command prompt. As for the gui, the bat file also needs to be started from the dev command prompt to access the development environment variables also used by your installation of the vs build tools or visual studio. Otherwise, the bat file can be modified like in the vcbld-gui tutorial here: https://www.youtube.com/watch?v=6lYCwM-UlNE  
+  Only download the release folder if you're missing OpenGL dependencies. Note that running the vcbld cmake command on windows generates a visual studio solution by default."
+  auth_token:
+    secure: ta1sqN8ALHgB+6BHHv3dqO7Q9DyB6oJNLIHu9EhQzmD3PqVFri0Q80GMcnA4t6ZU
+  repository: MoAlyousef/vcbld
+  artifact: vcbld_win32, vcbld-gui_win32, release-w32, vcbld-gui-bat_win32
+  prerelease: true
+
 - provider: GitHub
   tag: vcbld-v0.1-alpha-linux64
   release: vcbld-linux64-av

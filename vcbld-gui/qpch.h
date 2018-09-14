@@ -1,9 +1,7 @@
 #ifndef QPCH_H
 #define QPCH_H
 
-#include <functional>
 #include <QApplication>
-#include <QDebug>
 #include <QDesktopWidget>
 #include <QDialog>
 #include <QDir>
@@ -16,6 +14,7 @@
 #include <QProcess>
 #include <QString>
 #include <QWindow>
+#include <functional>
 #include <streambuf>
 
 #include "add.h"

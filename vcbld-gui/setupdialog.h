@@ -21,7 +21,6 @@ public:
   int choice();
 
 private slots:
-
   void on_listWidget_doubleClicked(const QModelIndex &index);
 
 private:

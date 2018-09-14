@@ -62,6 +62,11 @@ void MainWindow::local_outputChanged() {
     ui->plainTextEdit->appendPlainText(error);
 }
 
+void MainWindow::on_vcpkgCmnd(const std::string &cmnd) {
+  QString command = QString::fromStdString(cmnd);
+  runProcess(command, QDir::currentPath());
+}
+
 void MainWindow::runProcess(const QString &process, const QString &dir) {
   proc->setWorkingDirectory(dir);
   proc->start(process);
@@ -73,7 +78,7 @@ void MainWindow::runProcess(const QString &process, const QString &dir) {
 
 void MainWindow::on_procFinished(int) { enableMenus(true); }
 
-void MainWindow::on_actionToolbar_triggered() {
+void MainWindow::on_actionToolbarZmIn_triggered() {
   QFont font = ui->menuBar->font();
   font.setPointSize(font.pointSize() + 1);
   ui->menuBar->setFont(font);
@@ -84,9 +89,10 @@ void MainWindow::on_actionToolbar_triggered() {
   ui->menuOpen->setFont(font);
   ui->menuPackages->setFont(font);
   ui->menuView->setFont(font);
+  statusLabel->setFont(font);
 }
 
-void MainWindow::on_actionToolbar_2_triggered() {
+void MainWindow::on_actionToolbarZmOut_triggered() {
   QFont font = ui->menuBar->font();
   font.setPointSize(font.pointSize() - 1);
   ui->menuBar->setFont(font);
@@ -97,11 +103,14 @@ void MainWindow::on_actionToolbar_2_triggered() {
   ui->menuOpen->setFont(font);
   ui->menuPackages->setFont(font);
   ui->menuView->setFont(font);
+  statusLabel->setFont(font);
 }
 
-void MainWindow::on_actionOutput_triggered() { ui->plainTextEdit->zoomIn(1); }
+void MainWindow::on_actionOutputZmIn_triggered() {
+  ui->plainTextEdit->zoomIn(1);
+}
 
-void MainWindow::on_actionOutput_2_triggered() {
+void MainWindow::on_actionOutputZmOut_triggered() {
   ui->plainTextEdit->zoomOut(1);
 }
 
@@ -165,12 +174,16 @@ void MainWindow::on_actionAlways_on_top_triggered(bool checked) {
 void MainWindow::on_actionDebug_triggered(bool checked) {
   if (checked) {
     ui->actionRelease->setChecked(false);
+  } else {
+    ui->actionDebug->setChecked(true);
   }
 }
 
 void MainWindow::on_actionRelease_triggered(bool checked) {
   if (checked) {
     ui->actionDebug->setChecked(false);
+  } else {
+    ui->actionRelease->setChecked(true);
   }
 }
 
@@ -380,18 +393,18 @@ void MainWindow::on_actionBuild_run_triggered() {
 }
 
 void MainWindow::on_actionAdd_triggered() {
-  Add *add = new Add(this);
+  Add *add = new Add("add", this);
   add->show();
   add->raise();
 }
 
-void MainWindow::on_actionRemove_2_triggered() {
-  Remove *rmv = new Remove(this);
+void MainWindow::on_actionRemove_triggered() {
+  Remove *rmv = new Remove("remove", this);
   rmv->show();
   rmv->raise();
 }
 
-void MainWindow::on_actionList_3_triggered() {
+void MainWindow::on_actionList_triggered() {
   ui->plainTextEdit->appendPlainText(Helper::exec(std::bind(&args::list)));
 }
 
@@ -520,7 +533,7 @@ void MainWindow::setup(Init &init) {
   }
 }
 
-void MainWindow::on_actionClear_output_2_triggered() {
+void MainWindow::on_actionClear_output_triggered() {
   ui->plainTextEdit->clear();
 }
 
@@ -578,4 +591,16 @@ void MainWindow::archive(Builder &builder) {
     runProcess(QString::fromStdString(builder.archiveCmnd()),
                QString::fromStdString(builder.outputDirectory() + "/release"));
   }
+}
+
+void MainWindow::on_actionInstall_triggered() {
+  Add *add = new Add("install", this);
+  add->show();
+  add->raise();
+}
+
+void MainWindow::on_actionUninstall_triggered() {
+  Remove *rmv = new Remove("uninstall", this);
+  rmv->show();
+  rmv->raise();
 }

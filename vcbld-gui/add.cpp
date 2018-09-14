@@ -2,7 +2,8 @@
 
 using namespace vcbld;
 
-Add::Add(QWidget *parent) : QMainWindow(parent), ui(new Ui::Add) {
+Add::Add(const std::string &param, QWidget *parent)
+    : QMainWindow(parent), ui(new Ui::Add), _param(param) {
   ui->setupUi(this);
   QDesktopWidget *desktop = QApplication::desktop();
   int screenWidth = desktop->width();
@@ -11,19 +12,32 @@ Add::Add(QWidget *parent) : QMainWindow(parent), ui(new Ui::Add) {
 
   QObject::connect(this, SIGNAL(outputChanged(const QString &)), parent,
                    SLOT(on_outputChanged(const QString &)));
+  QObject::connect(this, SIGNAL(vcpkgCmnd(const std::string &)), parent,
+                   SLOT(on_vcpkgCmnd(const std::string &)));
 
-  try {
-    std::vector<fs::directory_entry> dirEntry;
-    std::string vcpkgDirPath = pkgClass.vcpkgDirPath();
+  std::string vcpkgDirPath = pkgClass.vcpkgDirPath();
+  if (_param == "add") {
     vcpkgDirPath += "/";
     vcpkgDirPath += "installed";
     vcpkgDirPath += "/";
     vcpkgDirPath += pkgClass.architecture();
     vcpkgDirPath += "/";
     vcpkgDirPath += "share";
+  } else if (_param == "install") {
+    vcpkgDirPath += "/";
+    vcpkgDirPath += "ports";
+  } else {
+    QMessageBox msgBox;
+    msgBox.setText("Unknown parameter");
+    msgBox.exec();
+  }
 
-    if (fs::is_directory(static_cast<fs::path>(vcpkgDirPath))) {
-      std::copy(fs::directory_iterator(vcpkgDirPath), fs::directory_iterator(),
+  _dirPath = std::move(vcpkgDirPath);
+
+  try {
+    std::vector<fs::directory_entry> dirEntry;
+    if (fs::is_directory(static_cast<fs::path>(_dirPath))) {
+      std::copy(fs::directory_iterator(_dirPath), fs::directory_iterator(),
                 back_inserter(dirEntry));
       std::sort(dirEntry.begin(), dirEntry.end());
       dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
@@ -54,7 +68,13 @@ void Add::on_listWidget_itemDoubleClicked(QListWidgetItem *item) {
   QString pkgName = item->text();
   std::vector<std::string> v;
   v.push_back(pkgName.toStdString());
-  _output = Helper::execVec(std::bind(&args::add, v), v);
+  if (_param == "add") {
+    _output = Helper::execVec(std::bind(&args::add, v), v);
+  } else {
+    emit vcpkgCmnd(pkgClass.vcpkgDirPath() + "/" + "vcpkg" + " install " +
+                   pkgName.toStdString());
+    _output = Helper::execVec(std::bind(&args::add, v), v);
+  }
   emit outputChanged(_output);
 }
 
@@ -63,16 +83,8 @@ void Add::on_lineEdit_textChanged(const QString &arg1) {
   try {
     std::vector<fs::directory_entry> dirEntry;
 
-    std::string vcpkgDirPath = pkgClass.vcpkgDirPath();
-    vcpkgDirPath += "/";
-    vcpkgDirPath += "installed";
-    vcpkgDirPath += "/";
-    vcpkgDirPath += pkgClass.architecture();
-    vcpkgDirPath += "/";
-    vcpkgDirPath += "share";
-
-    if (fs::is_directory(static_cast<fs::path>(vcpkgDirPath))) {
-      std::copy(fs::directory_iterator(vcpkgDirPath), fs::directory_iterator(),
+    if (fs::is_directory(static_cast<fs::path>(_dirPath))) {
+      std::copy(fs::directory_iterator(_dirPath), fs::directory_iterator(),
                 back_inserter(dirEntry));
       std::sort(dirEntry.begin(), dirEntry.end());
       dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),

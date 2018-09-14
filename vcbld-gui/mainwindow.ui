@@ -88,20 +88,23 @@
      <string>Packages</string>
     </property>
     <addaction name="actionAdd"/>
-    <addaction name="actionRemove_2"/>
-    <addaction name="actionList_3"/>
+    <addaction name="actionRemove"/>
+    <addaction name="actionList"/>
     <addaction name="actionRestore"/>
+    <addaction name="separator"/>
+    <addaction name="actionInstall"/>
+    <addaction name="actionUninstall"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
      <string>Window</string>
     </property>
-    <addaction name="actionClear_output_2"/>
+    <addaction name="actionClear_output"/>
     <addaction name="actionAlways_on_top"/>
-    <addaction name="actionToolbar"/>
-    <addaction name="actionToolbar_2"/>
-    <addaction name="actionOutput"/>
-    <addaction name="actionOutput_2"/>
+    <addaction name="actionToolbarZmIn"/>
+    <addaction name="actionToolbarZmOut"/>
+    <addaction name="actionOutputZmIn"/>
+    <addaction name="actionOutputZmOut"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -138,36 +141,6 @@
   <action name="actionOpen">
    <property name="text">
     <string>Open...</string>
-   </property>
-  </action>
-  <action name="actionSearch">
-   <property name="text">
-    <string>Search</string>
-   </property>
-  </action>
-  <action name="actionInstall">
-   <property name="text">
-    <string>Install</string>
-   </property>
-  </action>
-  <action name="actionRemove">
-   <property name="text">
-    <string>Remove</string>
-   </property>
-  </action>
-  <action name="actionList">
-   <property name="text">
-    <string>List</string>
-   </property>
-  </action>
-  <action name="actionUpdate">
-   <property name="text">
-    <string>Update</string>
-   </property>
-  </action>
-  <action name="actionUpgrade">
-   <property name="text">
-    <string>Upgrade</string>
    </property>
   </action>
   <action name="actionClose">
@@ -229,19 +202,9 @@
     <string>Add...</string>
    </property>
   </action>
-  <action name="actionRemove_2">
+  <action name="actionRemove">
    <property name="text">
     <string>Remove...</string>
-   </property>
-  </action>
-  <action name="actionList_2">
-   <property name="text">
-    <string>List...</string>
-   </property>
-  </action>
-  <action name="actionSearch_2">
-   <property name="text">
-    <string>Search...</string>
    </property>
   </action>
   <action name="actionAlways_on_top">
@@ -288,7 +251,7 @@
     <string>Build &amp;&amp; run</string>
    </property>
   </action>
-  <action name="actionList_3">
+  <action name="actionList">
    <property name="text">
     <string>List</string>
    </property>
@@ -303,29 +266,34 @@
     <string>Clear output</string>
    </property>
   </action>
-  <action name="actionClear_output_2">
-   <property name="text">
-    <string>Clear output</string>
-   </property>
-  </action>
-  <action name="actionToolbar">
+  <action name="actionToolbarZmIn">
    <property name="text">
     <string>Toolbar +</string>
    </property>
   </action>
-  <action name="actionToolbar_2">
+  <action name="actionToolbarZmOut">
    <property name="text">
     <string>Toolbar -</string>
    </property>
   </action>
-  <action name="actionOutput">
+  <action name="actionOutputZmIn">
    <property name="text">
     <string>Output +</string>
    </property>
   </action>
-  <action name="actionOutput_2">
+  <action name="actionOutputZmOut">
    <property name="text">
     <string>Output -</string>
+   </property>
+  </action>
+  <action name="actionInstall">
+   <property name="text">
+    <string>Install...</string>
+   </property>
+  </action>
+  <action name="actionUninstall">
+   <property name="text">
+    <string>Uninstall...</string>
    </property>
   </action>
  </widget>

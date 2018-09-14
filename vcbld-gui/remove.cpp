@@ -2,7 +2,8 @@
 
 using namespace vcbld;
 
-Remove::Remove(QWidget *parent) : QMainWindow(parent), ui(new Ui::Remove) {
+Remove::Remove(const std::string &param, QWidget *parent)
+    : QMainWindow(parent), ui(new Ui::Remove), _param(param) {
   ui->setupUi(this);
   QDesktopWidget *desktop = QApplication::desktop();
   int screenWidth = desktop->width();
@@ -11,6 +12,8 @@ Remove::Remove(QWidget *parent) : QMainWindow(parent), ui(new Ui::Remove) {
 
   QObject::connect(this, SIGNAL(outputChanged(const QString &)), parent,
                    SLOT(on_outputChanged(const QString &)));
+  QObject::connect(this, SIGNAL(vcpkgCmnd(const std::string &)), parent,
+                   SLOT(on_vcpkgCmnd(const std::string &)));
 
   for (std::vector<std::string>::iterator it = pkgClass.packageNames().begin();
        it != pkgClass.packageNames().end(); ++it) {
@@ -28,7 +31,13 @@ void Remove::on_listWidget_itemDoubleClicked(QListWidgetItem *item) {
   QString pkgName = item->text();
   std::vector<std::string> v;
   v.push_back(pkgName.toStdString());
-  _output = Helper::execVec(std::bind(&args::remove, v), v);
+  if (_param == "remove") {
+    _output = Helper::execVec(std::bind(&args::remove, v), v);
+  } else {
+    emit vcpkgCmnd(pkgClass.vcpkgDirPath() + "/" + "vcpkg" + " remove " +
+                   pkgName.toStdString());
+    _output = Helper::execVec(std::bind(&args::remove, v), v);
+  }
   emit outputChanged(_output);
   item->setHidden(true);
 }

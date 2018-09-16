@@ -7,7 +7,6 @@ Init::Init(const fs::path &vcbldPath) : _vcbldPath(vcbldPath) {
   std::string brewLLVM = "/usr/local/opt/llvm/bin";
   std::string localBin = "/usr/local/bin";
 
-
   findPathDirs(PATH, _paths);
 
   if (fs::exists(brewLLVM)) {
@@ -60,16 +59,15 @@ Init::Init(const fs::path &vcbldPath) : _vcbldPath(vcbldPath) {
         "vcpkg" / "downloads" / "tools"));
   }
 
-  try {
-    finder(_paths, "C:/");
-    if (std::getenv("HOME") != nullptr)
-      finder(_paths, std::getenv("HOME"));
-    if (std::getenv("PROGRAMFILES") != nullptr)
-      finder(_paths, std::getenv("PROGRAMFILES"));
-    if (std::getenv("MINGW_HOME") != nullptr)
-      finder(_paths, std::getenv("MINGW_HOME"));
-  } catch (...) {
-    // fail quietly
+  finder(_paths, "C:/");
+  if (std::getenv("HOME") != nullptr)
+    finder(_paths, std::getenv("HOME"));
+  if (std::getenv("PROGRAMFILES") != nullptr)
+    finder(_paths, std::getenv("PROGRAMFILES"));
+  if (std::getenv("MINGW_HOME") != nullptr)
+    finder(_paths, std::getenv("MINGW_HOME"));
+  if (std::getenv("EMSCRIPTEN") != nullptr) {
+    _paths.emplace_back(fs::canonical(std::getenv("EMSCRIPTEN")));
   }
 
   sorter(_paths);

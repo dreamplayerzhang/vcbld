@@ -2,8 +2,7 @@
 
 namespace vcbld {
 
-Builder::Builder(const std::string &buildType)
-    : _buildType(buildType) {
+Builder::Builder(const std::string &buildType) : _buildType(buildType) {
   if (!fs::exists("vcbld.json")) {
     std::cout << "Build configuration not found!" << std::endl;
     std::exit(1);
@@ -17,10 +16,6 @@ Builder::Builder(const std::string &buildType)
   } else {
     _buildDir = _rlsDir;
   }
-  compile();
-  appLink();
-  dylibLink();
-  archive();
 }
 
 void Builder::compile() {
@@ -46,6 +41,32 @@ void Builder::compile() {
                     << " " << compilerDefines() << debugFlag << stdFlag
                     << language() << standard() << keepFlag << sourceFiles();
   }
+}
+
+std::string Builder::objPath(const std::string &buildPath) {
+  std::vector<fs::directory_entry> dirEntry;
+  std::string fullPath;
+  std::ostringstream temp;
+
+  if (fs::is_directory(static_cast<fs::path>(buildPath))) {
+    std::copy(fs::directory_iterator(buildPath), fs::directory_iterator(),
+              back_inserter(dirEntry));
+    std::sort(dirEntry.begin(), dirEntry.end());
+    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
+                   dirEntry.end());
+    _outCount = dirEntry.size();
+
+    for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
+         it != dirEntry.end(); ++it) {
+      if (fs::path(it->path().filename()).extension() == ".o" ||
+          fs::path(it->path().filename()).extension() == ".obj") {
+        fullPath = std::move(it->path().string());
+        posixify(fullPath);
+        temp << "\"" << fullPath << "\" ";
+      }
+    }
+  }
+  return temp.str();
 }
 
 void Builder::appLink() {
@@ -129,11 +150,15 @@ void Builder::archive() {
 }
 
 std::string Builder::getBldCommands() {
+  compile();
   if (binaryType() == "app") {
+    appLink();
     return _compileCommand.str() + "\n" + _appLinkCmnd.str();
   } else if (binaryType() == "staticLibrary") {
+    archive();
     return _compileCommand.str() + "\n" + _archiveCmnd.str();
   } else if (binaryType() == "dynamicLibrary") {
+    dylibLink();
     return _compileCommand.str() + "\n" + _libLinkCmnd.str();
   } else {
     std::cout << "Unknown binary type defined in vcbld.json." << std::endl;
@@ -155,6 +180,7 @@ void Builder::build() {
   if (!fs::exists(outputDirectory() + "/" + "debug"))
     fs::create_directory(_dbgDir);
 
+  compile(); // prep compile command
   if (binaryType() == "app") {
     try {
       std::cout << "Compiling in " << _buildType << "...\n";
@@ -163,6 +189,7 @@ void Builder::build() {
       std::cout << "Compilation failed!" << std::endl;
       std::cerr << e.what() << " " << errno << std::endl;
     }
+    appLink(); // prep applink command
     try {
       std::cout << "Linking...\n";
       exec("cd \"" + buildDir + "\" && " + appLinkCmnd());
@@ -185,6 +212,7 @@ void Builder::build() {
       std::cout << "Compilation failed!" << std::endl;
       std::cerr << e.what() << " " << errno << std::endl;
     }
+    archive();
     try {
       std::cout << "Archiving...\n";
       exec("cd \"" + buildDir + "\" && " + archiveCmnd());
@@ -201,6 +229,7 @@ void Builder::build() {
       std::cout << "Compilation failed!" << std::endl;
       std::cerr << e.what() << " " << errno << std::endl;
     }
+    dylibLink();
     try {
       std::cout << "Linking...\n";
       exec("cd \"" + buildDir + "\" && " + libLinkCmnd());
@@ -282,20 +311,23 @@ void Builder::copy() {
         }
       }
     }
-  } if (_buildType == "debug") {
-    for (std::vector<std::string>::iterator iter = winDbgDlls().begin(); iter != winDbgDlls().end(); ++iter) {
+  }
+  if (_buildType == "debug") {
+    for (std::vector<std::string>::iterator iter = winDbgDlls().begin();
+         iter != winDbgDlls().end(); ++iter) {
       try {
-         fs::copy(vcpkgDirPath() + "/" + "installed" + "/" + *iter, _dbgDir);
+        fs::copy(vcpkgDirPath() + "/" + "installed" + "/" + *iter, _dbgDir);
       } catch (...) {
-         // fail quietly
+        // fail quietly
       }
     }
   } else {
-    for (std::vector<std::string>::iterator iter = winRlsDlls().begin(); iter != winRlsDlls().end(); ++iter) {
+    for (std::vector<std::string>::iterator iter = winRlsDlls().begin();
+         iter != winRlsDlls().end(); ++iter) {
       try {
-         fs::copy(vcpkgDirPath() + "/" + "installed" + "/" + *iter, _rlsDir);
+        fs::copy(vcpkgDirPath() + "/" + "installed" + "/" + *iter, _rlsDir);
       } catch (...) {
-         // fail quietly
+        // fail quietly
       }
     }
   }

@@ -63,9 +63,8 @@ PrepClass::PrepClass() {
             _windDbgDlls.end());
 
         std::sort(_winRlsDlls.begin(), _winRlsDlls.end());
-        _winRlsDlls.erase(
-            std::unique(_winRlsDlls.begin(), _winRlsDlls.end()),
-            _winRlsDlls.end());
+        _winRlsDlls.erase(std::unique(_winRlsDlls.begin(), _winRlsDlls.end()),
+                          _winRlsDlls.end());
       }
     }
   }
@@ -124,6 +123,7 @@ std::string PrepClass::sourceFiles() {
     std::sort(dirEntry.begin(), dirEntry.end());
     dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
                    dirEntry.end());
+    _srcCount = dirEntry.size();
 
     for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
          it != dirEntry.end(); ++it) {
@@ -165,31 +165,6 @@ std::string PrepClass::sourceFilesSinPath() {
           fs::path(it->path().filename()).extension() == ".uic" ||
           fs::path(it->path().filename()).extension() == ".ui") {
         temp << it->path().filename().string() << " ";
-      }
-    }
-  }
-  return temp.str();
-}
-
-std::string PrepClass::objPath(const std::string &buildPath) {
-  std::vector<fs::directory_entry> dirEntry;
-  std::string fullPath;
-  std::ostringstream temp;
-
-  if (fs::is_directory(static_cast<fs::path>(buildPath))) {
-    std::copy(fs::directory_iterator(buildPath), fs::directory_iterator(),
-              back_inserter(dirEntry));
-    std::sort(dirEntry.begin(), dirEntry.end());
-    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
-                   dirEntry.end());
-
-    for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
-         it != dirEntry.end(); ++it) {
-      if (fs::path(it->path().filename()).extension() == ".o" ||
-          fs::path(it->path().filename()).extension() == ".obj") {
-        fullPath = std::move(it->path().string());
-        posixify(fullPath);
-        temp << "\"" << fullPath << "\" ";
       }
     }
   }
@@ -430,13 +405,9 @@ std::vector<std::string> &PrepClass::rlsLocalLibNames() {
   return _rlsLocalLibNames;
 }
 
-std::vector<std::string> &PrepClass::winDbgDlls() {
-  return _windDbgDlls;
-}
+std::vector<std::string> &PrepClass::winDbgDlls() { return _windDbgDlls; }
 
-std::vector<std::string> &PrepClass::winRlsDlls() {
-  return _winRlsDlls;
-}
+std::vector<std::string> &PrepClass::winRlsDlls() { return _winRlsDlls; }
 
 std::string PrepClass::findDbgLib(const std::string &line) {
   std::string libName;
@@ -485,4 +456,7 @@ void PrepClass::posixify(std::string &path) {
     posixify(path);
   }
 }
+
+size_t PrepClass::srcCount() const { return _srcCount; }
+
 } // namespace vcbld

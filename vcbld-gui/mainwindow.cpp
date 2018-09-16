@@ -554,6 +554,7 @@ void MainWindow::clear() {
 }
 
 void MainWindow::compile(Builder &builder) {
+  builder.compile();
   if (ui->actionDebug->isChecked()) {
     runProcess(QString::fromStdString(builder.compileCommand()),
                QString::fromStdString(builder.outputDirectory() + "/debug"));
@@ -564,6 +565,7 @@ void MainWindow::compile(Builder &builder) {
 }
 
 void MainWindow::appLink(Builder &builder) {
+  builder.appLink();
   if (ui->actionDebug->isChecked()) {
     runProcess(QString::fromStdString(builder.appLinkCmnd()),
                QString::fromStdString(builder.outputDirectory() + "/debug"));
@@ -574,6 +576,7 @@ void MainWindow::appLink(Builder &builder) {
 }
 
 void MainWindow::libLink(Builder &builder) {
+  builder.dylibLink();
   if (ui->actionDebug->isChecked()) {
     runProcess(QString::fromStdString(builder.libLinkCmnd()),
                QString::fromStdString(builder.outputDirectory() + "/debug"));
@@ -584,6 +587,7 @@ void MainWindow::libLink(Builder &builder) {
 }
 
 void MainWindow::archive(Builder &builder) {
+  builder.archive();
   if (ui->actionDebug->isChecked()) {
     runProcess(QString::fromStdString(builder.archiveCmnd()),
                QString::fromStdString(builder.outputDirectory() + "/debug"));

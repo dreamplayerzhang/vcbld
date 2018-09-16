@@ -1,8 +1,8 @@
 #ifndef PREP_H
 #define PREP_H
 
-#include <string>
 #include <sstream>
+#include <string>
 #include <vector>
 
 #include "pkg.h"
@@ -17,7 +17,6 @@ public:
   void posixify(std::string &path);
   std::string sourceFiles();
   std::string sourceFilesSinPath();
-  std::string objPath(const std::string &buildPath);
   std::string headerPaths();
   std::string cmakeOutput();
   std::string stripLibName(const std::string &lib);
@@ -29,6 +28,7 @@ public:
   std::vector<std::string> &rlsLocalLibNames();
   std::vector<std::string> &winDbgDlls();
   std::vector<std::string> &winRlsDlls();
+  size_t srcCount() const;
 
 private:
   bool hasComponents(const std::string &libName);
@@ -46,6 +46,7 @@ private:
   std::vector<std::string> _rlsLocalLibNames;
   std::vector<std::string> _windDbgDlls;
   std::vector<std::string> _winRlsDlls;
+  size_t _srcCount;
 };
 } // namespace vcbld
 #endif // !PREP_H

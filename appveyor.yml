@@ -94,3 +94,4 @@ deploy:
   repository: MoAlyousef/vcbld
   artifact: vcbld_linux64, vcbld-gui_linux64, vcbld-gui-appimage_linux64, vcbld-gui-command_linux64
   prerelease: true
+  force_update: true

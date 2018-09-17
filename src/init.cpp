@@ -7,7 +7,6 @@ Init::Init(const fs::path &vcbldPath) : _vcbldPath(vcbldPath) {
   std::string brewLLVM = "/usr/local/opt/llvm/bin";
   std::string localBin = "/usr/local/bin";
 
-
   findPathDirs(PATH, _paths);
 
   if (fs::exists(brewLLVM)) {
@@ -60,16 +59,15 @@ Init::Init(const fs::path &vcbldPath) : _vcbldPath(vcbldPath) {
         "vcpkg" / "downloads" / "tools"));
   }
 
-  try {
-    finder(_paths, "C:/");
-    if (std::getenv("HOME") != nullptr)
-      finder(_paths, std::getenv("HOME"));
-    if (std::getenv("PROGRAMFILES") != nullptr)
-      finder(_paths, std::getenv("PROGRAMFILES"));
-    if (std::getenv("MINGW_HOME") != nullptr)
-      finder(_paths, std::getenv("MINGW_HOME"));
-  } catch (...) {
-    // fail quietly
+  finder(_paths, "C:/");
+  if (std::getenv("HOME") != nullptr)
+    finder(_paths, std::getenv("HOME"));
+  if (std::getenv("PROGRAMFILES") != nullptr)
+    finder(_paths, std::getenv("PROGRAMFILES"));
+  if (std::getenv("MINGW_HOME") != nullptr)
+    finder(_paths, std::getenv("MINGW_HOME"));
+  if (std::getenv("EMSCRIPTEN") != nullptr) {
+    _paths.emplace_back(fs::canonical(std::getenv("EMSCRIPTEN")));
   }
 
   sorter(_paths);
@@ -114,11 +112,11 @@ Init::Init(const fs::path &vcbldPath) : _vcbldPath(vcbldPath) {
     if (fs::exists((*it) / "clang-4.0")) {
       _cCompilers.emplace_back((*it) / "clang-4.0");
     }
-    if (fs::exists((*it) / "emcc")) {
+    if (fs::exists((*it) / "emcc") && (PLATFORM_NAME == "x64-linux" || PLATFORM_NAME == "x64-osx")) {
       _cCompilers.emplace_back((*it) / "emcc");
     }
-    if (fs::exists((*it) / "emcc.exe")) {
-      _cCompilers.emplace_back((*it) / "emcc.exe");
+    if (fs::exists((*it) / "emcc.bat") && (PLATFORM_NAME == "x86-windows" || PLATFORM_NAME == "x64-windows")) {
+      _cCompilers.emplace_back((*it) / "emcc.bat");
     }
     if (fs::exists((*it) / "cl.exe")) {
       _cCompilers.emplace_back((*it) / "cl.exe");
@@ -150,11 +148,11 @@ Init::Init(const fs::path &vcbldPath) : _vcbldPath(vcbldPath) {
     if (fs::exists((*it) / "cl.exe")) {
       _cppCompilers.emplace_back((*it) / "cl.exe");
     }
-    if (fs::exists((*it) / "em++")) {
+    if (fs::exists((*it) / "em++") && (PLATFORM_NAME == "x64-linux" || PLATFORM_NAME == "x64-osx")) {
       _cppCompilers.emplace_back((*it) / "em++");
     }
-    if (fs::exists((*it) / "em++.exe")) {
-      _cppCompilers.emplace_back((*it) / "em++.exe");
+    if (fs::exists((*it) / "em++.bat") && (PLATFORM_NAME == "x86-windows" || PLATFORM_NAME == "x64-windows")) {
+      _cppCompilers.emplace_back((*it) / "em++.bat");
     }
     if (fs::exists((*it) / "cmake") && !fs::is_directory((*it) / "cmake")) {
       _cmakePaths.emplace_back((*it) / "cmake");
@@ -183,11 +181,11 @@ Init::Init(const fs::path &vcbldPath) : _vcbldPath(vcbldPath) {
     if (fs::exists((*it) / "lib.exe")) {
       _archiverPaths.emplace_back((*it) / "lib.exe");
     }
-    if (fs::exists((*it) / "emar")) {
+    if (fs::exists((*it) / "emar") && (PLATFORM_NAME == "x64-linux" || PLATFORM_NAME == "x64-osx")) {
       _archiverPaths.emplace_back((*it) / "emar");
     }
-    if (fs::exists((*it) / "emar.exe")) {
-      _archiverPaths.emplace_back((*it) / "emar.exe");
+    if (fs::exists((*it) / "emar.bat") && (PLATFORM_NAME == "x86-windows" || PLATFORM_NAME == "x64-windows")) {
+      _archiverPaths.emplace_back((*it) / "emar.bat");
     }
     if (fs::exists((*it) / "vcpkg") && !fs::is_directory((*it) / "vcpkg")) {
       _vcpkgPaths.emplace_back((*it) / "vcpkg");

@@ -297,6 +297,7 @@ void MainWindow::on_actionRun_Cmake_triggered() {
         QLineEdit::Normal);
 
     ConfClass confClass;
+    std::string emcmakePath;
     std::ostringstream cmakeCmnd, temp;
     std::string config;
     if (ui->actionDebug->isChecked()) {
@@ -305,11 +306,24 @@ void MainWindow::on_actionRun_Cmake_triggered() {
       config = "Release";
     }
 
+    if (confClass.compilerPath().find("emcc") != std::string::npos || confClass.compilerPath().find("em++") != std::string::npos) {
+    emcmakePath = fs::canonical(confClass.compilerPath()).parent_path() / "emcmake";
+    }
+
+    if (!emcmakePath.empty()) {
+      if (PLATFORM_NAME == "x86-windows" || PLATFORM_NAME == "x64-windows") {
+        emcmakePath = "\"" + emcmakePath + ".bat\" ";
+      } else {
+        emcmakePath = "\"" + emcmakePath + "\" ";
+      }
+    }
+
     temp << " -DCMAKE_C_COMPILER=\"" << confClass.cCompilerPath() << "\""
          << " -DCMAKE_CXX_COMPILER=\"" << confClass.cppCompilerPath() << "\""
          << " -DCMAKE_MAKE_PROGRAM=\"" << confClass.makePath() << "\" ";
 
-    cmakeCmnd << " \"" << confClass.cmakePath() << "\""
+    cmakeCmnd << emcmakePath
+              << "\"" << confClass.cmakePath() << "\""
               << " -DCMAKE_BUILD_TYPE=" << config
               << " -DCMAKE_TOOLCHAIN_FILE=\"" << confClass.vcpkgDirPath()
               << "/scripts/buildsystems/vcpkg.cmake"
@@ -324,8 +338,21 @@ void MainWindow::on_actionRun_Cmake_triggered() {
 void MainWindow::on_actionRun_make_triggered() {
   if (_dirName != "") {
     ConfClass confClass;
+    std::string emmakePath;
+    if (confClass.compilerPath().find("emcc") != std::string::npos || confClass.compilerPath().find("em++") != std::string::npos) {
+      emmakePath = fs::canonical(confClass.compilerPath()).parent_path() / "emmake";
+    }
+
+    if (!emmakePath.empty()) {
+      if (PLATFORM_NAME == "x86-windows" || PLATFORM_NAME == "x64-windows") {
+        emmakePath = "\"" + emmakePath + ".bat\" ";
+      } else {
+        emmakePath = "\"" + emmakePath + "\" ";
+      }
+    }
+
     QDir::setCurrent(_dirName);
-    runProcess(QString::fromStdString("\"" + confClass.makePath() + "\""),
+    runProcess(QString::fromStdString(emmakePath + "\"" + confClass.makePath() + "\""),
                QString::fromStdString(confClass.outputDirectory()));
   }
 }

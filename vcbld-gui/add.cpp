@@ -62,8 +62,6 @@ Add::~Add() { delete ui; }
 
 QString Add::output() const { return _output; }
 
-void Add::on_pushButton_clicked() { close(); }
-
 void Add::on_listWidget_itemDoubleClicked(QListWidgetItem *item) {
   QString pkgName = item->text();
   std::vector<std::string> v;
@@ -72,7 +70,7 @@ void Add::on_listWidget_itemDoubleClicked(QListWidgetItem *item) {
     _output = Helper::execVec(std::bind(&args::add, v), v);
   } else {
     emit vcpkgCmnd(pkgClass.vcpkgDirPath() + "/" + "vcpkg" + " install " +
-                   pkgName.toStdString());
+                   pkgName.toStdString() + ':' + pkgClass.architecture());
     _output = Helper::execVec(std::bind(&args::add, v), v);
   }
   emit outputChanged(_output);

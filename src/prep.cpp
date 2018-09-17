@@ -352,9 +352,6 @@ std::string PrepClass::cmakeOutput() {
             << " HINTS ";
       }
       _cmakeOutput
-          << stripLibName(
-                 _fullDbgLibNames[std::distance(_fullLibNames.begin(), it)])
-          << " HINTS "
           << "${VCPKG_DBG_LIB_PATH})\n"
           << "find_library(" << libName << "_RLS NAMES " << libName << " HINTS "
           << "${VCPKG_RLS_LIB_PATH})\n"

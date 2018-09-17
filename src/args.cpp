@@ -301,8 +301,12 @@ void search(const std::string &pkg) {
   }
 }
 
-void install(const std::string &packages) {
+void install(std::vector<std::string> &pkg) {
   ConfClass confClass;
+  std::string packages;
+  for (std::vector<std::string>::iterator it = pkg.begin(); it != pkg.end(); ++it) {
+    packages += (*it) + ':' + confClass.architecture() + " ";
+  }
   std::string temp =
       confClass.vcpkgDirPath() + "/" + "vcpkg" + " install " + packages;
   int systemRet = system(temp.c_str());
@@ -311,8 +315,12 @@ void install(const std::string &packages) {
   }
 }
 
-void uninstall(const std::string &packages) {
+void uninstall(std::vector<std::string> &pkg) {
   ConfClass confClass;
+  std::string packages;
+  for (std::vector<std::string>::iterator it = pkg.begin(); it != pkg.end(); ++it) {
+    packages += (*it) + ':' + confClass.architecture() + " ";
+  }
   std::string temp =
       confClass.vcpkgDirPath() + "/" + "vcpkg" + " remove " + packages;
   int systemRet = system(temp.c_str());
@@ -328,7 +336,7 @@ void restore() {
     for (std::vector<std::string>::iterator it =
              pkgClass.packageNames().begin();
          it != pkgClass.packageNames().end(); ++it) {
-      pkg << *it << " ";
+      pkg << *it << ':' << pkgClass.architecture() << " ";
     }
     std::string instlCmnd = pkgClass.vcpkgDirPath() + "/" + "vcpkg" + " " +
                             "install" + " " + pkg.str();
@@ -344,14 +352,28 @@ void restore() {
 
 void cmake(const std::string &cmakeArgs) {
   ConfClass confClass;
+  std::string emcmakePath;
   std::ostringstream cmakeCmnd, temp;
+
+  if (confClass.compilerPath().find("emcc") != std::string::npos || confClass.compilerPath().find("em++") != std::string::npos) {
+    emcmakePath = fs::canonical(confClass.compilerPath()).parent_path() / "emcmake";
+  }
+
+  if (!emcmakePath.empty()) {
+    if (PLATFORM_NAME == "x86-windows" || PLATFORM_NAME == "x64-windows") {
+      emcmakePath = "\"" + emcmakePath + ".bat\" ";
+    } else {
+      emcmakePath = "\"" + emcmakePath + "\" ";
+    }
+  }
 
   temp << " -DCMAKE_C_COMPILER=\"" << confClass.cCompilerPath() << "\""
        << " -DCMAKE_CXX_COMPILER=\"" << confClass.cppCompilerPath() << "\""
        << " -DCMAKE_MAKE_PROGRAM=\"" << confClass.makePath() << "\" ";
 
-  cmakeCmnd << "cd \"" << confClass.outputDirectory() << "\" && \""
-            << confClass.cmakePath() << "\""
+  cmakeCmnd << "cd \"" << confClass.outputDirectory() << "\"" << " && "
+            << emcmakePath
+            << "\"" << confClass.cmakePath() << "\""
             << " -DCMAKE_TOOLCHAIN_FILE=\"" << confClass.vcpkgDirPath()
             << "/scripts/buildsystems/vcpkg.cmake"
             << "\"" << temp.str() << cmakeArgs << " .. ";
@@ -363,9 +385,24 @@ void cmake(const std::string &cmakeArgs) {
 
 void make(const std::string &makeArgs) {
   ConfClass confClass;
+  std::string emmakePath;
   std::ostringstream makeCmnd;
-  makeCmnd << "cd \"" << confClass.outputDirectory() << "\" && \""
-           << confClass.makePath() << "\" " << makeArgs;
+
+  if (confClass.compilerPath().find("emcc") != std::string::npos || confClass.compilerPath().find("em++") != std::string::npos) {
+    emmakePath = fs::canonical(confClass.compilerPath()).parent_path() / "emmake";
+  }
+
+  if (!emmakePath.empty()) {
+    if (PLATFORM_NAME == "x86-windows" || PLATFORM_NAME == "x64-windows") {
+      emmakePath = "\"" + emmakePath + ".bat\" ";
+    } else {
+      emmakePath = "\"" + emmakePath + "\" ";
+    }
+  }
+
+  makeCmnd << "cd \"" << confClass.outputDirectory() << "\"" << " && "
+           << emmakePath
+           << "\"" << confClass.makePath() << "\" " << makeArgs;
   int systemRet = system(makeCmnd.str().c_str());
   if (systemRet == -1) {
     std::cout << "An error occured while running make." << std::endl;

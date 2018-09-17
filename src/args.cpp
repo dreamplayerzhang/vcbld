@@ -356,7 +356,7 @@ void cmake(const std::string &cmakeArgs) {
   std::ostringstream cmakeCmnd, temp;
 
   if (confClass.compilerPath().find("emcc") != std::string::npos || confClass.compilerPath().find("em++") != std::string::npos) {
-    emcmakePath = fs::canonical(confClass.compilerPath()).parent_path() / "emcmake";
+    emcmakePath = (fs::canonical(confClass.compilerPath()).parent_path() / "emcmake").string();
   }
 
   if (!emcmakePath.empty()) {
@@ -389,7 +389,7 @@ void make(const std::string &makeArgs) {
   std::ostringstream makeCmnd;
 
   if (confClass.compilerPath().find("emcc") != std::string::npos || confClass.compilerPath().find("em++") != std::string::npos) {
-    emmakePath = fs::canonical(confClass.compilerPath()).parent_path() / "emmake";
+    emmakePath = (fs::canonical(confClass.compilerPath()).parent_path() / "emmake").string();
   }
 
   if (!emmakePath.empty()) {

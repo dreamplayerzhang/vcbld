@@ -121,10 +121,10 @@ void cmakeGen() {
               << "/release)\n";
         }
         ofs << "set(VCPKG_DBG_LIB_PATH "
-               "${CMAKE_PREFIX_PATH}/../" << prepClass.architecture() << "/debug/"
+               "${CMAKE_PREFIX_PATH}/debug/"
                "lib NO_DEFAULT_PATH)\n"
             << "set(VCPKG_RLS_LIB_PATH "
-               "${CMAKE_PREFIX_PATH}/../" << prepClass.architecture() << "/lib NO_DEFAULT_PATH)\n\n"
+               "${CMAKE_PREFIX_PATH}/lib NO_DEFAULT_PATH)\n\n"
             << prepClass.cmakeOutput() << "\n";
 
         if (prepClass.binaryType() == "app") {
@@ -136,9 +136,7 @@ void cmakeGen() {
         }
 
         ofs << "target_include_directories(" << prepClass.binaryName() << " PUBLIC "
-               "${CMAKE_PREFIX_PATH}/../"
-            << prepClass.architecture()
-            << "/include)\n";
+               "${CMAKE_PREFIX_PATH}/include)\n";
         if (!prepClass.includeDirectory().empty() &&
             fs::exists(prepClass.includeDirectory())) {
           ofs << "target_include_directories(" << prepClass.binaryName() << " PUBLIC "
@@ -148,7 +146,7 @@ void cmakeGen() {
         }
         if (!prepClass.fullLibNames().empty() && !prepClass.fullDbgLibNames().empty()) {
           ofs << "target_link_libraries(" << prepClass.binaryName() << " debug ${dbgLIBS})\n"
-              << "target_link_libraries(" << prepClass.binaryName() << "optimized "
+              << "target_link_libraries(" << prepClass.binaryName() << " optimized "
                  "${rlsLIBS})\n";
         }
         ofs.flush();

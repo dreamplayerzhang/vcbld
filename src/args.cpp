@@ -374,6 +374,7 @@ void cmake(const std::string &cmakeArgs) {
   cmakeCmnd << "cd \"" << confClass.outputDirectory() << "\"" << " && "
             << emcmakePath
             << "\"" << confClass.cmakePath() << "\""
+            << " -DVCPKG_TARGET_TRIPLET=" << confClass.architecture()
             << " -DCMAKE_TOOLCHAIN_FILE=\"" << confClass.vcpkgDirPath()
             << "/scripts/buildsystems/vcpkg.cmake"
             << "\"" << temp.str() << cmakeArgs << " .. ";

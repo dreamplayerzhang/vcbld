@@ -325,6 +325,7 @@ void MainWindow::on_actionRun_Cmake_triggered() {
     cmakeCmnd << emcmakePath
               << "\"" << confClass.cmakePath() << "\""
               << " -DCMAKE_BUILD_TYPE=" << config
+              << " -DVCPKG_TARGET_TRIPLET=" << confClass.architecture()
               << " -DCMAKE_TOOLCHAIN_FILE=\"" << confClass.vcpkgDirPath()
               << "/scripts/buildsystems/vcpkg.cmake"
               << "\"" << temp.str() << " " << args.toStdString() << " .. ";

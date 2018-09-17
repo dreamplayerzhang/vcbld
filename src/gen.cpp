@@ -121,10 +121,10 @@ void cmakeGen() {
               << "/release)\n";
         }
         ofs << "set(VCPKG_DBG_LIB_PATH "
-               "${CMAKE_PREFIX_PATH}/debug/"
+               "${CMAKE_PREFIX_PATH}/../" << prepClass.architecture() << "/debug/"
                "lib)\n"
             << "set(VCPKG_RLS_LIB_PATH "
-               "${CMAKE_PREFIX_PATH}/lib)\n\n"
+               "${CMAKE_PREFIX_PATH}/../" << prepClass.architecture() << "/lib)\n\n"
             << prepClass.cmakeOutput() << "\n";
 
         if (prepClass.binaryType() == "app") {
@@ -136,7 +136,8 @@ void cmakeGen() {
         }
 
         ofs << "target_include_directories(${PROJECT_NAME} PUBLIC "
-               "${CMAKE_PREFIX_PATH}"
+               "${CMAKE_PREFIX_PATH}/../"
+            << prepClass.architecture()
             << "/include)\n";
         if (!prepClass.includeDirectory().empty() &&
             fs::exists(prepClass.includeDirectory())) {

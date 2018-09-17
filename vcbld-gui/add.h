@@ -19,7 +19,6 @@ public:
   QString output() const;
 
 private slots:
-  void on_pushButton_clicked();
   void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
   void on_lineEdit_textChanged(const QString &arg1);
 

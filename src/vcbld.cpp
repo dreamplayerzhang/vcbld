@@ -119,14 +119,11 @@ int main(int argc, char *argv[]) {
       if (argc < 3) {
         std::cout << "Please enter package names to install." << std::endl;
       } else {
-        std::string package;
         std::vector<std::string> packages;
         for (int i = 2; i < argc; i++) {
-          package += " ";
-          package += argv[i];
           packages.push_back(static_cast<std::string>(argv[i]));
         }
-        args::install(package);
+        args::install(packages);
         args::add(packages);
       }
     } else if (strcmp(argv[1], "search") == 0) {
@@ -139,15 +136,12 @@ int main(int argc, char *argv[]) {
       if (argc < 3) {
         std::cout << "Please enter package names to uninstall." << std::endl;
       } else {
-        std::string package;
         std::vector<std::string> packages;
         for (int i = 2; i < argc; i++) {
-          package += " ";
-          package += argv[i];
           packages.push_back(static_cast<std::string>(argv[i]));
         }
         args::remove(packages);
-        args::uninstall(package);
+        args::uninstall(packages);
       }
     } else if (strcmp(argv[1], "vcpkg") == 0) {
       if (argc < 3) {

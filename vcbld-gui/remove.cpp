@@ -25,8 +25,6 @@ Remove::~Remove() { delete ui; }
 
 QString Remove::output() const { return _output; }
 
-void Remove::on_cancelButton_clicked() { this->close(); }
-
 void Remove::on_listWidget_itemDoubleClicked(QListWidgetItem *item) {
   QString pkgName = item->text();
   std::vector<std::string> v;
@@ -35,7 +33,7 @@ void Remove::on_listWidget_itemDoubleClicked(QListWidgetItem *item) {
     _output = Helper::execVec(std::bind(&args::remove, v), v);
   } else {
     emit vcpkgCmnd(pkgClass.vcpkgDirPath() + "/" + "vcpkg" + " remove " +
-                   pkgName.toStdString());
+                   pkgName.toStdString() + ':' + pkgClass.architecture());
     _output = Helper::execVec(std::bind(&args::remove, v), v);
   }
   emit outputChanged(_output);

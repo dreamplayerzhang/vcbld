@@ -353,7 +353,9 @@ void cmake(const std::string &cmakeArgs) {
 
   if (!emcmakePath.empty()) {
     if (PLATFORM_NAME == "x86-windows" || PLATFORM_NAME == "x64-windows") {
-      emcmakePath += ".bat";
+      emcmakePath = "\"" + emcmakePath + ".bat\"";
+    } else {
+      emcmakePath = "\"" + emcmakePath + "\"";
     }
   }
 
@@ -384,7 +386,9 @@ void make(const std::string &makeArgs) {
 
   if (!emmakePath.empty()) {
     if (PLATFORM_NAME == "x86-windows" || PLATFORM_NAME == "x64-windows") {
-      emmakePath += ".bat";
+      emmakePath = "\"" + emmakePath + ".bat\"";
+    } else {
+      emmakePath = "\"" + emmakePath + "\"";
     }
   }
 

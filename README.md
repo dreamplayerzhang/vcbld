@@ -48,10 +48,15 @@ $ cmake .. && make
 Notice that vcbld needs cmake version 3.10 or higher to build. vcpkg ships with an updated version of cmake that you can use to build vcbld, which can be found in [vcpkg-root]/downloads/tools/cmake*/cmake*/bin/cmake.
 The built vcbld executable can be found in the release directory. Adding the vcbld executable to the vcpkg directory ensures it finds vcpkg if vcpkg isn't in a typical location as in your PATH, HOME or Program Files.
 Note that vcbld doesn't automatically add itself to your PATH enviroment variable. 
-However, you can add it to the PATH enviroment variable using:
+However, you can add it to the PATH enviroment variable in linux using:
  ```
  $ echo 'export PATH=$PATH:/path/to/vcbld/directory' >> ~/.bashrc 
  ```
+ or for mac osx:
+ ```
+ $ echo 'export PATH=$PATH:/path/to/vcbld/directory' >> ~/.bash_profile 
+ ```
+ 
 Or after building from source, by passing the make install command:
 ```
 $ make install

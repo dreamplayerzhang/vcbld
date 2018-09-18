@@ -63,15 +63,12 @@ void PkgClass::write() {
     fs::remove("package.json");
     try {
       std::ofstream pkgsOutput("package.json");
-      if (pkgsOutput.is_open())
-      {
+      if (pkgsOutput.is_open()) {
         pkgsOutput << std::setw(4) << "{\n\t\"packages\" : []\n}";
         pkgsOutput.flush();
         pkgsOutput.close();
         std::cout << "package.json written successfully." << std::endl;
-      }
-      else
-      {
+      } else {
         std::cout << "package.json exists." << std::endl;
       }
     } catch (const std::exception &e) {
@@ -98,9 +95,10 @@ std::string PkgClass::getVersion(const std::string &pkgName) {
          it != dirEntry.end(); ++it) {
       std::string fileName = it->path().filename().string();
       foundPkg = fileName.find(pkg);
-      if (foundPkg != std::string::npos && foundPkg == 0) {
+      if (foundPkg != std::string::npos && foundPkg == 0 &&
+          fileName.find(architecture()) != std::string::npos) {
         temp2 = it->path().filename().string().substr(pkg.length(),
-                                                        fileName.length());
+                                                      fileName.length());
       }
     }
   }
@@ -124,7 +122,5 @@ void PkgClass::remove(const std::string &pkgName) {
   }
 }
 
-std::vector<std::string> &PkgClass::packageNames() {
-  return _packageNames;
-}
+std::vector<std::string> &PkgClass::packageNames() { return _packageNames; }
 } // namespace vcbld

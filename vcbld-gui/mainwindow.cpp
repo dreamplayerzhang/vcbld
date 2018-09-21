@@ -258,7 +258,7 @@ void MainWindow::on_actionClean_triggered() {
 void MainWindow::on_actionRun_triggered() {
   if (_dirName != "") {
     ConfClass confClass;
-    std::string config, command;
+    std::string config, command, node, nodeExec;
 
     if (ui->actionDebug->isChecked()) {
       config = "debug";
@@ -266,19 +266,40 @@ void MainWindow::on_actionRun_triggered() {
       config = "release";
     }
 
+    if (confClass.architecture() == "x64-windows" ||
+        confClass.architecture() == "x86-windows") {
+      node = "node.exe";
+    } else {
+      node = "node";
+    }
+
+    if (confClass.binaryName().find(".js") != std::string::npos &&
+        (confClass.compilerPath().find("emcc") != std::string::npos ||
+         confClass.compilerPath().find("em++") != std::string::npos)) {
+      nodeExec = node + " ";
+    } else {
+      nodeExec = "";
+    }
+
 #if defined(_WIN32) || defined(_WIN64)
-    command = "cmd.exe /C " +
+    command = "cmd.exe /C cmd /k" + nodeExec +
               fs::canonical(confClass.outputDirectory()).string() + "\\" +
               config + "\\" + confClass.binaryName() + ".exe";
 #elif defined(__linux__)
-    command = "xterm -hold -e " + confClass.outputDirectory() + "/" + config +
-              "/" + confClass.binaryName() + " &";
+    command = "xterm -hold -e " + nodeExec + confClass.outputDirectory() + "/" +
+              config + "/" + confClass.binaryName() + " &";
 #elif defined(__APPLE__) && defined(__MACH__)
-    command = "open -a Terminal " + confClass.outputDirectory() + "/" + config +
-              "/" + confClass.binaryName();
+    if (confClass.binaryName().find(".js") != std::string::npos) {
+      command = "osascript -e 'tell application \"Terminal\" to do script \"" +
+                nodeExec + " '" + confClass.outputDirectory() + "/" + config +
+                "/" + confClass.binaryName() + "';exit\"'";
+    } else {
+      command = "open -a Terminal " + confClass.outputDirectory() + "/" +
+                config + "/" + confClass.binaryName();
+    }
 #else
-    command = "xterm -hold -e " + confClass.outputDirectory() + "/" + config +
-              "/" + confClass.binaryName();
+    command = "xterm -hold -e " + nodeExec + confClass.outputDirectory() + "/" +
+              config + "/" + confClass.binaryName();
 #endif
 
     int systemRet = system(command.c_str());
@@ -306,8 +327,11 @@ void MainWindow::on_actionRun_Cmake_triggered() {
       config = "Release";
     }
 
-    if (confClass.compilerPath().find("emcc") != std::string::npos || confClass.compilerPath().find("em++") != std::string::npos) {
-    emcmakePath = (fs::canonical(confClass.compilerPath()).parent_path() / "emcmake").string();
+    if (confClass.compilerPath().find("emcc") != std::string::npos ||
+        confClass.compilerPath().find("em++") != std::string::npos) {
+      emcmakePath =
+          (fs::canonical(confClass.compilerPath()).parent_path() / "emcmake")
+              .string();
     }
 
     if (!emcmakePath.empty()) {
@@ -322,8 +346,7 @@ void MainWindow::on_actionRun_Cmake_triggered() {
          << " -DCMAKE_CXX_COMPILER=\"" << confClass.cppCompilerPath() << "\""
          << " -DCMAKE_MAKE_PROGRAM=\"" << confClass.makePath() << "\" ";
 
-    cmakeCmnd << emcmakePath
-              << "\"" << confClass.cmakePath() << "\""
+    cmakeCmnd << emcmakePath << "\"" << confClass.cmakePath() << "\""
               << " -DCMAKE_BUILD_TYPE=" << config
               << " -DVCPKG_TARGET_TRIPLET=" << confClass.architecture()
               << " -DCMAKE_TOOLCHAIN_FILE=\"" << confClass.vcpkgDirPath()
@@ -340,8 +363,11 @@ void MainWindow::on_actionRun_make_triggered() {
   if (_dirName != "") {
     ConfClass confClass;
     std::string emmakePath;
-    if (confClass.compilerPath().find("emcc") != std::string::npos || confClass.compilerPath().find("em++") != std::string::npos) {
-      emmakePath = (fs::canonical(confClass.compilerPath()).parent_path() / "emmake").string();
+    if (confClass.compilerPath().find("emcc") != std::string::npos ||
+        confClass.compilerPath().find("em++") != std::string::npos) {
+      emmakePath =
+          (fs::canonical(confClass.compilerPath()).parent_path() / "emmake")
+              .string();
     }
 
     if (!emmakePath.empty()) {
@@ -353,8 +379,9 @@ void MainWindow::on_actionRun_make_triggered() {
     }
 
     QDir::setCurrent(_dirName);
-    runProcess(QString::fromStdString(emmakePath + "\"" + confClass.makePath() + "\""),
-               QString::fromStdString(confClass.outputDirectory()));
+    runProcess(
+        QString::fromStdString(emmakePath + "\"" + confClass.makePath() + "\""),
+        QString::fromStdString(confClass.outputDirectory()));
   }
 }
 

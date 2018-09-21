@@ -99,16 +99,27 @@ void clean(const std::string &buildType) {
 void run(const std::string &buildType) {
   std::ostringstream command;
   ConfClass confClass;
-  std::string ext;
+  std::string ext, node, nodeExec;
   if (confClass.architecture() == "x64-windows" ||
       confClass.architecture() == "x86-windows") {
     ext = ".exe";
+    node = "node.exe";
   } else {
     ext = "";
+    node = "node";
   }
+
+  if (confClass.binaryName().find(".js") != std::string::npos &&
+      (confClass.compilerPath().find("emcc") != std::string::npos ||
+       confClass.compilerPath().find("em++") != std::string::npos)) {
+    nodeExec = node + " ";
+  } else {
+    nodeExec = "";
+  }
+
   if (buildType == "debug") {
     try {
-      command << confClass.outputDirectory() << "/debug/"
+      command << nodeExec << confClass.outputDirectory() << "/debug/"
               << confClass.binaryName() << ext;
       int systemRet = system(command.str().c_str());
       if (systemRet == -1) {
@@ -120,7 +131,7 @@ void run(const std::string &buildType) {
     }
   } else {
     try {
-      command << confClass.outputDirectory() << "/release/"
+      command << nodeExec << confClass.outputDirectory() << "/release/"
               << confClass.binaryName() << ext;
       int systemRet = system(command.str().c_str());
       if (systemRet == -1) {
@@ -249,9 +260,8 @@ void add(const std::vector<std::string> &pkg) {
           std::cout << "Package already exists." << std::endl;
           isExist = true;
           break;
-        } 
-          isExist = false;
-        
+        }
+        isExist = false;
       }
       if (!isExist) {
         pkgClass.include(*it);
@@ -275,8 +285,7 @@ void remove(const std::vector<std::string> &pkg) {
         pkgClass.remove(*it);
         pkgClass.write();
         break;
-      } 
-      
+      }
     }
   }
 }
@@ -304,7 +313,8 @@ void search(const std::string &pkg) {
 void install(std::vector<std::string> &pkg) {
   ConfClass confClass;
   std::string packages;
-  for (std::vector<std::string>::iterator it = pkg.begin(); it != pkg.end(); ++it) {
+  for (std::vector<std::string>::iterator it = pkg.begin(); it != pkg.end();
+       ++it) {
     packages += (*it) + ':' + confClass.architecture() + " ";
   }
   std::string temp =
@@ -318,7 +328,8 @@ void install(std::vector<std::string> &pkg) {
 void uninstall(std::vector<std::string> &pkg) {
   ConfClass confClass;
   std::string packages;
-  for (std::vector<std::string>::iterator it = pkg.begin(); it != pkg.end(); ++it) {
+  for (std::vector<std::string>::iterator it = pkg.begin(); it != pkg.end();
+       ++it) {
     packages += (*it) + ':' + confClass.architecture() + " ";
   }
   std::string temp =
@@ -355,8 +366,11 @@ void cmake(const std::string &cmakeArgs) {
   std::string emcmakePath;
   std::ostringstream cmakeCmnd, temp;
 
-  if (confClass.compilerPath().find("emcc") != std::string::npos || confClass.compilerPath().find("em++") != std::string::npos) {
-    emcmakePath = (fs::canonical(confClass.compilerPath()).parent_path() / "emcmake").string();
+  if (confClass.compilerPath().find("emcc") != std::string::npos ||
+      confClass.compilerPath().find("em++") != std::string::npos) {
+    emcmakePath =
+        (fs::canonical(confClass.compilerPath()).parent_path() / "emcmake")
+            .string();
   }
 
   if (!emcmakePath.empty()) {
@@ -371,9 +385,8 @@ void cmake(const std::string &cmakeArgs) {
        << " -DCMAKE_CXX_COMPILER=\"" << confClass.cppCompilerPath() << "\""
        << " -DCMAKE_MAKE_PROGRAM=\"" << confClass.makePath() << "\" ";
 
-  cmakeCmnd << "cd \"" << confClass.outputDirectory() << "\"" << " && "
-            << emcmakePath
-            << "\"" << confClass.cmakePath() << "\""
+  cmakeCmnd << "cd \"" << confClass.outputDirectory() << "\""
+            << " && " << emcmakePath << "\"" << confClass.cmakePath() << "\""
             << " -DVCPKG_TARGET_TRIPLET=" << confClass.architecture()
             << " -DCMAKE_TOOLCHAIN_FILE=\"" << confClass.vcpkgDirPath()
             << "/scripts/buildsystems/vcpkg.cmake"
@@ -389,8 +402,11 @@ void make(const std::string &makeArgs) {
   std::string emmakePath;
   std::ostringstream makeCmnd;
 
-  if (confClass.compilerPath().find("emcc") != std::string::npos || confClass.compilerPath().find("em++") != std::string::npos) {
-    emmakePath = (fs::canonical(confClass.compilerPath()).parent_path() / "emmake").string();
+  if (confClass.compilerPath().find("emcc") != std::string::npos ||
+      confClass.compilerPath().find("em++") != std::string::npos) {
+    emmakePath =
+        (fs::canonical(confClass.compilerPath()).parent_path() / "emmake")
+            .string();
   }
 
   if (!emmakePath.empty()) {
@@ -401,9 +417,9 @@ void make(const std::string &makeArgs) {
     }
   }
 
-  makeCmnd << "cd \"" << confClass.outputDirectory() << "\"" << " && "
-           << emmakePath
-           << "\"" << confClass.makePath() << "\" " << makeArgs;
+  makeCmnd << "cd \"" << confClass.outputDirectory() << "\""
+           << " && " << emmakePath << "\"" << confClass.makePath() << "\" "
+           << makeArgs;
   int systemRet = system(makeCmnd.str().c_str());
   if (systemRet == -1) {
     std::cout << "An error occured while running make." << std::endl;

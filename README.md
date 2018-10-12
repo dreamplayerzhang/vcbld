@@ -23,6 +23,7 @@ SDK commands:
     vcpkg      [vcpkg command]      Runs vcpkg commands.
     cmake      [config + args]      Runs cmake in the output directory using the vcpkg toolchain.
     make       [make arguments]     Runs make in the output directory.
+    commands                        Generates build commands.
     help                            Show help.
 
     --version                       Current vcbld version in use.
@@ -44,6 +45,12 @@ vcbld has a single external dependency, namely Nlohmann-json which is a header-o
 $ git clone https://github.com/MoAlyousef/vcbld.git
 $ cd vcbld && mkdir bin && cd bin
 $ cmake .. && make
+```
+Building vcbld-gui, either change the option WITH_GUI in the CMakeLists.txt file to ON, or change it using the command line. Remember to also set the CMAKE_PREFIX_PATH to point the the location of your Qt libraries:
+```
+$ git clone https://github.com/MoAlyousef/vcbld.git
+$ cd vcbld && mkdir bin && cd bin
+$ cmake -DCMAKE_PREFIX_PATH=path/to/Qt/libs -DWITH_GUI=ON .. && make
 ```
 Notice that vcbld needs cmake version 3.10 or higher to build. vcpkg ships with an updated version of cmake that you can use to build vcbld, which can be found in [vcpkg-root]/downloads/tools/cmake*/cmake*/bin/cmake.
 The built vcbld executable can be found in the release directory. Adding the vcbld executable to the vcpkg directory ensures it finds vcpkg if vcpkg isn't in a typical location as in your PATH, HOME or Program Files.

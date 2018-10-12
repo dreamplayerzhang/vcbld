@@ -131,9 +131,7 @@ std::string PrepClass::sourceFiles() {
           fs::path(it->path().filename()).extension() == ".rc" ||
           fs::path(it->path().filename()).extension() == ".c" ||
           fs::path(it->path().filename()).extension() == ".cxx" ||
-          fs::path(it->path().filename()).extension() == ".qrc" ||
-          fs::path(it->path().filename()).extension() == ".uic" ||
-          fs::path(it->path().filename()).extension() == ".ui") {
+          fs::path(it->path().filename()).extension() == ".qrc") {
         fullPath = std::move(it->path().string());
         posixify(fullPath);
         temp << "\"" << fullPath << "\" ";
@@ -161,9 +159,7 @@ std::string PrepClass::sourceFilesSinPath() {
           fs::path(it->path().filename()).extension() == ".rc" ||
           fs::path(it->path().filename()).extension() == ".c" ||
           fs::path(it->path().filename()).extension() == ".cxx" ||
-          fs::path(it->path().filename()).extension() == ".qrc" ||
-          fs::path(it->path().filename()).extension() == ".uic" ||
-          fs::path(it->path().filename()).extension() == ".ui") {
+          fs::path(it->path().filename()).extension() == ".qrc") {
         temp << it->path().filename().string() << " ";
       }
     }
@@ -223,27 +219,33 @@ std::string PrepClass::dbgLibPaths() {
   std::ostringstream temp;
   if (!libDirectory().empty() && fs::exists(libDirectory() + "/" + "debug")) {
     std::string localDbgLibs = libDirectory() + "/" + "debug";
+    if (compilerPath().find("cl.exe") == std::string::npos) {
+      temp << " -L\"" << localDbgLibs << "\" ";
+    } else {
+      temp << " -LIBPATH:\"" << localDbgLibs << "\" ";
+    }
     for (std::vector<std::string>::iterator jt = _dbgLocalLibNames.begin();
          jt != _dbgLocalLibNames.end(); ++jt) {
       if (compilerPath().find("cl.exe") == std::string::npos) {
-        temp << " -L\"" << localDbgLibs << "\" "
-             << "-l" << stripLibName(*jt);
+        temp << "-l" << stripLibName(*jt) << " ";
       } else {
-        temp << " -LIBPATH:\"" << localDbgLibs << "\" "
-             << " " << *jt;
+        temp << " " << *jt << " ";
       }
     }
   }
   std::string dbgLibPath = vcpkgDirPath() + "/" + "installed" + "/" +
                            architecture() + "/" + "debug" + "/" + "lib";
+  if (compilerPath().find("cl.exe") == std::string::npos) {
+    temp << " -L\"" << dbgLibPath << "\" ";
+  } else {
+    temp << " -LIBPATH:\"" << dbgLibPath << "\" ";
+  }
   for (std::vector<std::string>::iterator it = _fullDbgLibNames.begin();
        it != _fullDbgLibNames.end(); ++it) {
     if (compilerPath().find("cl.exe") == std::string::npos) {
-      temp << " -L\"" << dbgLibPath << "\" "
-           << "-l" << stripLibName(*it);
+      temp << "-l" << stripLibName(*it) << " ";
     } else {
-      temp << " -LIBPATH:\"" << dbgLibPath << "\" "
-           << " " << *it;
+      temp << " " << *it << " ";
     }
   }
   return temp.str();
@@ -253,27 +255,33 @@ std::string PrepClass::rlsLibPaths() {
   std::ostringstream temp;
   if (!libDirectory().empty() && fs::exists(libDirectory() + "/release")) {
     std::string localRlsLibs = libDirectory() + "/" + "release";
+    if (compilerPath().find("cl.exe") == std::string::npos) {
+      temp << " -L\"" << localRlsLibs << "\" ";
+    } else {
+      temp << " -LIBPATH:\"" << localRlsLibs << "\" ";
+    }
     for (std::vector<std::string>::iterator jt = _rlsLocalLibNames.begin();
          jt != _rlsLocalLibNames.end(); ++jt) {
       if (compilerPath().find("cl.exe") == std::string::npos) {
-        temp << " -L\"" << localRlsLibs << "\" "
-             << "-l" << stripLibName(*jt);
+        temp << "-l" << stripLibName(*jt) << " ";
       } else {
-        temp << " -LIBPATH:\"" << localRlsLibs << "\" "
-             << " " << *jt;
+        temp << " " << *jt << " ";
       }
     }
   }
   std::string rlsLibPath =
       vcpkgDirPath() + "/" + "installed" + "/" + architecture() + "/" + "lib";
+  if (compilerPath().find("cl.exe") == std::string::npos) {
+    temp << " -L\"" << rlsLibPath << "\" ";
+  } else {
+    temp << " -LIBPATH:\"" << rlsLibPath << "\" ";
+  }
   for (std::vector<std::string>::iterator it = _fullLibNames.begin();
        it != _fullLibNames.end(); ++it) {
     if (compilerPath().find("cl.exe") == std::string::npos) {
-      temp << " -L\"" << rlsLibPath << "\" "
-           << "-l" << stripLibName(*it);
+      temp << "-l" << stripLibName(*it) << " ";
     } else {
-      temp << " -LIBPATH:\"" << rlsLibPath << "\" "
-           << " " << *it;
+      temp << " " << *it << " ";
     }
   }
   return temp.str();
@@ -351,12 +359,12 @@ std::string PrepClass::cmakeOutput() {
                    _fullDbgLibNames[std::distance(_fullLibNames.begin(), it)])
             << " HINTS ";
       }
-      _cmakeOutput
-          << "${VCPKG_DBG_LIB_PATH})\n"
-          << "find_library(" << libName << "_RLS NAMES " << libName << " HINTS "
-          << "${VCPKG_RLS_LIB_PATH})\n"
-          << "set(dbgLIBS ${dbgLIBS} ${" << libName << "_DBG})\n"
-          << "set(rlsLIBS ${rlsLIBS} ${" << libName << "_RLS})\n\n";
+      _cmakeOutput << "${VCPKG_DBG_LIB_PATH})\n"
+                   << "find_library(" << libName << "_RLS NAMES " << libName
+                   << " HINTS "
+                   << "${VCPKG_RLS_LIB_PATH})\n"
+                   << "set(dbgLIBS ${dbgLIBS} ${" << libName << "_DBG})\n"
+                   << "set(rlsLIBS ${rlsLIBS} ${" << libName << "_RLS})\n\n";
     }
   }
   if (_boostComponents.size() > 1) {
@@ -413,7 +421,14 @@ std::string PrepClass::findDbgLib(const std::string &line) {
   if (found != std::string::npos) {
     libName = line.substr(found + 10, line.length());
   }
-  return libName;
+  if (libName.find(".a") != std::string::npos ||
+      libName.find(".lib") != std::string::npos ||
+      libName.find(".so") != std::string::npos ||
+      libName.find(".dylib") != std::string::npos) {
+    return libName;
+  } else {
+    return "";
+  }
 }
 
 std::string PrepClass::findRlsLib(const std::string &line) {
@@ -424,7 +439,14 @@ std::string PrepClass::findRlsLib(const std::string &line) {
   if (found != std::string::npos) {
     libName = line.substr(found + toFind.length(), line.length());
   }
-  return libName;
+  if (libName.find(".a") != std::string::npos ||
+      libName.find(".lib") != std::string::npos ||
+      libName.find(".so") != std::string::npos ||
+      libName.find(".dylib") != std::string::npos) {
+    return libName;
+  } else {
+    return "";
+  }
 }
 
 std::string PrepClass::findWinDbgDll(const std::string &line) {

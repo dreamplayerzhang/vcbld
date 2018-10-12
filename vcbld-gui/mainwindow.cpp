@@ -78,6 +78,10 @@ void MainWindow::runProcess(const QString &process, const QString &dir) {
 
 void MainWindow::on_procFinished(int) { enableMenus(true); }
 
+void MainWindow::on_actionBuild_Commands_triggered() {
+  ui->plainTextEdit->appendPlainText(Helper::exec(std::bind(&args::commands)));
+}
+
 void MainWindow::on_actionToolbarZmIn_triggered() {
   QFont font = ui->menuBar->font();
   font.setPointSize(font.pointSize() + 1);
@@ -361,6 +365,11 @@ void MainWindow::on_actionRun_Cmake_triggered() {
 
 void MainWindow::on_actionRun_make_triggered() {
   if (_dirName != "") {
+
+    QString args = QInputDialog::getText(this, tr("Make Arguments"),
+                                         tr("Please enter any Make arguments:"),
+                                         QLineEdit::Normal);
+
     ConfClass confClass;
     std::string emmakePath;
     if (confClass.compilerPath().find("emcc") != std::string::npos ||
@@ -379,9 +388,9 @@ void MainWindow::on_actionRun_make_triggered() {
     }
 
     QDir::setCurrent(_dirName);
-    runProcess(
-        QString::fromStdString(emmakePath + "\"" + confClass.makePath() + "\""),
-        QString::fromStdString(confClass.outputDirectory()));
+    runProcess(QString::fromStdString(emmakePath + "\"" + confClass.makePath() +
+                                      "\" " + args.toStdString()),
+               QString::fromStdString(confClass.outputDirectory()));
   }
 }
 

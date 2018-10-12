@@ -153,13 +153,16 @@ std::string Builder::getBldCommands() {
   compile();
   if (binaryType() == "app") {
     appLink();
-    return _compileCommand.str() + "\n" + _appLinkCmnd.str();
+    return "compile:\n" + _compileCommand.str() + "\n" + "link:\n" +
+           _appLinkCmnd.str();
   } else if (binaryType() == "staticLibrary") {
     archive();
-    return _compileCommand.str() + "\n" + _archiveCmnd.str();
+    return "compile:\n" + _compileCommand.str() + "\n" + "archive:\n" +
+           _archiveCmnd.str();
   } else if (binaryType() == "dynamicLibrary") {
     dylibLink();
-    return _compileCommand.str() + "\n" + _libLinkCmnd.str();
+    return "compile:\n" + _compileCommand.str() + "\n" + "link:\n" +
+           _libLinkCmnd.str();
   } else {
     std::cout << "Unknown binary type defined in vcbld.json." << std::endl;
     return "";

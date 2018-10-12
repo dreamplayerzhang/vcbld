@@ -72,13 +72,14 @@
    </widget>
    <widget class="QMenu" name="menuGenerate">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="title">
      <string>Generate</string>
     </property>
     <addaction name="actionCMakeLists"/>
     <addaction name="actionIncludePath"/>
+    <addaction name="actionBuild_Commands"/>
    </widget>
    <widget class="QMenu" name="menuPackages">
     <property name="enabled">
@@ -184,7 +185,7 @@
   </action>
   <action name="actionRun_Cmake">
    <property name="text">
-    <string>Run cmake</string>
+    <string>Run cmake...</string>
    </property>
   </action>
   <action name="actionCMakeLists">
@@ -220,7 +221,7 @@
   </action>
   <action name="actionRun_make">
    <property name="text">
-    <string>Run make</string>
+    <string>Run make...</string>
    </property>
   </action>
   <action name="actionSetup">
@@ -294,6 +295,11 @@
   <action name="actionUninstall">
    <property name="text">
     <string>Uninstall...</string>
+   </property>
+  </action>
+  <action name="actionBuild_Commands">
+   <property name="text">
+    <string>Build Commands</string>
    </property>
   </action>
  </widget>

@@ -58,6 +58,7 @@ private slots:
   void on_actionInstall_triggered();
   void on_actionUninstall_triggered();
   void on_procFinished(int);
+  void on_actionBuild_Commands_triggered();
 
 signals:
   void outputChanged(const QString &);

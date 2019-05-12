@@ -1,4 +1,7 @@
 # vcbld
+
+<img src="https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true" alt="Project Badge" width="150">
+
 A command-line software development kit and a minimalist build system for C and C++ that works with vcpkg. For more information regarding the vcbld-gui, check the dedicated section and the tutorial video. vcbld has a minimal build system which works for small single hierarchy projects and allows for faster prototyping, however it has support for cmake and can be used to generate CMakeLists.txt files which can be seperately run using cmake and used to generate other build systems.
 The vcbld executable is about 500kb large, and depends on the presence of vcpkg and cmake. Of course you would also need a C/C++ compiler such as gcc or clang.
 

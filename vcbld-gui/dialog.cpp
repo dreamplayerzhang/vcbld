@@ -1,4 +1,6 @@
+#include "dialog.h"
 #include "qpch.h"
+#include "ui_dialog.h"
 
 using namespace vcbld;
 
@@ -12,19 +14,19 @@ Dialog::Dialog(QWidget *parent) : QDialog(parent), ui(new Ui::Dialog) {
 
 Dialog::~Dialog() { delete ui; }
 
-std::string Dialog::binType() const { return _binType.toStdString(); }
+BinType Dialog::binType() const { return _binType; }
 
 void Dialog::on_pushButton_clicked() {
-  _binType = "app";
+  _binType = BinType::Application;
   close();
 }
 
 void Dialog::on_pushButton_2_clicked() {
-  _binType = "dylib";
+  _binType = BinType::DynamicLibrary;
   close();
 }
 
 void Dialog::on_pushButton_3_clicked() {
-  _binType = "statlib";
+  _binType = BinType::StaticLibrary;
   close();
 }

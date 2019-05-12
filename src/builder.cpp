@@ -1,8 +1,14 @@
+#include "builder.h"
 #include "pch.h"
 
 namespace vcbld {
 
-Builder::Builder(const std::string &buildType) : _buildType(buildType) {
+Builder::Builder(const Configuration &conf) {
+  if (conf == Configuration::Debug) {
+    _buildType = "debug";
+  } else {
+    _buildType = "release";
+  }
   if (!fs::exists("vcbld.json")) {
     std::cout << "Build configuration not found!" << std::endl;
     std::exit(1);
@@ -56,11 +62,10 @@ std::string Builder::objPath(const std::string &buildPath) {
                    dirEntry.end());
     _outCount = dirEntry.size();
 
-    for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
-         it != dirEntry.end(); ++it) {
-      if (fs::path(it->path().filename()).extension() == ".o" ||
-          fs::path(it->path().filename()).extension() == ".obj") {
-        fullPath = std::move(it->path().string());
+    for (auto &it : dirEntry) {
+      if (fs::path(it.path().filename()).extension() == ".o" ||
+          fs::path(it.path().filename()).extension() == ".obj") {
+        fullPath = std::move(it.path().string());
         posixify(fullPath);
         temp << "\"" << fullPath << "\" ";
       }
@@ -262,26 +267,24 @@ void Builder::copy() {
     std::string localDbgPath = libDirectory() + "/" + "debug";
     std::string localRlsPath = libDirectory() + "/" + "release";
     if (_buildType == "debug") {
-      for (std::vector<std::string>::iterator it = dbgLocalLibNames().begin();
-           it != dbgLocalLibNames().end(); ++it) {
-        fullName = localDbgPath + "/" + (*it);
+      for (auto &it : dbgLocalLibNames()) {
+        fullName = localDbgPath + "/" + (it);
         if (fs::exists(fullName)) {
-          if (it->find(".a") == std::string::npos &&
-              it->find(".lib") == std::string::npos) {
-            if (!fs::exists(_dbgDir + "/" + (*it))) {
+          if (it.find(".a") == std::string::npos &&
+              it.find(".lib") == std::string::npos) {
+            if (!fs::exists(_dbgDir + "/" + it)) {
               fs::copy(fullName, _dbgDir);
             }
           }
         }
       }
     } else {
-      for (std::vector<std::string>::iterator it = rlsLocalLibNames().begin();
-           it != rlsLocalLibNames().end(); ++it) {
-        fullName = localRlsPath + "/" + (*it);
+      for (auto &it : rlsLocalLibNames()) {
+        fullName = localRlsPath + "/" + (it);
         if (fs::exists(fullName)) {
-          if (it->find(".a") == std::string::npos &&
-              it->find(".lib") == std::string::npos) {
-            if (!fs::exists(_rlsDir + "/" + (*it))) {
+          if (it.find(".a") == std::string::npos &&
+              it.find(".lib") == std::string::npos) {
+            if (!fs::exists(_rlsDir + "/" + it)) {
               fs::copy(fullName, _rlsDir);
             }
           }
@@ -289,8 +292,7 @@ void Builder::copy() {
       }
     }
   }
-  for (std::vector<std::string>::iterator it = fullLibNames().begin();
-       it != fullLibNames().end(); ++it) {
+  for (auto it = fullLibNames().begin(); it != fullLibNames().end(); ++it) {
     if (_buildType == "debug") {
       fullName = dbgLibPath + "/" +
                  fullDbgLibNames()[std::distance(fullLibNames().begin(), it)];
@@ -316,19 +318,17 @@ void Builder::copy() {
     }
   }
   if (_buildType == "debug") {
-    for (std::vector<std::string>::iterator iter = winDbgDlls().begin();
-         iter != winDbgDlls().end(); ++iter) {
+    for (auto &it : winDbgDlls()) {
       try {
-        fs::copy(vcpkgDirPath() + "/" + "installed" + "/" + *iter, _dbgDir);
+        fs::copy(vcpkgDirPath() + "/" + "installed" + "/" + it, _dbgDir);
       } catch (...) {
         // fail quietly
       }
     }
   } else {
-    for (std::vector<std::string>::iterator iter = winRlsDlls().begin();
-         iter != winRlsDlls().end(); ++iter) {
+    for (auto &it : winRlsDlls()) {
       try {
-        fs::copy(vcpkgDirPath() + "/" + "installed" + "/" + *iter, _rlsDir);
+        fs::copy(vcpkgDirPath() + "/" + "installed" + "/" + it, _rlsDir);
       } catch (...) {
         // fail quietly
       }

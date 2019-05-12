@@ -1,3 +1,4 @@
+#include "conf.h"
 #include "pch.h"
 
 namespace vcbld {
@@ -90,19 +91,16 @@ ConfClass::ConfClass() {
       _libDirectory = "";
     }
 
-    for (json::iterator it = vcbldJson["compilerDefines"].begin();
-         it != vcbldJson["compilerDefines"].end(); ++it) {
-      _compilerDefines << " " << *it << " ";
+    for (auto &it : vcbldJson["compilerDefines"]) {
+      _compilerDefines << " " << it << " ";
     }
 
-    for (json::iterator it = vcbldJson["compilerFlags"].begin();
-         it != vcbldJson["compilerFlags"].end(); ++it) {
-      _compilerFlags << " " << *it << " ";
+    for (auto &it : vcbldJson["compilerFlags"]) {
+      _compilerFlags << " " << it << " ";
     }
 
-    for (json::iterator it = vcbldJson["linkerFlags"].begin();
-         it != vcbldJson["linkerFlags"].end(); ++it) {
-      _linkerFlags << " " << *it << " ";
+    for (auto &it : vcbldJson["linkerFlags"]) {
+      _linkerFlags << " " << it << " ";
     }
   } catch (...) {
     std::cerr << "Error reading vcbld.json. " << std::endl;

@@ -1,3 +1,4 @@
+#include "prep.h"
 #include "pch.h"
 
 namespace vcbld {
@@ -15,17 +16,15 @@ PrepClass::PrepClass() {
     std::sort(dirEntry.begin(), dirEntry.end());
     dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
                    dirEntry.end());
-    for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
-         it != dirEntry.end(); ++it) {
+    for (auto &it : dirEntry) {
 
-      for (std::vector<std::string>::iterator jt = packageNames().begin();
-           jt != packageNames().end(); ++jt) {
-        foundFile = it->path().filename().string().find(*jt);
+      for (auto &jt : packageNames()) {
+        foundFile = it.path().filename().string().find(jt);
         if (foundFile != std::string::npos && foundFile == 0) {
-          std::string fileName = it->path().filename().string();
+          std::string fileName = it.path().filename().string();
           std::string line;
           try {
-            std::ifstream ifs(it->path());
+            std::ifstream ifs(it.path());
             if (ifs.is_open()) {
               while (!ifs.eof()) {
                 getline(ifs, line);
@@ -81,11 +80,9 @@ PrepClass::PrepClass() {
           std::unique(localDbgDirEntry.begin(), localDbgDirEntry.end()),
           localDbgDirEntry.end());
 
-      for (std::vector<fs::directory_entry>::iterator jt =
-               localDbgDirEntry.begin();
-           jt != localDbgDirEntry.end(); ++jt) {
-        if ((jt->path().filename().string()).at(0) != '.') {
-          _dbgLocalLibNames.push_back(jt->path().filename().string());
+      for (auto &it : localDbgDirEntry) {
+        if ((it.path().filename().string()).at(0) != '.') {
+          _dbgLocalLibNames.push_back(it.path().filename().string());
         }
       }
     }
@@ -101,11 +98,9 @@ PrepClass::PrepClass() {
           std::unique(localRlsDirEntry.begin(), localRlsDirEntry.end()),
           localRlsDirEntry.end());
 
-      for (std::vector<fs::directory_entry>::iterator jt =
-               localRlsDirEntry.begin();
-           jt != localRlsDirEntry.end(); ++jt) {
-        if ((jt->path().filename().string()).at(0) != '.') {
-          _rlsLocalLibNames.push_back(jt->path().filename().string());
+      for (auto &it : localRlsDirEntry) {
+        if ((it.path().filename().string()).at(0) != '.') {
+          _rlsLocalLibNames.push_back(it.path().filename().string());
         }
       }
     }
@@ -125,14 +120,13 @@ std::string PrepClass::sourceFiles() {
                    dirEntry.end());
     _srcCount = dirEntry.size();
 
-    for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
-         it != dirEntry.end(); ++it) {
-      if (fs::path(it->path().filename()).extension() == ".cpp" ||
-          fs::path(it->path().filename()).extension() == ".rc" ||
-          fs::path(it->path().filename()).extension() == ".c" ||
-          fs::path(it->path().filename()).extension() == ".cxx" ||
-          fs::path(it->path().filename()).extension() == ".qrc") {
-        fullPath = std::move(it->path().string());
+    for (auto &it : dirEntry) {
+      if (fs::path(it.path().filename()).extension() == ".cpp" ||
+          fs::path(it.path().filename()).extension() == ".rc" ||
+          fs::path(it.path().filename()).extension() == ".c" ||
+          fs::path(it.path().filename()).extension() == ".cxx" ||
+          fs::path(it.path().filename()).extension() == ".qrc") {
+        fullPath = std::move(it.path().string());
         posixify(fullPath);
         temp << "\"" << fullPath << "\" ";
       }
@@ -153,14 +147,13 @@ std::string PrepClass::sourceFilesSinPath() {
     dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
                    dirEntry.end());
 
-    for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
-         it != dirEntry.end(); ++it) {
-      if (fs::path(it->path().filename()).extension() == ".cpp" ||
-          fs::path(it->path().filename()).extension() == ".rc" ||
-          fs::path(it->path().filename()).extension() == ".c" ||
-          fs::path(it->path().filename()).extension() == ".cxx" ||
-          fs::path(it->path().filename()).extension() == ".qrc") {
-        temp << it->path().filename().string() << " ";
+    for (auto &it : dirEntry) {
+      if (fs::path(it.path().filename()).extension() == ".cpp" ||
+          fs::path(it.path().filename()).extension() == ".rc" ||
+          fs::path(it.path().filename()).extension() == ".c" ||
+          fs::path(it.path().filename()).extension() == ".cxx" ||
+          fs::path(it.path().filename()).extension() == ".qrc") {
+        temp << it.path().filename().string() << " ";
       }
     }
   }
@@ -224,12 +217,11 @@ std::string PrepClass::dbgLibPaths() {
     } else {
       temp << " -LIBPATH:\"" << localDbgLibs << "\" ";
     }
-    for (std::vector<std::string>::iterator jt = _dbgLocalLibNames.begin();
-         jt != _dbgLocalLibNames.end(); ++jt) {
+    for (auto &it : _dbgLocalLibNames) {
       if (compilerPath().find("cl.exe") == std::string::npos) {
-        temp << "-l" << stripLibName(*jt) << " ";
+        temp << "-l" << stripLibName(it) << " ";
       } else {
-        temp << " " << *jt << " ";
+        temp << " " << it << " ";
       }
     }
   }
@@ -240,12 +232,11 @@ std::string PrepClass::dbgLibPaths() {
   } else {
     temp << " -LIBPATH:\"" << dbgLibPath << "\" ";
   }
-  for (std::vector<std::string>::iterator it = _fullDbgLibNames.begin();
-       it != _fullDbgLibNames.end(); ++it) {
+  for (auto &it : _fullDbgLibNames) {
     if (compilerPath().find("cl.exe") == std::string::npos) {
-      temp << "-l" << stripLibName(*it) << " ";
+      temp << "-l" << stripLibName(it) << " ";
     } else {
-      temp << " " << *it << " ";
+      temp << " " << it << " ";
     }
   }
   return temp.str();
@@ -260,12 +251,11 @@ std::string PrepClass::rlsLibPaths() {
     } else {
       temp << " -LIBPATH:\"" << localRlsLibs << "\" ";
     }
-    for (std::vector<std::string>::iterator jt = _rlsLocalLibNames.begin();
-         jt != _rlsLocalLibNames.end(); ++jt) {
+    for (auto &it : _rlsLocalLibNames) {
       if (compilerPath().find("cl.exe") == std::string::npos) {
-        temp << "-l" << stripLibName(*jt) << " ";
+        temp << "-l" << stripLibName(it) << " ";
       } else {
-        temp << " " << *jt << " ";
+        temp << " " << it << " ";
       }
     }
   }
@@ -276,12 +266,11 @@ std::string PrepClass::rlsLibPaths() {
   } else {
     temp << " -LIBPATH:\"" << rlsLibPath << "\" ";
   }
-  for (std::vector<std::string>::iterator it = _fullLibNames.begin();
-       it != _fullLibNames.end(); ++it) {
+  for (auto &it : _fullLibNames) {
     if (compilerPath().find("cl.exe") == std::string::npos) {
-      temp << "-l" << stripLibName(*it) << " ";
+      temp << "-l" << stripLibName(it) << " ";
     } else {
-      temp << " " << *it << " ";
+      temp << " " << it << " ";
     }
   }
   return temp.str();
@@ -307,13 +296,12 @@ bool PrepClass::hasComponents(const std::string &libName) {
 }
 std::string PrepClass::cmakeOutput() {
 
-  for (std::vector<std::string>::iterator it = _dbgLocalLibNames.begin();
-       it != _dbgLocalLibNames.end(); ++it) {
+  for (auto &it : _dbgLocalLibNames) {
     std::string libName;
     if (compilerPath().find("cl.exe") != std::string::npos) {
-      libName = *it;
+      libName = it;
     } else {
-      libName = stripLibName(*it);
+      libName = stripLibName(it);
     }
 
     _cmakeOutput << "find_library(" << libName << "_DBG NAMES " << libName
@@ -322,13 +310,12 @@ std::string PrepClass::cmakeOutput() {
                  << "set(dbgLIBS ${dbgLIBS} ${" << libName << "_DBG})\n\n";
   }
 
-  for (std::vector<std::string>::iterator it = _rlsLocalLibNames.begin();
-       it != _rlsLocalLibNames.end(); ++it) {
+  for (auto &it : _rlsLocalLibNames) {
     std::string libName;
     if (compilerPath().find("cl.exe") != std::string::npos) {
-      libName = *it;
+      libName = it;
     } else {
-      libName = stripLibName(*it);
+      libName = stripLibName(it);
     }
     _cmakeOutput << "find_library(" << libName << "_RLS NAMES " << libName
                  << " HINTS "
@@ -336,8 +323,7 @@ std::string PrepClass::cmakeOutput() {
                  << "set(rlsLIBS ${rlsLIBS} ${" << libName << "_RLS})\n\n";
   }
 
-  for (std::vector<std::string>::iterator it = _fullLibNames.begin();
-       it != _fullLibNames.end(); ++it) {
+  for (auto it = _fullLibNames.begin(); it != _fullLibNames.end(); ++it) {
     std::string libName;
     if (compilerPath().find("cl.exe") != std::string::npos) {
       libName = *it;
@@ -371,10 +357,9 @@ std::string PrepClass::cmakeOutput() {
     _cmakeOutput << "#Find "
                  << "Boost components"
                  << "\n"
-                 << "find_package(Boost COMPONENTS ";
-    for (std::vector<std::string>::iterator it = _boostComponents.begin();
-         it != _boostComponents.end(); ++it) {
-      _cmakeOutput << *it << " ";
+                 << "find_package(Boost COMPONENTS system ";
+    for (auto &it : _boostComponents) {
+      _cmakeOutput << it << " ";
     }
     _cmakeOutput << "REQUIRED)\n"
                  << "set(dbgLIBS ${dbgLIBS} ${Boost_LIBRARIES})\n"
@@ -385,9 +370,8 @@ std::string PrepClass::cmakeOutput() {
                  << "Qt components"
                  << "\n"
                  << "find_package(Qt5 COMPONENTS ";
-    for (std::vector<std::string>::iterator jt = _QtComponents.begin();
-         jt != _QtComponents.end(); ++jt) {
-      _cmakeOutput << *jt << " ";
+    for (auto &it : _QtComponents) {
+      _cmakeOutput << it << " ";
     }
     _cmakeOutput << "REQUIRED)\n"
                  << "set(dbgLIBS ${dbgLIBS} ${Qt5_LIBRARIES})\n"

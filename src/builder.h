@@ -4,13 +4,14 @@
 #include <sstream>
 #include <string>
 
+#include "predefs.h"
 #include "prep.h"
 
 namespace vcbld {
 class Builder : public PrepClass {
 public:
   Builder() = delete;
-  explicit Builder(const std::string &buildType);
+  explicit Builder(const Configuration&);
   Builder(const Builder &) = delete;
   Builder &operator=(const Builder &) = delete;
 

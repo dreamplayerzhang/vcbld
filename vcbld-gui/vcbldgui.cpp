@@ -1,3 +1,4 @@
+#include "mainwindow.h"
 #include "qpch.h"
 
 using namespace vcbld;

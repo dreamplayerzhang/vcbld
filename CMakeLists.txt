@@ -18,6 +18,8 @@ if (${ENABLE_TESTS})
     add_subdirectory(tests)
 endif()
 
+# set(CMAKE_PREFIX_PATH C:/Qt/5.11.2/msvc2017_64)
+
 option(WITH_GUI "Add vcbld-gui" OFF)
 if (${WITH_GUI})
     set (vcbldgui_VERSION_MAJOR 0)

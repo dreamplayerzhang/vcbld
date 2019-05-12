@@ -7,6 +7,7 @@
 #include <functional>
 
 #include "builder.h"
+#include "dialog.h"
 #include "fs.h"
 #include "init.h"
 

@@ -4,9 +4,8 @@
 #include <string>
 #include <vector>
 
-#include "conf.h"
 #include "fs.h"
-
+#include "predefs.h"
 
 namespace vcbld {
 class Init {
@@ -14,7 +13,7 @@ public:
   Init() = delete;
   Init(const fs::path &vcbldPath);
 
-  void init(const std::string &binType);
+  void init(const BinType&);
   void setup();
   void sorter(std::vector<fs::path> &vector);
   void lister(std::vector<fs::path> &vector);

@@ -1,3 +1,5 @@
+#include "init.h"
+#include "conf.h"
 #include "pch.h"
 
 namespace vcbld {
@@ -72,126 +74,131 @@ Init::Init(const fs::path &vcbldPath) : _vcbldPath(vcbldPath) {
 
   sorter(_paths);
 
-  for (std::vector<fs::path>::iterator it = _paths.begin(); it != _paths.end();
-       ++it) {
-    replaceHome(*it);
+  for (auto &it : _paths) {
+    replaceHome(it);
 
-    if (fs::exists((*it) / "gcc")) {
-      _cCompilers.emplace_back((*it) / "gcc");
+    if (fs::exists((it) / "gcc")) {
+      _cCompilers.emplace_back((it) / "gcc");
     }
-    if (fs::exists((*it) / "gcc.exe")) {
-      _cCompilers.emplace_back((*it) / "gcc.exe");
+    if (fs::exists((it) / "gcc.exe")) {
+      _cCompilers.emplace_back((it) / "gcc.exe");
     }
-    if (fs::exists((*it) / "gcc-8")) {
-      _cCompilers.emplace_back((*it) / "gcc-8");
+    if (fs::exists((it) / "gcc-8")) {
+      _cCompilers.emplace_back((it) / "gcc-8");
     }
-    if (fs::exists((*it) / "gcc-7")) {
-      _cCompilers.emplace_back((*it) / "gcc-7");
+    if (fs::exists((it) / "gcc-7")) {
+      _cCompilers.emplace_back((it) / "gcc-7");
     }
-    if (fs::exists((*it) / "gcc-6")) {
-      _cCompilers.emplace_back((*it) / "gcc-6");
+    if (fs::exists((it) / "gcc-6")) {
+      _cCompilers.emplace_back((it) / "gcc-6");
     }
-    if (fs::exists((*it) / "gcc-5")) {
-      _cCompilers.emplace_back((*it) / "gcc-5");
+    if (fs::exists((it) / "gcc-5")) {
+      _cCompilers.emplace_back((it) / "gcc-5");
     }
-    if (fs::exists((*it) / "gcc-4")) {
-      _cCompilers.emplace_back((*it) / "gcc-4");
+    if (fs::exists((it) / "gcc-4")) {
+      _cCompilers.emplace_back((it) / "gcc-4");
     }
-    if (fs::exists((*it) / "clang") && !fs::is_directory((*it) / "clang")) {
-      _cCompilers.emplace_back((*it) / "clang");
+    if (fs::exists((it) / "clang") && !fs::is_directory((it) / "clang")) {
+      _cCompilers.emplace_back((it) / "clang");
     }
-    if (fs::exists((*it) / "clang.exe")) {
-      _cCompilers.emplace_back((*it) / "clang.exe");
+    if (fs::exists((it) / "clang.exe")) {
+      _cCompilers.emplace_back((it) / "clang.exe");
     }
-    if (fs::exists((*it) / "clang-6.0")) {
-      _cCompilers.emplace_back((*it) / "clang-6.0");
+    if (fs::exists((it) / "clang-6.0")) {
+      _cCompilers.emplace_back((it) / "clang-6.0");
     }
-    if (fs::exists((*it) / "clang-5.0")) {
-      _cCompilers.emplace_back((*it) / "clang-5.0");
+    if (fs::exists((it) / "clang-5.0")) {
+      _cCompilers.emplace_back((it) / "clang-5.0");
     }
-    if (fs::exists((*it) / "clang-4.0")) {
-      _cCompilers.emplace_back((*it) / "clang-4.0");
+    if (fs::exists((it) / "clang-4.0")) {
+      _cCompilers.emplace_back((it) / "clang-4.0");
     }
-    if (fs::exists((*it) / "emcc") && (PLATFORM_NAME == "x64-linux" || PLATFORM_NAME == "x64-osx")) {
-      _cCompilers.emplace_back((*it) / "emcc");
+    if (fs::exists((it) / "emcc") &&
+        (PLATFORM_NAME == "x64-linux" || PLATFORM_NAME == "x64-osx")) {
+      _cCompilers.emplace_back((it) / "emcc");
     }
-    if (fs::exists((*it) / "emcc.bat") && (PLATFORM_NAME == "x86-windows" || PLATFORM_NAME == "x64-windows")) {
-      _cCompilers.emplace_back((*it) / "emcc.bat");
+    if (fs::exists((it) / "emcc.bat") &&
+        (PLATFORM_NAME == "x86-windows" || PLATFORM_NAME == "x64-windows")) {
+      _cCompilers.emplace_back((it) / "emcc.bat");
     }
-    if (fs::exists((*it) / "cl.exe")) {
-      _cCompilers.emplace_back((*it) / "cl.exe");
+    if (fs::exists((it) / "cl.exe")) {
+      _cCompilers.emplace_back((it) / "cl.exe");
     }
-    if (fs::exists((*it) / "g++")) {
-      _cppCompilers.emplace_back((*it) / "g++");
+    if (fs::exists((it) / "g++")) {
+      _cppCompilers.emplace_back((it) / "g++");
     }
-    if (fs::exists((*it) / "g++.exe")) {
-      _cppCompilers.emplace_back((*it) / "g++.exe");
+    if (fs::exists((it) / "g++.exe")) {
+      _cppCompilers.emplace_back((it) / "g++.exe");
     }
-    if (fs::exists((*it) / "/g++-8")) {
-      _cppCompilers.emplace_back((*it) / "/g++-8");
+    if (fs::exists((it) / "/g++-8")) {
+      _cppCompilers.emplace_back((it) / "/g++-8");
     }
-    if (fs::exists((*it) / "g++-7")) {
-      _cppCompilers.emplace_back((*it) / "g++-7");
+    if (fs::exists((it) / "g++-7")) {
+      _cppCompilers.emplace_back((it) / "g++-7");
     }
-    if (fs::exists((*it) / "g++-6")) {
-      _cppCompilers.emplace_back((*it) / "g++-6");
+    if (fs::exists((it) / "g++-6")) {
+      _cppCompilers.emplace_back((it) / "g++-6");
     }
-    if (fs::exists((*it) / "g++-5")) {
-      _cppCompilers.emplace_back((*it) / "g++-5");
+    if (fs::exists((it) / "g++-5")) {
+      _cppCompilers.emplace_back((it) / "g++-5");
     }
-    if (fs::exists((*it) / "clang++")) {
-      _cppCompilers.emplace_back((*it) / "clang++");
+    if (fs::exists((it) / "clang++")) {
+      _cppCompilers.emplace_back((it) / "clang++");
     }
-    if (fs::exists((*it) / "clang++.exe")) {
-      _cppCompilers.emplace_back((*it) / "clang++.exe");
+    if (fs::exists((it) / "clang++.exe")) {
+      _cppCompilers.emplace_back((it) / "clang++.exe");
     }
-    if (fs::exists((*it) / "cl.exe")) {
-      _cppCompilers.emplace_back((*it) / "cl.exe");
+    if (fs::exists((it) / "cl.exe")) {
+      _cppCompilers.emplace_back((it) / "cl.exe");
     }
-    if (fs::exists((*it) / "em++") && (PLATFORM_NAME == "x64-linux" || PLATFORM_NAME == "x64-osx")) {
-      _cppCompilers.emplace_back((*it) / "em++");
+    if (fs::exists((it) / "em++") &&
+        (PLATFORM_NAME == "x64-linux" || PLATFORM_NAME == "x64-osx")) {
+      _cppCompilers.emplace_back((it) / "em++");
     }
-    if (fs::exists((*it) / "em++.bat") && (PLATFORM_NAME == "x86-windows" || PLATFORM_NAME == "x64-windows")) {
-      _cppCompilers.emplace_back((*it) / "em++.bat");
+    if (fs::exists((it) / "em++.bat") &&
+        (PLATFORM_NAME == "x86-windows" || PLATFORM_NAME == "x64-windows")) {
+      _cppCompilers.emplace_back((it) / "em++.bat");
     }
-    if (fs::exists((*it) / "cmake") && !fs::is_directory((*it) / "cmake")) {
-      _cmakePaths.emplace_back((*it) / "cmake");
+    if (fs::exists((it) / "cmake") && !fs::is_directory((it) / "cmake")) {
+      _cmakePaths.emplace_back((it) / "cmake");
     }
-    if (fs::exists((*it) / "cmake.exe")) {
-      _cmakePaths.emplace_back((*it) / "cmake.exe");
+    if (fs::exists((it) / "cmake.exe")) {
+      _cmakePaths.emplace_back((it) / "cmake.exe");
     }
-    if (fs::exists((*it) / "make")) {
-      _makePaths.emplace_back((*it) / "make");
+    if (fs::exists((it) / "make")) {
+      _makePaths.emplace_back((it) / "make");
     }
-    if (fs::exists((*it) / "make.exe")) {
-      _makePaths.emplace_back((*it) / "make.exe");
+    if (fs::exists((it) / "make.exe")) {
+      _makePaths.emplace_back((it) / "make.exe");
     }
-    if (fs::exists((*it) / "nmake.exe")) {
-      _makePaths.emplace_back((*it) / "nmake.exe");
+    if (fs::exists((it) / "nmake.exe")) {
+      _makePaths.emplace_back((it) / "nmake.exe");
     }
-    if (fs::exists((*it) / "mingw32-make.exe")) {
-      _makePaths.emplace_back((*it) / "mingw32-make.exe");
+    if (fs::exists((it) / "mingw32-make.exe")) {
+      _makePaths.emplace_back((it) / "mingw32-make.exe");
     }
-    if (fs::exists((*it) / "ar")) {
-      _archiverPaths.emplace_back((*it) / "ar");
+    if (fs::exists((it) / "ar")) {
+      _archiverPaths.emplace_back((it) / "ar");
     }
-    if (fs::exists((*it) / "ar.exe")) {
-      _archiverPaths.emplace_back((*it) / "ar.exe");
+    if (fs::exists((it) / "ar.exe")) {
+      _archiverPaths.emplace_back((it) / "ar.exe");
     }
-    if (fs::exists((*it) / "lib.exe")) {
-      _archiverPaths.emplace_back((*it) / "lib.exe");
+    if (fs::exists((it) / "lib.exe")) {
+      _archiverPaths.emplace_back((it) / "lib.exe");
     }
-    if (fs::exists((*it) / "emar") && (PLATFORM_NAME == "x64-linux" || PLATFORM_NAME == "x64-osx")) {
-      _archiverPaths.emplace_back((*it) / "emar");
+    if (fs::exists((it) / "emar") &&
+        (PLATFORM_NAME == "x64-linux" || PLATFORM_NAME == "x64-osx")) {
+      _archiverPaths.emplace_back((it) / "emar");
     }
-    if (fs::exists((*it) / "emar.bat") && (PLATFORM_NAME == "x86-windows" || PLATFORM_NAME == "x64-windows")) {
-      _archiverPaths.emplace_back((*it) / "emar.bat");
+    if (fs::exists((it) / "emar.bat") &&
+        (PLATFORM_NAME == "x86-windows" || PLATFORM_NAME == "x64-windows")) {
+      _archiverPaths.emplace_back((it) / "emar.bat");
     }
-    if (fs::exists((*it) / "vcpkg") && !fs::is_directory((*it) / "vcpkg")) {
-      _vcpkgPaths.emplace_back((*it) / "vcpkg");
+    if (fs::exists((it) / "vcpkg") && !fs::is_directory((it) / "vcpkg")) {
+      _vcpkgPaths.emplace_back((it) / "vcpkg");
     }
-    if (fs::exists((*it) / "vcpkg.exe")) {
-      _vcpkgPaths.emplace_back((*it) / "vcpkg.exe");
+    if (fs::exists((it) / "vcpkg.exe")) {
+      _vcpkgPaths.emplace_back((it) / "vcpkg.exe");
     }
   }
 
@@ -237,13 +244,13 @@ void Init::setup() {
   }
 }
 
-void Init::init(const std::string &binType) {
+void Init::init(const BinType &binType) {
   std::string binaryType;
-  if (binType == "app") {
+  if (binType == BinType::Application) {
     binaryType = "app";
-  } else if (binType == "dylib") {
+  } else if (binType == BinType::DynamicLibrary) {
     binaryType = "dynamicLibrary";
-  } else if (binType == "statlib") {
+  } else if (binType == BinType::StaticLibrary) {
     binaryType = "staticLibrary";
   } else {
     binaryType = "app";
@@ -391,16 +398,15 @@ void Init::finder(std::vector<fs::path> &vector, const fs::path &dir) {
     std::vector<fs::directory_entry> dirEntry;
     std::copy(fs::directory_iterator(dir), fs::directory_iterator(),
               back_inserter(dirEntry));
-    for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
-         it != dirEntry.end(); ++it) {
-      if (it->path().string().find("MinGW") != std::string::npos ||
-          it->path().string().find("cmake") != std::string::npos) {
-        vector.emplace_back(it->path() / "bin");
+    for (auto &it : dirEntry) {
+      if (it.path().string().find("MinGW") != std::string::npos ||
+          it.path().string().find("cmake") != std::string::npos) {
+        vector.emplace_back(it.path() / "bin");
       }
-      if (fs::exists((it->path() / "vcpkg").string())) {
-        vector.emplace_back(it->path().string());
-        if (fs::exists(it->path() / "downloads" / "tools")) {
-          vector.emplace_back(findCmake(it->path() / "downloads" / "tools"));
+      if (fs::exists((it.path() / "vcpkg").string())) {
+        vector.emplace_back(it.path().string());
+        if (fs::exists(it.path() / "downloads" / "tools")) {
+          vector.emplace_back(findCmake(it.path() / "downloads" / "tools"));
         }
       }
     }
@@ -414,9 +420,8 @@ void Init::sorter(std::vector<fs::path> &vector) {
 
 void Init::lister(std::vector<fs::path> &vector) {
   int i = 1;
-  for (std::vector<fs::path>::const_iterator it = vector.begin();
-       it != vector.end(); ++it) {
-    std::cout << i << ") " << it->string() << std::endl;
+  for (auto &it : vector) {
+    std::cout << i << ") " << it.string() << std::endl;
     i++;
   }
 }

@@ -1,3 +1,4 @@
+#include "pkg.h"
 #include "pch.h"
 
 namespace vcbld {
@@ -12,9 +13,8 @@ PkgClass::PkgClass() {
     } else {
       std::cerr << "Failed to open package.json file: " << errno << std::endl;
     }
-    for (json::iterator it = pkgsJson["packages"].begin();
-         it != pkgsJson["packages"].end(); ++it) {
-      _packageNames.push_back(*it);
+    for (auto &it : pkgsJson["packages"]) {
+      _packageNames.push_back(it);
     }
   } catch (...) {
     std::cerr << "Error reading package.json." << std::endl;
@@ -24,9 +24,8 @@ PkgClass::PkgClass() {
 void PkgClass::write() {
   json pkgsJson;
 
-  for (std::vector<std::string>::iterator it = _packageNames.begin();
-       it != _packageNames.end(); ++it) {
-    pkgsJson["packages"].push_back(*it);
+  for (auto &it : _packageNames) {
+    pkgsJson["packages"].push_back(it);
   }
   try {
     std::ofstream pkgsOutput("package.json");
@@ -91,14 +90,13 @@ std::string PkgClass::getVersion(const std::string &pkgName) {
     std::sort(dirEntry.begin(), dirEntry.end());
     dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
                    dirEntry.end());
-    for (std::vector<fs::directory_entry>::iterator it = dirEntry.begin();
-         it != dirEntry.end(); ++it) {
-      std::string fileName = it->path().filename().string();
+    for (auto &it : dirEntry) {
+      std::string fileName = it.path().filename().string();
       foundPkg = fileName.find(pkg);
       if (foundPkg != std::string::npos && foundPkg == 0 &&
           fileName.find(architecture()) != std::string::npos) {
-        temp2 = it->path().filename().string().substr(pkg.length(),
-                                                      fileName.length());
+        temp2 = it.path().filename().string().substr(pkg.length(),
+                                                     fileName.length());
       }
     }
   }
@@ -112,8 +110,7 @@ void PkgClass::include(const std::string &pkgName) {
 }
 
 void PkgClass::remove(const std::string &pkgName) {
-  for (std::vector<std::string>::iterator it = _packageNames.begin();
-       it != _packageNames.end();) {
+  for (auto it = _packageNames.begin(); it != _packageNames.end();) {
     if (*it == pkgName) {
       it = _packageNames.erase(it);
     } else {

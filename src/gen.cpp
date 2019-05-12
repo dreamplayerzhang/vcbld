@@ -1,4 +1,7 @@
+#include "gen.h"
 #include "pch.h"
+#include "pkg.h"
+#include "prep.h"
 
 namespace vcbld {
 namespace gen {
@@ -128,25 +131,33 @@ void cmakeGen() {
             << prepClass.cmakeOutput() << "\n";
 
         if (prepClass.binaryType() == "app") {
-          ofs << "add_executable(" << prepClass.binaryName() << " ${SOURCE_FILES})\n\n";
+          ofs << "add_executable(" << prepClass.binaryName()
+              << " ${SOURCE_FILES})\n\n";
         } else if (prepClass.binaryType() == "statLib") {
-          ofs << "add_library(" << prepClass.binaryName() << " STATIC ${SOURCE_FILES})\n\n";
+          ofs << "add_library(" << prepClass.binaryName()
+              << " STATIC ${SOURCE_FILES})\n\n";
         } else {
-          ofs << "add_library(" << prepClass.binaryName() << " SHARED ${SOURCE_FILES})\n\n";
+          ofs << "add_library(" << prepClass.binaryName()
+              << " SHARED ${SOURCE_FILES})\n\n";
         }
 
-        ofs << "target_include_directories(" << prepClass.binaryName() << " PUBLIC "
+        ofs << "target_include_directories(" << prepClass.binaryName()
+            << " PUBLIC "
                "${CMAKE_PREFIX_PATH}/include)\n";
         if (!prepClass.includeDirectory().empty() &&
             fs::exists(prepClass.includeDirectory())) {
-          ofs << "target_include_directories(" << prepClass.binaryName() << " PUBLIC "
+          ofs << "target_include_directories(" << prepClass.binaryName()
+              << " PUBLIC "
                  "${CMAKE_CURRENT_SOURCE_DIR}/../"
               << fs::path(prepClass.includeDirectory()).filename().string()
               << ")\n";
         }
-        if (!prepClass.fullLibNames().empty() && !prepClass.fullDbgLibNames().empty()) {
-          ofs << "target_link_libraries(" << prepClass.binaryName() << " debug ${dbgLIBS})\n"
-              << "target_link_libraries(" << prepClass.binaryName() << " optimized "
+        if (!prepClass.fullLibNames().empty() &&
+            !prepClass.fullDbgLibNames().empty()) {
+          ofs << "target_link_libraries(" << prepClass.binaryName()
+              << " debug ${dbgLIBS})\n"
+              << "target_link_libraries(" << prepClass.binaryName()
+              << " optimized "
                  "${rlsLIBS})\n";
         }
         ofs.flush();

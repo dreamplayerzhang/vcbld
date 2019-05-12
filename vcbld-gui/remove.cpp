@@ -1,4 +1,7 @@
+#include "remove.h"
+#include "helper.h"
 #include "qpch.h"
+#include "ui_remove.h"
 
 using namespace vcbld;
 
@@ -15,9 +18,8 @@ Remove::Remove(const std::string &param, QWidget *parent)
   QObject::connect(this, SIGNAL(vcpkgCmnd(const std::string &)), parent,
                    SLOT(on_vcpkgCmnd(const std::string &)));
 
-  for (std::vector<std::string>::iterator it = pkgClass.packageNames().begin();
-       it != pkgClass.packageNames().end(); ++it) {
-    ui->listWidget->addItem(QString::fromStdString(*it));
+  for (auto &it : pkgClass.packageNames()) {
+    ui->listWidget->addItem(QString::fromStdString(it));
   }
 }
 
@@ -30,11 +32,11 @@ void Remove::on_listWidget_itemDoubleClicked(QListWidgetItem *item) {
   std::vector<std::string> v;
   v.push_back(pkgName.toStdString());
   if (_param == "remove") {
-    _output = Helper::execVec(std::bind(&args::remove, v), v);
+    _output = Helper::exec([&]() { args::remove(v); });
   } else {
     emit vcpkgCmnd(pkgClass.vcpkgDirPath() + "/" + "vcpkg" + " remove " +
                    pkgName.toStdString() + ':' + pkgClass.architecture());
-    _output = Helper::execVec(std::bind(&args::remove, v), v);
+    _output = Helper::exec([&]() { args::remove(v); });
   }
   emit outputChanged(_output);
   item->setHidden(true);

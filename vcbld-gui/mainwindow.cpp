@@ -1,4 +1,12 @@
+#include "mainwindow.h"
+#include "add.h"
+#include "dialog.h"
+#include "helper.h"
 #include "qpch.h"
+#include "remove.h"
+#include "setupdialog.h"
+#include "ui_mainwindow.h"
+#include "vcbldgui.h"
 
 using namespace vcbld;
 
@@ -79,7 +87,7 @@ void MainWindow::runProcess(const QString &process, const QString &dir) {
 void MainWindow::on_procFinished(int) { enableMenus(true); }
 
 void MainWindow::on_actionBuild_Commands_triggered() {
-  ui->plainTextEdit->appendPlainText(Helper::exec(std::bind(&args::commands)));
+  ui->plainTextEdit->appendPlainText(Helper::exec([]() { args::commands(); }));
 }
 
 void MainWindow::on_actionToolbarZmIn_triggered() {
@@ -135,16 +143,14 @@ void MainWindow::on_actionNew_triggered() {
     QString display = QString::fromStdString(path.string());
     statusLabel->setText("Current directory: " + _dirName);
     this->setWindowTitle("vcbld-gui\t--\t" + display);
-    Dialog *dialog = new Dialog(this);
+    auto *dialog = new Dialog(this);
     dialog->exec();
-    if (!dialog->binType().empty()) {
-      ui->plainTextEdit->appendPlainText(Helper::execArgs(
-          std::bind(&args::New, dialog->binType()), dialog->binType()));
-      init.init(dialog->binType());
-      enableMenus(true);
-      setup(init);
-      init.setup();
-    }
+    ui->plainTextEdit->appendPlainText(
+        Helper::exec([&]() { args::New(dialog->binType()); }));
+    init.init(dialog->binType());
+    enableMenus(true);
+    setup(init);
+    init.setup();
   }
 }
 
@@ -195,7 +201,7 @@ void MainWindow::on_actionBuild_triggered() {
   if (_dirName != "") {
     QDir::setCurrent(_dirName);
     if (ui->actionDebug->isChecked()) {
-      Builder builder("debug");
+      Builder builder(Configuration::Debug);
       if (!fs::exists(builder.outputDirectory()))
         fs::create_directory(builder.outputDirectory());
       if (!fs::exists(builder.outputDirectory() + "/" + "debug"))
@@ -219,7 +225,7 @@ void MainWindow::on_actionBuild_triggered() {
         msgBox.exec();
       }
     } else {
-      Builder builder("release");
+      Builder builder(Configuration::Release);
       if (!fs::exists(builder.outputDirectory()))
         fs::create_directory(builder.outputDirectory());
       if (!fs::exists(builder.outputDirectory() + "/" + "release"))
@@ -251,9 +257,9 @@ void MainWindow::on_actionClean_triggered() {
   if (_dirName != "") {
     QDir::setCurrent(_dirName);
     if (ui->actionDebug->isChecked()) {
-      args::clean("debug");
+      args::clean(Configuration::Debug);
     } else {
-      args::clean("release");
+      args::clean(Configuration::Release);
     }
     ui->plainTextEdit->appendPlainText("Build output cleaned.");
   }
@@ -436,7 +442,7 @@ void MainWindow::on_actionIncludePath_triggered() {
   if (_dirName != "") {
     QDir::setCurrent(_dirName);
     ui->plainTextEdit->appendPlainText(
-        Helper::exec(std::bind(&args::includes)));
+        Helper::exec([]() { args::includes(); }));
   }
 }
 
@@ -444,7 +450,7 @@ void MainWindow::on_actionCMakeLists_triggered() {
   if (_dirName != "") {
     QDir::setCurrent(_dirName);
     ui->plainTextEdit->appendPlainText(
-        Helper::exec(std::bind(&args::generate)));
+        Helper::exec([]() { args::generate(); }));
   }
 }
 
@@ -469,7 +475,7 @@ void MainWindow::on_actionRemove_triggered() {
 }
 
 void MainWindow::on_actionList_triggered() {
-  ui->plainTextEdit->appendPlainText(Helper::exec(std::bind(&args::list)));
+  ui->plainTextEdit->appendPlainText(Helper::exec([]() { args::list(); }));
 }
 
 void MainWindow::setup(Init &init) {
@@ -602,7 +608,7 @@ void MainWindow::on_actionClear_output_triggered() {
 }
 
 void MainWindow::on_actionRestore_triggered() {
-  ui->plainTextEdit->appendPlainText(Helper::exec(std::bind(&args::restore)));
+  ui->plainTextEdit->appendPlainText(Helper::exec([]() { args::restore(); }));
 }
 
 void MainWindow::clear() {

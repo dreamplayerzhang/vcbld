@@ -1,4 +1,7 @@
+#include "add.h"
+#include "helper.h"
 #include "qpch.h"
+#include "ui_add.h"
 
 using namespace vcbld;
 
@@ -42,12 +45,10 @@ Add::Add(const std::string &param, QWidget *parent)
       std::sort(dirEntry.begin(), dirEntry.end());
       dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
                      dirEntry.end());
-      for (std::vector<fs::directory_entry>::const_iterator it =
-               dirEntry.begin();
-           it != dirEntry.end(); ++it) {
-        if ((it->path().filename().string()).at(0) != '.') {
+      for (auto &it : dirEntry) {
+        if ((it.path().filename().string()).at(0) != '.') {
           ui->listWidget->addItem(
-              QString::fromStdString(it->path().filename().string()));
+              QString::fromStdString(it.path().filename().string()));
         }
       }
     } else {
@@ -67,11 +68,11 @@ void Add::on_listWidget_itemDoubleClicked(QListWidgetItem *item) {
   std::vector<std::string> v;
   v.push_back(pkgName.toStdString());
   if (_param == "add") {
-    _output = Helper::execVec(std::bind(&args::add, v), v);
+    _output = Helper::exec([&]() { args::add(v); });
   } else {
     emit vcpkgCmnd(pkgClass.vcpkgDirPath() + "/" + "vcpkg" + " install " +
                    pkgName.toStdString() + ':' + pkgClass.architecture());
-    _output = Helper::execVec(std::bind(&args::add, v), v);
+    _output = Helper::exec([&]() { args::add(v); });
   }
   emit outputChanged(_output);
 }
@@ -87,14 +88,12 @@ void Add::on_lineEdit_textChanged(const QString &arg1) {
       std::sort(dirEntry.begin(), dirEntry.end());
       dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
                      dirEntry.end());
-      for (std::vector<fs::directory_entry>::const_iterator it =
-               dirEntry.begin();
-           it != dirEntry.end(); ++it) {
-        if ((it->path().filename().string()).at(0) != '.') {
-          if ((it->path().filename().string()).find(arg1.toStdString()) !=
+      for (auto &it : dirEntry) {
+        if ((it.path().filename().string()).at(0) != '.') {
+          if ((it.path().filename().string()).find(arg1.toStdString()) !=
               std::string::npos) {
             ui->listWidget->addItem(
-                QString::fromStdString(it->path().filename().string()));
+                QString::fromStdString(it.path().filename().string()));
           }
         }
       }

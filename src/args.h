@@ -4,14 +4,19 @@
 #include <string>
 
 #include "fs.h"
+#include "init.h"
+#include "predefs.h"
 
 namespace vcbld {
 namespace args {
-void New(const std::string &binType);
+void handleArgs(int argc, char **argv);
+void setup(Init &init);
+std::string parseQuotes(const char *arg);
+void New(const BinType&);
 void restore();
-void build(const std::string &buildType);
-void clean(const std::string &buildType);
-void run(const std::string &buildType);
+void build(const Configuration&);
+void clean(const Configuration&);
+void run(const Configuration&);
 void available();
 void install(std::vector<std::string> &pkg);
 void uninstall(std::vector<std::string> &pkg);

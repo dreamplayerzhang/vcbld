@@ -1,4 +1,6 @@
+#include "setupdialog.h"
 #include "qpch.h"
+#include "ui_setupdialog.h"
 
 using namespace vcbld;
 

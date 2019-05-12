@@ -4,6 +4,8 @@
 #include <QDialog>
 #include <string>
 
+#include "predefs.h"
+
 namespace Ui {
 class Dialog;
 }
@@ -14,7 +16,7 @@ class Dialog : public QDialog {
 public:
   explicit Dialog(QWidget *parent = nullptr);
   ~Dialog();
-  std::string binType() const;
+  BinType binType() const;
 
 private slots:
   void on_pushButton_clicked();
@@ -23,7 +25,7 @@ private slots:
 
 private:
   Ui::Dialog *ui;
-  QString _binType;
+  BinType _binType = BinType::Application;
 };
 
 #endif // DIALOG_H

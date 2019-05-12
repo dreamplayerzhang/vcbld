@@ -17,18 +17,13 @@
 #include <functional>
 #include <streambuf>
 
-#include "add.h"
-#include "dialog.h"
-#include "helper.h"
-#include "mainwindow.h"
 #include "pch.h"
-#include "remove.h"
-#include "setupdialog.h"
-#include "ui_add.h"
-#include "ui_dialog.h"
-#include "ui_mainwindow.h"
-#include "ui_remove.h"
-#include "ui_setupdialog.h"
-#include "vcbldgui.h"
+#include "args.h"
+#include "conf.h"
+#include "gen.h"
+#include "prep.h"
+#include "pkg.h"
+#include "builder.h"
+#include "vcbld.h"
 
 #endif // DEBUG

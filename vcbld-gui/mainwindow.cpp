@@ -144,6 +144,7 @@ void MainWindow::on_actionNew_triggered() {
     statusLabel->setText("Current directory: " + _dirName);
     this->setWindowTitle("vcbld-gui\t--\t" + display);
     auto *dialog = new Dialog(this);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->exec();
     ui->plainTextEdit->appendPlainText(
         Helper::exec([&]() { args::New(dialog->binType()); }));
@@ -464,12 +465,14 @@ void MainWindow::on_actionBuild_run_triggered() {
 
 void MainWindow::on_actionAdd_triggered() {
   Add *add = new Add("add", this);
+  add->setAttribute(Qt::WA_DeleteOnClose);
   add->show();
   add->raise();
 }
 
 void MainWindow::on_actionRemove_triggered() {
   Remove *rmv = new Remove("remove", this);
+  rmv->setAttribute(Qt::WA_DeleteOnClose);
   rmv->show();
   rmv->raise();
 }
@@ -669,12 +672,14 @@ void MainWindow::archive(Builder &builder) {
 
 void MainWindow::on_actionInstall_triggered() {
   Add *add = new Add("install", this);
+  add->setAttribute(Qt::WA_DeleteOnClose);
   add->show();
   add->raise();
 }
 
 void MainWindow::on_actionUninstall_triggered() {
   Remove *rmv = new Remove("uninstall", this);
+  rmv->setAttribute(Qt::WA_DeleteOnClose);
   rmv->show();
   rmv->raise();
 }

@@ -283,27 +283,6 @@ Some video tutorials will be added to my youtube channel.
 This is the link to the first video:
 https://www.youtube.com/watch?v=gE72ehRLQzE
 
-Second video on building vcbld from source using cmake:
-https://www.youtube.com/watch?v=hMTEm4Fzcgk
-
-Third video on using external 3rd party libraries with vcbld:
-https://www.youtube.com/watch?v=KBeY5pgsJQo
-
-Fourth video on building vcbld using vcbld:
-https://www.youtube.com/watch?v=zY-8IX6Lnsk
-
-Fifth video on using 3rd party libraries - 2nd part:
-https://www.youtube.com/watch?v=2qpDG8DyJnI
-
-Sixth video and first video on the vcbld-gui:
-https://www.youtube.com/watch?v=dsBqfPNM-w8
-
-Seventh and second video on the usage of the gui:
-https://www.youtube.com/watch?v=l5v3Bl8U-GI
-
-Using vcbld and vcbld-gui in a windows environment:
-https://www.youtube.com/watch?v=6lYCwM-UlNE
-
 ## Contributing:
 All contributions are welcome!
 

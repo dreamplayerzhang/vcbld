@@ -426,7 +426,7 @@ void Init::lister(std::vector<fs::path> &vector) {
   }
 }
 
-std::string Init::chooser(std::vector<fs::path> &vector, const int &choice) {
+std::string Init::chooser(std::vector<fs::path> &vector, const size_t &choice) {
   fs::path temp;
   if (vector.empty()) {
     temp = "";
@@ -434,8 +434,7 @@ std::string Init::chooser(std::vector<fs::path> &vector, const int &choice) {
     temp = vector[0];
   } else {
     try {
-      if (static_cast<size_t>(choice) <= vector.size() && choice != 0 &&
-          typeid(choice) == typeid(int)) {
+      if (choice <= vector.size() && choice != 0) {
         temp = vector[choice - 1];
       } else {
         temp = vector[0];

@@ -77,19 +77,16 @@ void PkgClass::write() {
 }
 
 std::string PkgClass::getVersion(const std::string &pkgName) {
-  std::vector<fs::directory_entry> dirEntry;
+  std::set<fs::directory_entry> dirEntry;
   std::string tempPath =
       vcpkgDirPath() + "/" + "installed" + "/" + +"vcpkg" + "/" + "info";
   std::string temp, temp2;
   size_t foundArch, foundPkg;
   std::string arch = "_" + architecture() + ".list";
   std::string pkg = pkgName + "_";
-  if (fs::is_directory(static_cast<fs::path>(tempPath))) {
+  if (fs::is_directory(tempPath)) {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
-              back_inserter(dirEntry));
-    std::sort(dirEntry.begin(), dirEntry.end());
-    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
-                   dirEntry.end());
+              std::inserter(dirEntry, dirEntry.begin()));
     for (auto &it : dirEntry) {
       std::string fileName = it.path().filename().string();
       foundPkg = fileName.find(pkg);

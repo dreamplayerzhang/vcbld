@@ -17,7 +17,7 @@ public:
   void setup();
   void sorter(std::vector<fs::path> &vector);
   void lister(std::vector<fs::path> &vector);
-  std::string chooser(std::vector<fs::path> &vector, const int &choice);
+  std::string chooser(std::vector<fs::path> &vector, const size_t &choice);
 
   void setCompiler(const int &i = 1);
   void setCppCompiler(const int &i = 1);

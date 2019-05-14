@@ -15,9 +15,8 @@ SetupDialog::SetupDialog(const QString &msg, std::vector<fs::path> &vector,
   labelText += msg;
   ui->label->setText(labelText);
 
-  for (std::vector<fs::path>::iterator it = vector.begin(); it != vector.end();
-       ++it) {
-    ui->listWidget->addItem(QString::fromStdString(it->string()));
+  for (auto &it : vector) {
+    ui->listWidget->addItem(QString::fromStdString(it.string()));
   }
 }
 

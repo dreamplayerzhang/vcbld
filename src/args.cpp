@@ -148,7 +148,7 @@ void handleArgs(int argc, char **argv) {
       if (args.size() < 3) {
         std::cout << "Please enter a package names to search for." << std::endl;
       } else {
-        search(static_cast<std::string>(args[2]));
+        search(args[2]);
       }
     } else if (args[1] == "uninstall") {
       if (args.size() < 3) {
@@ -331,7 +331,7 @@ void setup(Init &init) {
 }
 
 std::string parseQuotes(const char *arg) {
-  std::string temp = static_cast<std::string>(arg);
+  std::string temp = arg;
   if (temp.find(' ') != std::string::npos) {
     return "\"" + temp + "\"";
   } else {
@@ -488,7 +488,7 @@ void run(const Configuration &buildType) {
 void available() {
   try {
     PkgClass pkgClass;
-    std::vector<fs::directory_entry> dirEntry;
+    std::set<fs::directory_entry> dirEntry;
 
     std::string vcpkgDirPath = pkgClass.vcpkgDirPath();
     vcpkgDirPath += "/";
@@ -498,12 +498,9 @@ void available() {
     vcpkgDirPath += "/";
     vcpkgDirPath += "share";
 
-    if (fs::is_directory(static_cast<fs::path>(vcpkgDirPath))) {
-      std::copy(fs::directory_iterator(vcpkgDirPath), fs::directory_iterator(),
-                back_inserter(dirEntry));
-      std::sort(dirEntry.begin(), dirEntry.end());
-      dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
-                     dirEntry.end());
+    if (fs::is_directory(vcpkgDirPath)) {
+		std::copy(fs::directory_iterator(vcpkgDirPath), fs::directory_iterator(),
+			std::inserter(dirEntry, dirEntry.begin()));
 
       for (auto &it : dirEntry) {
         if ((it.path().filename().string()).at(0) != '.') {
@@ -533,7 +530,7 @@ void find(const std::string &pkg) {
     vcpkgDirPath += "/";
     vcpkgDirPath += "share";
 
-    if (fs::is_directory(static_cast<fs::path>(vcpkgDirPath))) {
+    if (fs::is_directory(vcpkgDirPath)) {
       std::copy(fs::directory_iterator(vcpkgDirPath), fs::directory_iterator(),
                 back_inserter(dirEntry));
 
@@ -587,7 +584,7 @@ void add(const std::vector<std::string> &pkg) {
     std::string addDep = pkgClass.vcpkgDirPath() + "/" + "installed" + "/" +
                          pkgClass.architecture() + "/" + "share" + "/" + it;
 
-    if (fs::is_directory(static_cast<fs::path>(addDep))) {
+    if (fs::is_directory(addDep)) {
       bool isExist = false;
       for (auto &jt : pkgClass.packageNames()) {
         if (jt == it) {

@@ -38,13 +38,10 @@ Add::Add(const std::string &param, QWidget *parent)
   _dirPath = std::move(vcpkgDirPath);
 
   try {
-    std::vector<fs::directory_entry> dirEntry;
-    if (fs::is_directory(static_cast<fs::path>(_dirPath))) {
-      std::copy(fs::directory_iterator(_dirPath), fs::directory_iterator(),
-                back_inserter(dirEntry));
-      std::sort(dirEntry.begin(), dirEntry.end());
-      dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
-                     dirEntry.end());
+    std::set<fs::directory_entry> dirEntry;
+    if (fs::is_directory(_dirPath)) {
+		std::copy(fs::directory_iterator(_dirPath), fs::directory_iterator(),
+			std::inserter(dirEntry, dirEntry.begin()));
       for (auto &it : dirEntry) {
         if ((it.path().filename().string()).at(0) != '.') {
           ui->listWidget->addItem(
@@ -80,14 +77,11 @@ void Add::on_listWidget_itemDoubleClicked(QListWidgetItem *item) {
 void Add::on_lineEdit_textChanged(const QString &arg1) {
   ui->listWidget->clear();
   try {
-    std::vector<fs::directory_entry> dirEntry;
+    std::set<fs::directory_entry> dirEntry;
 
-    if (fs::is_directory(static_cast<fs::path>(_dirPath))) {
+    if (fs::is_directory(_dirPath)) {
       std::copy(fs::directory_iterator(_dirPath), fs::directory_iterator(),
-                back_inserter(dirEntry));
-      std::sort(dirEntry.begin(), dirEntry.end());
-      dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
-                     dirEntry.end());
+                std::inserter(dirEntry, dirEntry.begin()));
       for (auto &it : dirEntry) {
         if ((it.path().filename().string()).at(0) != '.') {
           if ((it.path().filename().string()).find(arg1.toStdString()) !=

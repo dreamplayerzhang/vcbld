@@ -4,18 +4,15 @@
 namespace vcbld {
 
 PrepClass::PrepClass() {
-  std::vector<fs::directory_entry> dirEntry;
+  std::set<fs::directory_entry> dirEntry;
   std::string arch = "_" + architecture() + ".list";
   std::string temp, temp2;
   size_t foundFile;
   std::string listsPath =
       vcpkgDirPath() + "/" + "installed" + "/" + +"vcpkg" + "/" + "info";
-  if (fs::is_directory(static_cast<fs::path>(listsPath))) {
+  if (fs::is_directory(listsPath)) {
     std::copy(fs::directory_iterator(listsPath), fs::directory_iterator(),
-              back_inserter(dirEntry));
-    std::sort(dirEntry.begin(), dirEntry.end());
-    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
-                   dirEntry.end());
+              std::inserter(dirEntry, dirEntry.begin()));
     for (auto &it : dirEntry) {
 
       for (auto &jt : packageNames()) {
@@ -46,39 +43,17 @@ PrepClass::PrepClass() {
             // fail quietly!
           }
         }
-        std::sort(_fullDbgLibNames.begin(), _fullDbgLibNames.end());
-        _fullDbgLibNames.erase(
-            std::unique(_fullDbgLibNames.begin(), _fullDbgLibNames.end()),
-            _fullDbgLibNames.end());
-
-        std::sort(_fullLibNames.begin(), _fullLibNames.end());
-        _fullLibNames.erase(
-            std::unique(_fullLibNames.begin(), _fullLibNames.end()),
-            _fullLibNames.end());
-
-        std::sort(_windDbgDlls.begin(), _windDbgDlls.end());
-        _windDbgDlls.erase(
-            std::unique(_windDbgDlls.begin(), _windDbgDlls.end()),
-            _windDbgDlls.end());
-
-        std::sort(_winRlsDlls.begin(), _winRlsDlls.end());
-        _winRlsDlls.erase(std::unique(_winRlsDlls.begin(), _winRlsDlls.end()),
-                          _winRlsDlls.end());
       }
     }
   }
 
   if (!libDirectory().empty()) {
     std::string localDbgLibs = libDirectory() + "/" + "debug";
-    std::vector<fs::directory_entry> localDbgDirEntry;
+    std::set<fs::directory_entry> localDbgDirEntry;
 
-    if (fs::is_directory(static_cast<fs::path>(localDbgLibs))) {
+    if (fs::is_directory(localDbgLibs)) {
       std::copy(fs::directory_iterator(localDbgLibs), fs::directory_iterator(),
-                std::back_inserter(localDbgDirEntry));
-      std::sort(localDbgDirEntry.begin(), localDbgDirEntry.end());
-      localDbgDirEntry.erase(
-          std::unique(localDbgDirEntry.begin(), localDbgDirEntry.end()),
-          localDbgDirEntry.end());
+                std::inserter(localDbgDirEntry, localDbgDirEntry.begin()));
 
       for (auto &it : localDbgDirEntry) {
         if ((it.path().filename().string()).at(0) != '.') {
@@ -90,13 +65,9 @@ PrepClass::PrepClass() {
     std::string localRlsLibs = libDirectory() + "/" + "release";
     std::vector<fs::directory_entry> localRlsDirEntry;
 
-    if (fs::is_directory(static_cast<fs::path>(localRlsLibs))) {
+    if (fs::is_directory(localRlsLibs)) {
       std::copy(fs::directory_iterator(localRlsLibs), fs::directory_iterator(),
-                std::back_inserter(localRlsDirEntry));
-      std::sort(localRlsDirEntry.begin(), localRlsDirEntry.end());
-      localRlsDirEntry.erase(
-          std::unique(localRlsDirEntry.begin(), localRlsDirEntry.end()),
-          localRlsDirEntry.end());
+                std::inserter(localRlsDirEntry, localRlsDirEntry.begin()));
 
       for (auto &it : localRlsDirEntry) {
         if ((it.path().filename().string()).at(0) != '.') {
@@ -108,16 +79,14 @@ PrepClass::PrepClass() {
 }
 
 std::string PrepClass::sourceFiles() {
-  std::vector<fs::directory_entry> dirEntry;
+  std::set<fs::directory_entry> dirEntry;
   std::string tempPath, fullPath;
   std::ostringstream temp;
   tempPath = sourceDirectory();
-  if (fs::is_directory(static_cast<fs::path>(tempPath))) {
+  if (fs::is_directory(tempPath)) {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
-              back_inserter(dirEntry));
-    std::sort(dirEntry.begin(), dirEntry.end());
-    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
-                   dirEntry.end());
+              std::inserter(dirEntry, dirEntry.begin()));
+
     _srcCount = dirEntry.size();
 
     for (auto &it : dirEntry) {
@@ -136,16 +105,13 @@ std::string PrepClass::sourceFiles() {
 }
 
 std::string PrepClass::sourceFilesSinPath() {
-  std::vector<fs::directory_entry> dirEntry;
+  std::set<fs::directory_entry> dirEntry;
   std::string tempPath;
   std::ostringstream temp;
   tempPath = sourceDirectory();
-  if (fs::is_directory(static_cast<fs::path>(tempPath))) {
+  if (fs::is_directory(tempPath)) {
     std::copy(fs::directory_iterator(tempPath), fs::directory_iterator(),
-              back_inserter(dirEntry));
-    std::sort(dirEntry.begin(), dirEntry.end());
-    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
-                   dirEntry.end());
+              std::inserter(dirEntry, dirEntry.begin()));
 
     for (auto &it : dirEntry) {
       if (fs::path(it.path().filename()).extension() == ".cpp" ||

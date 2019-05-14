@@ -50,16 +50,13 @@ void Builder::compile() {
 }
 
 std::string Builder::objPath(const std::string &buildPath) {
-  std::vector<fs::directory_entry> dirEntry;
+  std::set<fs::directory_entry> dirEntry;
   std::string fullPath;
   std::ostringstream temp;
 
-  if (fs::is_directory(static_cast<fs::path>(buildPath))) {
+  if (fs::is_directory(buildPath)) {
     std::copy(fs::directory_iterator(buildPath), fs::directory_iterator(),
-              back_inserter(dirEntry));
-    std::sort(dirEntry.begin(), dirEntry.end());
-    dirEntry.erase(std::unique(dirEntry.begin(), dirEntry.end()),
-                   dirEntry.end());
+              std::inserter(dirEntry, dirEntry.begin()));
     _outCount = dirEntry.size();
 
     for (auto &it : dirEntry) {
